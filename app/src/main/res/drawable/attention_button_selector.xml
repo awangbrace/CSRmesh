@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+******************************************************************************
+Copyright 2015 Qualcomm Technologies International, Ltd.
+******************************************************************************
+-->
+
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+<!-- Pressed button drawable -->
+<item android:state_pressed="true"
+      android:drawable="@drawable/ic_visibility_white_24dp" />
+
+<!-- Disabled button drawable -->
+<item android:state_enabled="false"
+android:drawable="@drawable/ic_visibility_white_24dp"
+     />
+
+<!-- The default button drawable -->
+<item android:drawable="@drawable/ic_visibility_white_24dp"
+      />
+</selector>

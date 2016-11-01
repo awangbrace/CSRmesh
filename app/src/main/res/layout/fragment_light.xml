@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+    <LinearLayout 
+        android:id="@+id/fragDimmerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+        
+    	<TextView
+    	    android:layout_width="wrap_content"
+    	    android:layout_height="wrap_content"
+    	    android:text="@string/dimmer"/>
+            
+		<SeekBar 
+		    android:max="100"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:id="@+id/fragDimmerSeekBar"/>
+		
+    </LinearLayout>
+    
+    <LinearLayout 
+        android:id="@+id/fragWarmLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:visibility="gone" >
+        
+    	<TextView
+    	    android:layout_width="wrap_content"
+    	    android:layout_height="wrap_content"
+    	    android:text="@string/warm"/>
+            
+		<SeekBar 
+		    android:max="100"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:id="@+id/fragWarmSeekBar"/>
+		
+    </LinearLayout>
+    
+   	<com.axalent.view.widget.HSVCircle
+	    android:id="@+id/fragLightCircle"
+	    android:layout_marginTop="15dp"
+	    android:layout_gravity="center_horizontal"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content" />
+
+	<Switch
+		android:id="@+id/powerSwitch"
+		android:layout_marginTop="10dp"
+		android:layout_gravity="center"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:visibility="gone"/>
+
+</LinearLayout>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    
+
+    	   <ImageView
+		       android:layout_alignParentLeft="true"
+		       android:layout_centerVertical="true"
+		       android:id="@+id/adapterShowGroupImg"
+		       android:layout_width="100dp"
+		       android:layout_height="100dp"/>
+    	   
+		  <LinearLayout
+		       android:layout_toRightOf="@+id/adapterShowGroupImg"
+			   android:id="@+id/adapterShowGroupGroup"
+    	       android:orientation="horizontal"
+    	       android:layout_centerVertical="true"
+    	       android:layout_width="match_parent"
+    	       android:layout_height="match_parent"
+    	       android:gravity="center">
+    	       
+		        <Switch 
+		            android:id="@+id/adapterShowGroupMswitch"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"/>
+		        
+		        <TextView 
+		            android:layout_marginLeft="25dp"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:textSize="16sp"
+		            android:id="@+id/adapterShowGroupStateTxt"/>
+    	       
+		   </LinearLayout>
+		    
+
+		    <com.axalent.view.widget.HorizontalText
+		        android:background="@drawable/device_name_bg"
+		        android:id="@+id/adapterShowGroupNameTxt"
+		        android:layout_width="100dp"
+		        android:layout_height="wrap_content"
+		        android:layout_alignBottom="@+id/adapterShowGroupImg"
+		        android:layout_alignParentLeft="true"
+		        android:gravity="center"
+        		android:alpha="0.5"
+		        android:textColor="@color/white"
+		        android:textSize="12sp" 
+		        android:ellipsize="marquee"
+		        android:focusableInTouchMode="true"
+		        android:marqueeRepeatLimit="marquee_forever"
+		        android:paddingLeft="5dp"
+		        android:paddingRight="5dp"
+		        android:singleLine="true"/>
+		    
+    
+</RelativeLayout>

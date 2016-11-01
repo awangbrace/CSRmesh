@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+        <string-array name="frag_video_qualitys">
+        <item>High</item>
+        <item>Middle</item>
+        <item>Low</item>
+    </string-array>
+    <string-array name="frag_environment_modes">
+        <item>50hz</item>
+        <item>60hz</item>
+    </string-array>
+	<string-array name="array_search_items">
+        <item>Semidiurnal</item>
+        <item>Intraday</item>
+        <item>Three day</item>
+        <item>Within a week</item>
+        <item>All</item>
+    </string-array>
+	<string-array name="array_frag_me">
+        <item>Name</item>
+        <item>Phone</item>
+        <item>Imei</item>
+        <item>Exit Account</item>
+        <item>About Axalent</item>
+        <item>Gateway Config</item>
+        <item>Gateway Display</item>
+        <item>Language：</item>
+        <item>Version : 0.2.2</item>
+    </string-array>
+    <string-array name="array_frag_schedule">
+        <item>Never</item>
+        <item>Day</item>
+        <item>Week</item>
+        <item>Month</item>
+        <item>Year</item>
+    </string-array>
+    <string-array name="array_menu_main">
+        <!--<item>Add Device</item>-->
+        <!--<item>Search CSRmesh Device</item>-->
+        <item>Scan QR Code</item>
+        <item>Cloud Sync</item>
+    </string-array>
+    <!-- bluetooth mode -->
+    <string-array name="array_menu_main_blue_tooth">
+        <item>Search CSRmesh Device</item>
+        <item>Cloud Sync</item>
+        <!--<item>Send Data</item>-->
+        <!--<item>Update NetworkKey</item>-->
+    </string-array>
+    <string-array name="array_menu_scene">
+        <item>Add Scene</item>
+    </string-array>
+    <string-array name="array_menu_group">
+        <item>Add Group</item>
+    </string-array>
+    <string-array name="array_menu_schedule">
+        <item>Add Schedule</item>
+    </string-array>
+    <string-array name="array_menu_show_device">
+        <!--<item>Add Trigger</item>-->
+        <!--<item>Delete Device</item>-->
+    </string-array>
+    <string-array name="array_menu_show_device_bluetooth">
+        <item>Delete Device</item>
+    </string-array>
+    <string-array name="array_frag_camera">
+        <item>call</item>
+        <item>recording</item>
+        <item>snapshoot</item>
+        <item>record</item>
+        <item>alarm</item>
+        <item>angle</item>
+        <item>infrared lamp</item>
+        <item>switch1</item>
+        <item>switch2</item>
+        <item>videoQuality</item>
+        <item>environmental</item>
+	</string-array>
+	<string-array name="array_frag_plug">
+        <item>Switch</item>
+        <item>Current</item>
+        <item>Energy</item>
+        <item>Power</item>
+        <item>Voltage</item>
+        <item>All</item>
+    </string-array>
+    
+	   <string-array name="array_frag_plug2">
+        <item>Power</item>
+    </string-array>
+    <string-array name="arrays_languages">
+        <item>@string/english</item>
+        <item>@string/chinese</item>
+    </string-array>
+    
+</resources>

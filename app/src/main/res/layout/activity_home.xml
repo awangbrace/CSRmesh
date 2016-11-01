@@ -1,0 +1,105 @@
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".view.activity.HomeActivity" >
+
+        <include layout="@layout/actionbar_home"/>
+
+        <View
+            android:layout_below="@+id/barHomeContent"
+            android:id="@+id/atyHomeAnchor"
+            android:layout_alignParentRight="true"
+            android:layout_width="0dp"
+            android:layout_height="0dp" />
+
+        <FrameLayout
+            android:layout_below="@+id/barHomeContent"
+            android:id="@+id/atyHomeFrameLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/atyHomeGroup" />
+
+        <View
+            android:layout_above="@+id/atyHomeGroup"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/black" />
+
+        <RadioGroup
+            android:layout_alignParentBottom="true"
+            android:id="@+id/atyHomeGroup"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:paddingTop="4.5dp"
+            android:orientation="horizontal" >
+
+            <RadioButton
+                android:id="@+id/atyHomeMainBtn"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:button="@null"
+                android:drawableTop="@drawable/selector_home_btn"
+                android:gravity="center"
+                android:text="@string/navigation_main"
+                android:textColor="@drawable/selector_navigation_btn" />
+
+            <RadioButton
+                android:id="@+id/atyHomeSceneBtn"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:button="@null"
+                android:drawableTop="@drawable/selector_scene_btn"
+                android:gravity="center"
+                android:text="@string/navigation_scene"
+                android:textColor="@drawable/selector_navigation_btn" />
+
+            <RadioButton
+                android:id="@+id/atyHomeScheduleBtn"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:button="@null"
+                android:drawableTop="@drawable/selector_schedule_btn"
+                android:gravity="center"
+                android:text="@string/navigation_schedule"
+                android:textColor="@drawable/selector_navigation_btn" />
+
+            <RadioButton
+                android:id="@+id/atyHomeMeBtn"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:button="@null"
+                android:drawableTop="@drawable/selector_me_btn"
+                android:gravity="center"
+                android:text="@string/navigation_me"
+                android:textColor="@drawable/selector_navigation_btn" />
+        </RadioGroup>
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_marginBottom="60dp"
+        android:layout_gravity="bottom"
+        android:id="@+id/database_update"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:background="@color/pre_red"
+        android:gravity="center"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        android:textSize="18sp"
+        android:text="@string/database_update"
+        android:visibility="gone"/>
+
+</FrameLayout>

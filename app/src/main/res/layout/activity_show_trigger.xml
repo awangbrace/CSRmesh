@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <include layout="@layout/actionbar_show_group"/>
+
+    <LinearLayout
+        android:layout_marginTop="0.2dp"
+        android:layout_below="@+id/barShowGroupContent"
+        android:id="@+id/atyShowTriggerTopLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <RadioGroup
+            android:id="@+id/atyShowTriggerGroup"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_alignParentTop="true"
+            android:orientation="horizontal" >
+
+            <RadioButton
+                android:id="@+id/atyShowTriggerOnBtn"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginRight="0.1dp"
+                android:layout_weight="1.0"
+                android:background="@drawable/selector_tab_trigger"
+                android:button="@null"
+                android:checked="true"
+                android:gravity="center"
+                android:text="@string/on"
+                android:textColor="@color/white" />
+
+            <RadioButton
+                android:id="@+id/atyShowTriggerOffBtn"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="0.1dp"
+                android:layout_weight="1.0"
+                android:background="@drawable/selector_tab_trigger"
+                android:button="@null"
+                android:gravity="center"
+                android:text="@string/off"
+                android:textColor="@color/white" />
+        </RadioGroup>
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/atyShowTriggerFrameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/atyShowTriggerTopLayout" />
+
+</RelativeLayout>

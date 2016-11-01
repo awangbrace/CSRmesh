@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="array_search_items">
+        <item>半天内</item>
+        <item>一天内</item>
+        <item>三天内</item>
+        <item>一周内</item>
+        <item>全部</item>
+    </string-array>
+    <string-array name="frag_video_qualitys">
+        <item>高</item>
+        <item>中</item>
+        <item>低</item>
+    </string-array>
+    <string-array name="frag_environment_modes">
+        <item>50hz</item>
+        <item>60hz</item>
+    </string-array>
+    <string-array name="array_frag_me">
+        <item>姓名</item>
+        <item>电话</item>
+        <item>识别码</item>
+        <item>退出账号</item>
+        <item>关于朔联</item>
+        <item>网关配置</item>
+       	<item>网关显示</item>
+        <item>语言：</item>
+        <item>版本号 : 0.2.2</item>
+        
+    </string-array>
+    <string-array name="array_frag_schedule">
+        <item>Never</item>
+        <item>Day</item>
+        <item>Week</item>
+        <item>Month</item>
+        <item>Year</item>
+    </string-array>
+    <string-array name="array_menu_main">
+        <!--<item>添加设备</item>-->
+        <!--<item>搜索CSRmesh设备</item>-->
+        <item>扫描二维码</item>
+        <item>云同步</item>
+    </string-array>
+    <!-- bluetooth mode -->
+    <string-array name="array_menu_main_blue_tooth">
+        <item>搜索CSRmesh设备</item>
+        <item>云同步</item>
+        <!--<item>发送数据</item>-->
+        <!--<item>更新NetworkKey</item>-->
+    </string-array>
+
+    <string-array name="array_menu_scene">
+        <item>添加场景</item>
+    </string-array>
+    <string-array name="array_menu_group">
+        <item>添加组</item>
+    </string-array>
+    <string-array name="array_menu_schedule">
+        <item>添加定时</item>
+    </string-array>
+    <string-array name="array_menu_show_device">
+        <!--<item>添加触发</item>-->
+        <!--<item>删除设备</item>-->
+    </string-array>
+    <string-array name="array_menu_show_device_bluetooth">
+        <item>删除设备</item>
+    </string-array>
+    <string-array name="array_frag_camera">
+        <item>对讲</item>
+        <item>录制</item>
+        <item>拍照</item>
+        <item>照片</item>
+        <item>警报</item>
+        <item>视角</item>
+        <item>红外灯</item>
+        <item>上下切换</item>
+        <item>左右切换</item>
+        <item>视频质量</item>
+        <item>环境模式</item>
+    </string-array>
+    
+    <string-array name="array_frag_plug">
+        <item>开关</item>
+        <item>电流</item>
+        <item>能量</item>
+        <item>功率</item>
+        <item>电压</item>
+        <item>全部</item>
+    </string-array>
+    
+   <string-array name="array_frag_plug2">
+        <item>功率</item>
+    </string-array>
+    
+    <string-array name="arrays_languages">
+        <item>@string/english</item>
+        <item>@string/chinese</item>
+    </string-array>
+
+    <integer-array name="pull_refresh_colors">
+        <item>@color/pull_refresh_blue</item>
+        <item>@color/pull_refresh_green</item>
+        <item>@color/pull_refresh_yellow</item>
+        <item>@color/pull_refresh_red</item>
+    </integer-array>
+
+
+</resources>

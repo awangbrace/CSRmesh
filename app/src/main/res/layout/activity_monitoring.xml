@@ -1,0 +1,123 @@
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/atyMonitoringContentDrawer"
+    tools:context=".view.activity.MonitoringActivity" >
+    
+    <FrameLayout
+        android:id="@+id/atyMonitoringContentFrame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+        
+        <LinearLayout 
+            android:layout_width="match_parent"
+    		android:layout_height="match_parent"
+    		android:orientation="vertical">
+    		
+    		<LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1.0"
+                android:orientation="horizontal" >
+
+                <RelativeLayout
+                    android:id="@+id/atyMonitoringLeftUpRelative"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="0.5dp"
+                    android:layout_marginRight="0.5dp"
+                    android:layout_weight="1.0"
+                    android:background="@drawable/selector_base_btn" >
+                    
+                    <!--  
+                    <TextView 
+                        android:id="@+id/atyMonitoringLeftUpHintTxt"
+                        android:text="@string/be_being_restart"
+                        android:layout_centerInParent="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        android:visibility="gone"/>-->
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:scaleType="center"
+                        android:src="@drawable/add_monitor" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/atyMonitoringRightUpRelative"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="0.5dp"
+                    android:layout_marginLeft="0.5dp"
+                    android:layout_weight="1.0"
+                    android:background="@drawable/selector_base_btn" >
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:scaleType="center"
+                        android:src="@drawable/add_monitor" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1.0"
+                android:orientation="horizontal" >
+
+                <RelativeLayout
+                    android:id="@+id/atyMonitoringLeftDownRelative"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="0.5dp"
+                    android:layout_marginTop="0.5dp"
+                    android:layout_weight="1.0"
+                    android:background="@drawable/selector_base_btn" >
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:scaleType="center"
+                        android:src="@drawable/add_monitor" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/atyMonitoringRightDownRelative"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="0.5dp"
+                    android:layout_marginTop="0.5dp"
+                    android:layout_weight="1.0"
+                    android:background="@drawable/selector_base_btn" >
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:scaleType="center"
+                        android:src="@drawable/add_monitor" />
+                </RelativeLayout>
+                
+            </LinearLayout>
+            
+        </LinearLayout>
+        
+    </FrameLayout>
+    
+
+   	<ListView
+        android:id="@+id/atyMonitoringLeftDrawerList"
+        android:layout_height="match_parent"
+        android:layout_width="140dp"
+        android:layout_gravity="start"
+        android:background="@color/white"/>
+
+</android.support.v4.widget.DrawerLayout>

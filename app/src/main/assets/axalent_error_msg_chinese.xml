@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ns1:requestFault xmlns:ns1="http://arrayent.com/zamapi/">
+    
+	<errorCode>1</errorCode>
+	<errorMsg>Arrayent服务器异常</errorMsg>
+	
+	<errorCode>2</errorCode>
+	<errorMsg>无效的设备名称</errorMsg>
+	
+	<errorCode>3</errorCode>
+	<errorMsg>无效的设备密码</errorMsg>
+	
+	<errorCode>4</errorCode>
+	<errorMsg>设备名称已经过期</errorMsg> 
+	
+	<errorCode>5</errorCode>
+	<errorMsg>未知的设备名称</errorMsg>
+	
+	<errorCode>6</errorCode>
+	<errorMsg>设备不可用</errorMsg>
+	
+	<errorCode>7</errorCode>
+	<errorMsg>发送者不是在设备的列表</errorMsg>
+	
+	<errorCode>8</errorCode>
+	<errorMsg>设备名称已经被使用</errorMsg>
+	
+	<errorCode>9</errorCode>
+	<errorMsg>客户不是一个试验的客户</errorMsg>
+	
+	<errorCode>10</errorCode>
+	<errorMsg>无效的登录会话</errorMsg>
+	
+	<errorCode>11</errorCode>
+	<errorMsg>无效的关键代码</errorMsg>
+	
+	<errorCode>12</errorCode>
+	<errorMsg>无效的问题号码</errorMsg>
+	
+	<errorCode>13</errorCode>
+	<errorMsg>无效的选项</errorMsg>
+	
+	<errorCode>14</errorCode>
+	<errorMsg>Arrayent核心服务器不可用</errorMsg>
+	
+	<errorCode>15</errorCode>
+	<errorMsg>注册码已经被使用</errorMsg>
+	
+	<errorCode>16</errorCode>
+	<errorMsg>Arrayent核心服务器拒绝访问</errorMsg>
+	
+	<errorCode>100</errorCode>
+	<errorMsg>太多的会话</errorMsg>
+	
+	<errorCode>101</errorCode>
+	<errorMsg>登录名或密码错误</errorMsg>
+	
+	<errorCode>102</errorCode>
+	<errorMsg>登录名不存在</errorMsg>
+	
+	<errorCode>103</errorCode>
+	<errorMsg>无效的客户属性名称</errorMsg>
+	
+	<errorCode>104</errorCode>
+	<errorMsg>无效的设备属性名称</errorMsg>
+	
+	<errorCode>105</errorCode>
+	<errorMsg>无效的设备类型名称</errorMsg>
+	
+	<errorCode>106</errorCode>
+	<errorMsg>无效的安全令牌</errorMsg>
+
+    <errorCode>107</errorCode>
+	<errorMsg>没有权限</errorMsg>
+	
+	<errorCode>108</errorCode>
+	<errorMsg>名字已经使用</errorMsg>
+	
+	<errorCode>109</errorCode>
+	<errorMsg>设备不存在</errorMsg>
+	
+	<errorCode>110</errorCode>
+	<errorMsg>设备已经与另一个客户相关的</errorMsg>
+
+	<errorCode>111</errorCode>
+	<errorMsg>客户不存在</errorMsg>
+	
+	<errorCode>112</errorCode>
+	<errorMsg>设备类型在使用中,不能删除</errorMsg>
+	
+	<errorCode>113</errorCode>
+	<errorMsg>触发不存在</errorMsg>
+	
+	<errorCode>114</errorCode>
+	<errorMsg>设备类型不存在</errorMsg>
+
+	<errorCode>115</errorCode>
+	<errorMsg>数据库一致性错误</errorMsg>
+
+	<errorCode>116</errorCode>
+	<errorMsg>无效的客户ID</errorMsg>
+	
+	<errorCode>117</errorCode>
+	<errorMsg>所需的名字是</errorMsg>
+	
+	<errorCode>118</errorCode>
+	<errorMsg>数据库内部错误</errorMsg>
+
+	<errorCode>119</errorCode>
+	<errorMsg>客户不是一个系统客户</errorMsg>
+
+	<errorCode>120</errorCode>
+	<errorMsg>名称已经在使用,不能删除</errorMsg>
+
+	<errorCode>201</errorCode>
+	<errorMsg>发送消息状态不可用</errorMsg>
+
+	<errorCode>202</errorCode>
+	<errorMsg>请求超时</errorMsg>
+
+	<errorCode>203</errorCode>
+	<errorMsg>内部连接错误</errorMsg>
+
+	<errorCode>204</errorCode>
+	<errorMsg>API键是无效的</errorMsg>
+
+	<errorCode>205</errorCode>
+	<errorMsg>无效设备ID</errorMsg>
+
+	<errorCode>206</errorCode>
+	<errorMsg>该用户已经被注册</errorMsg>
+
+	<errorCode>301</errorCode>
+	<errorMsg>URI语法错误的</errorMsg>
+
+	<errorCode>302</errorCode>
+	<errorMsg>URL格式是无效的</errorMsg>
+
+	<errorCode>303</errorCode>
+	<errorMsg>与提供的URL不能网</errorMsg>
+
+	<errorCode>304</errorCode>
+	<errorMsg>错误下载远程文件，请检查可用spacedisk和权限</errorMsg>
+
+	<errorCode>310</errorCode>
+	<errorMsg>错误计算文件校验和</errorMsg>
+
+	<errorCode>339</errorCode>
+	<errorMsg>无效的激活码</errorMsg>
+	
+	<errorCode>346</errorCode>
+	<errorMsg>设备已经被添加到其他用户下</errorMsg>
+
+	<errorCode>1000</errorCode>
+	<errorMsg>接口不支持</errorMsg>
+
+	<errorCode>1001</errorCode>
+	<errorMsg>内部错误</errorMsg>
+	
+	<errorCode>311</errorCode>
+	<errorMsg>暂时不支持该类型的邮箱</errorMsg>
+	
+	<errorCode>125</errorCode>
+	<errorMsg>访问被拒绝</errorMsg>
+	
+    <errorCode>344</errorCode>
+    <errorMsg>语言不支持中文</errorMsg>
+	
+    <errorCode>174</errorCode>
+    <errorMsg>邮箱已被注册</errorMsg>
+	
+</ns1:requestFault>

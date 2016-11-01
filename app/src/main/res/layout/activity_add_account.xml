@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include layout="@layout/actionbar_account"/>
+
+    <EditText
+        android:textSize="15sp"
+        android:hint="@string/please_enter_the_email"
+        android:paddingLeft="10dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/white"
+        android:id="@+id/atyLoginUsernameEdit"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:inputType="text"
+        android:maxLength="30" />
+
+    <EditText
+        android:textSize="15sp"
+        android:hint="@string/please_enter_the_password"
+        android:paddingLeft="10dp"
+        android:layout_marginTop="1dp"
+        android:background="@color/white"
+        android:id="@+id/atyLoginPasswordEdit"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:inputType="textPassword"
+        android:maxLength="30"/>
+
+    <Button
+        android:textStyle="bold"
+        android:textSize="15sp"
+        android:textColor="@color/white"
+        android:text="@string/login"
+        android:background="@drawable/selector_base_btn"
+        android:id="@+id/atyLoginLoginBtn"
+        android:layout_margin="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"/>
+
+</LinearLayout>

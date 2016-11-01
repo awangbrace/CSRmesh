@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingTop="100dp"
+    android:paddingLeft="30dp"
+    android:paddingRight="30dp" >
+    
+    <TextView 
+        android:textSize="18sp"
+        android:gravity="center"
+        android:id="@+id/fragSendRecoveryHintTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/send_reset_password_to_email_hint"/>
+    
+        
+    <EditText
+        android:textSize="15sp"
+        android:hint="@string/please_enter_the_email"
+        android:paddingLeft="10dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/white"
+        android:id="@+id/fragSendRecoveryEmailEdit"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:maxLength="30" />
+    
+
+</LinearLayout>

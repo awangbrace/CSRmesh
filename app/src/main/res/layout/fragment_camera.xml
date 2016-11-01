@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/fragCameraStateRelative"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="5dp" >
+
+        <TextView
+            android:id="@+id/fragCameraConnectStateTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/connect_state" />
+
+        <TextView
+            android:id="@+id/fragCameraOnlinePopulationTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/fragCameraConnectStateTxt"
+            android:layout_marginTop="10dp"
+            android:text="@string/online_population" />
+
+        <TextView
+            android:id="@+id/fragCameraConnectStateValueTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="5dp"
+            android:text="@string/connecting" />
+
+        <TextView
+            android:id="@+id/fragCameraOnlinePopulationValueTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/fragCameraOnlinePopulationTxt"
+            android:layout_alignParentRight="true"
+            android:text="@string/default_online_population" />
+    </RelativeLayout>
+
+    <HorizontalScrollView
+        android:id="@+id/fragCameraBtnLinear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/fragCameraStateRelative"
+        android:layout_marginTop="5dp"
+        android:scrollbars="none" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/fragCameraConnectBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selector_base_btn"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="@string/again_connect"
+                android:textColor="@color/white"
+                android:textSize="13sp" />
+
+            <Button
+                android:id="@+id/fragCameraPasswordBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selector_base_btn"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="@string/configuration_password"
+                android:textColor="@color/white"
+                android:textSize="13sp" />
+
+            <Button
+                android:id="@+id/fragCameraIncidentBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selector_base_btn"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="@string/select_incident"
+                android:textColor="@color/white"
+                android:textSize="13sp" />
+
+            <Button
+                android:id="@+id/fragCameraMonitoringBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selector_base_btn"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="@string/whole_journey_monitoring"
+                android:textColor="@color/white"
+                android:textSize="13sp" />
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <RelativeLayout
+        android:id="@+id/fragCameraMonitorRelative"
+        android:layout_width="match_parent"
+        android:layout_height="190dp"
+        android:layout_below="@+id/fragCameraBtnLinear"
+        android:paddingTop="5dp" >
+
+        <com.tutk.IOTC.Monitor
+            android:id="@+id/fragCameraMonitor"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true" />
+
+        <ImageButton
+            android:id="@+id/fragCameraTopBtn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/selector_camera_circle"
+            android:scaleType="center"
+            android:src="@drawable/top" />
+
+        <ImageButton
+            android:id="@+id/fragCameraBottomBtn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/selector_camera_circle"
+            android:scaleType="center"
+            android:src="@drawable/bottom" />
+
+        <ImageButton
+            android:id="@+id/fragCameraLeftBtn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/selector_camera_circle"
+            android:scaleType="center"
+            android:src="@drawable/left" />
+
+        <ImageButton
+            android:id="@+id/fragCameraRightBtn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/selector_camera_circle"
+            android:scaleType="center"
+            android:src="@drawable/right" />
+
+    </RelativeLayout>
+
+    <com.axalent.view.widget.HorizontalList
+        android:id="@+id/fragCameraList"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/listview_height"
+        android:layout_below="@+id/fragCameraMonitorRelative"
+        android:background="@color/color_blue"
+        android:orientation="horizontal" />
+
+</RelativeLayout>

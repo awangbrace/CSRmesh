@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <include layout="@layout/actionbar_search"/>
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/swipeContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/barSearchContent"
+        android:layout_above="@+id/selectDevice">
+
+        <ListView
+            android:id="@+id/list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </ListView>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <!-- Here is the view to show if the list is empty -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/selectDevice">
+        <TextView android:id="@+id/empty_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="@string/no_result_found" />
+    </RelativeLayout>
+    <!-- end of the view -->
+
+    <com.axalent.view.material.ButtonFlatMaterial
+        xmlns:material="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/selectDevice"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_button_flat"
+        android:text="@string/select_a_device"
+        android:padding="5dip"
+        android:layout_alignParentBottom="true"
+        android:background="#FF000000"
+        />
+    <!--material:buttonbackground="@color/background_led_disabled"-->
+
+</RelativeLayout>

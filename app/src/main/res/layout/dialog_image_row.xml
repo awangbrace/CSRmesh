@@ -1,0 +1,17 @@
+<!--
+******************************************************************************
+Copyright 2015 Qualcomm Technologies International, Ltd.
+******************************************************************************
+-->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:padding="5dip">
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="36dip"
+        android:layout_height="36dip"
+        android:layout_centerInParent="true"
+        android:tint="@color/dark_blue_csr"
+        android:src="@drawable/ic_brightness_1_black_36dp"/>
+</RelativeLayout>

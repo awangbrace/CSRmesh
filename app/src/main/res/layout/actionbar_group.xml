@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+	android:background="@color/color_blue"
+	android:id="@+id/barGroupContent">
+    
+
+        <TextView 
+            android:id="@+id/barGroupTitleTxt"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        
+        <RelativeLayout 
+            android:layout_width="50dp"
+            android:id="@+id/barGroup"
+			android:background="@drawable/selector_base_btn"
+            android:layout_alignParentLeft="true"
+            android:layout_height="match_parent">
+            
+	        <ImageView
+	            android:layout_centerInParent="true"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content" 
+	            android:src="@drawable/ic_done_white_24dp"/>
+	        
+        </RelativeLayout>
+        
+		<TextView
+			android:id="@+id/barCancel"
+			android:layout_centerVertical="true"
+			android:layout_alignParentRight="true"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+			android:textColor="@color/white"
+			android:padding="10dp"
+			android:text="@string/cancel_group"/>
+        
+
+</RelativeLayout>

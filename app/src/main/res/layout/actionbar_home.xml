@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+	android:background="@color/color_blue"
+	android:id="@+id/barHomeContent">
+    
+    
+        <TextView 
+            android:id="@+id/barHomeTitleTxt"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:layout_marginLeft="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+	<ImageButton
+		android:id="@+id/channel_status"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:visibility="gone"
+		android:layout_centerVertical="true"
+		android:layout_marginLeft="10dp"
+		android:layout_toRightOf="@+id/barHomeTitleTxt"
+		android:src="@drawable/ic_bluetooth_disabled_black_24dp"
+		android:tint="@color/material_color_4"
+		android:background="@drawable/ripple_round_channel"/>
+        
+        <RelativeLayout 
+            android:layout_width="50dp"
+            android:id="@+id/barHomeMenu"
+			android:background="@drawable/selector_base_btn"
+            android:layout_alignParentRight="true"
+            android:layout_height="match_parent">
+            
+	        <ImageView
+	            android:layout_centerInParent="true"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content" 
+	            android:src="@drawable/menu"/>
+	        
+        </RelativeLayout>
+        
+
+</RelativeLayout>

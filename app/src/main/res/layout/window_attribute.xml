@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" 
+    android:orientation="vertical" >
+    
+    
+    <RelativeLayout 
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.9"
+        android:background="@color/color_blue">
+        
+        
+        <RelativeLayout 
+            android:id="@+id/windowAttributeCloseLayout"
+            android:background="@drawable/selector_base_btn"
+            android:layout_width="45dp"
+            android:layout_height="match_parent">
+            
+	        <ImageView
+	            android:layout_centerInParent="true"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:src="@drawable/close" />
+        
+        </RelativeLayout>
+        
+        <TextView 
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/device_attribute"/>
+        
+        
+    </RelativeLayout>
+    
+    
+    <LinearLayout 
+        android:id="@+id/windowAttributeContentLayout"
+        android:layout_width="match_parent"
+      	android:layout_height="0dp"
+        android:layout_weight="8.2"
+        android:gravity="center"
+        android:orientation="vertical">
+        
+    </LinearLayout>
+    
+    <Button 
+        android:background="@drawable/selector_base_btn"
+        android:id="@+id/windowAttributeConfirmBtn"
+        android:layout_width="match_parent"
+        android:textColor="@color/white"
+		android:layout_height="0dp"
+        android:layout_weight="0.9"
+        android:text="@string/confirm"
+        android:textSize="18sp" />
+    
+
+</LinearLayout>

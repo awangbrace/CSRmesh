@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" 
+    android:orientation="vertical" >
+    
+    
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="0dp"
+	    android:layout_weight="2.5"
+	    android:padding="5dp">
+	    
+        <RelativeLayout 
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1.0">
+            
+            <TextView
+                android:layout_centerVertical="true"
+                android:textColor="@color/black"
+                android:id="@+id/fragShowScheduleDevName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/name" />
+
+            <TextView
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:gravity="center"
+                android:textColor="@color/black"
+                android:id="@+id/fragShowScheduleDevNameTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textSize="15sp" />
+            
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1.0" >
+            
+            <TextView
+                 android:layout_centerVertical="true"
+                android:id="@+id/fragShowScheduleDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/date"
+                android:textColor="@color/black" />
+
+            <TextView
+                 android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:id="@+id/fragShowScheduleDateTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="15sp" />
+            
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1.0">
+            <Switch
+                android:id="@+id/fragShowScheduleSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true" />
+	
+		    <TextView
+		        android:layout_centerVertical="true"
+		        android:textColor="@color/black"
+		        android:id="@+id/fragShowScheduleEnable"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="@string/enable" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1.0">
+		    
+		    <TextView
+		        android:layout_centerVertical="true"
+                android:id="@+id/fragShowScheduleRepetition"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/repetition"
+                android:textColor="@color/black" />
+
+            <Spinner
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:id="@+id/fragShowScheduleOptionSpinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:entries="@array/array_frag_schedule" />
+
+        </RelativeLayout>
+	</LinearLayout>
+
+	    
+	    <com.baoyz.swipemenulistview.SwipeMenuListView
+            android:id="@+id/fragShowScheduleListView"
+            android:layout_width="match_parent"
+            android:layout_weight="6.6"
+            android:layout_height="0dp" />
+	    
+	    <Button 
+	        android:id="@+id/fragShowScheduleUpdateBtn"
+	        android:textSize="20sp"
+	        android:text="@string/update"
+	        android:textColor="@color/white"
+	        android:layout_width="match_parent"
+	        android:layout_height="0dp"
+	        android:background="@drawable/selector_base_btn"
+	        android:layout_weight="0.9"/>
+
+</LinearLayout>

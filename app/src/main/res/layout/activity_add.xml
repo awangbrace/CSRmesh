@@ -1,0 +1,26 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.activity.AddActivity" >
+
+    <include layout="@layout/actionbar_add"/>
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/barAddContent"
+        android:layout_above="@+id/atyAddSaveOrUpdateBtn"
+        android:id="@+id/atyAddListView"/>
+    
+    <Button 
+        android:layout_alignParentBottom="true"
+        android:id="@+id/atyAddSaveOrUpdateBtn"
+        android:textSize="20sp"
+        android:textColor="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/selector_base_btn"/>
+
+</RelativeLayout>

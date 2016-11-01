@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" 
+    android:padding="10dp">
+    
+    <LinearLayout 
+        android:layout_centerVertical="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        
+	    <TextView 
+	        android:text="@string/alarm_Incident"
+	        android:id="@+id/adapterIncidentNameTxt"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textColor="@color/black"
+	        android:textSize="18sp"/>
+	    
+	    <TextView
+	        android:id="@+id/adapterIncidentDateTxt"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textColor="@color/black"
+	        android:textSize="13sp" />
+	    
+    </LinearLayout>
+    
+    
+    <ImageView
+        android:src="@drawable/item_next"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="5dp"
+        android:id="@+id/adapterIncidentRightImg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleType="center"/>
+
+</RelativeLayout>

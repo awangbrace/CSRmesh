@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+	android:background="@color/color_blue"
+	android:id="@+id/barChartContent">
+    
+
+        <RelativeLayout 
+            android:layout_width="50dp"
+            android:id="@+id/barChartBack"
+android:background="@drawable/selector_base_btn"
+            android:layout_alignParentLeft="true"
+            android:layout_height="match_parent">
+            
+	        <ImageView
+	            android:layout_centerInParent="true"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content" 
+	            android:src="@drawable/back"/>
+	        
+        </RelativeLayout>
+        
+        
+        <TextView
+            android:text="@string/chart"
+	        android:id="@+id/barChartTitle"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_centerInParent="true"
+	        android:textColor="@color/white"
+	        android:gravity="center"
+	        android:textSize="20sp" />
+        <!--  
+        <RelativeLayout 
+            android:layout_width="50dp"
+            android:id="@+id/barChartEdit"
+            android:background="@drawable/selector_click"
+            android:layout_alignParentRight="true"
+            android:layout_height="match_parent">
+            
+	        <ImageView
+	            android:layout_centerInParent="true"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content" 
+	            android:src="@drawable/edit"/>
+	        
+        </RelativeLayout>-->
+        
+
+</RelativeLayout>

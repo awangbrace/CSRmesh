@@ -1,0 +1,120 @@
+apply plugin: 'com.android.application'
+def appVersion = '2.0.0'
+def appVersionNums = appVersion.split(/\./)
+def releaseTime() {
+    return new Date().format("yyyy-MM-dd", TimeZone.getTimeZone("UTC"))
+}
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "21.1.2"
+
+    defaultConfig {
+        applicationId "cn.axalent.bluetooth"
+        minSdkVersion 19
+        targetSdkVersion 23
+        versionCode ((Integer.parseInt(appVersionNums[0]) << 24) + (Integer.parseInt(appVersionNums[1]) << 16) + (Integer.parseInt(appVersionNums[2]) << 8))
+        versionName appVersion
+        multiDexEnabled true
+        // 默认是umeng的渠道
+        manifestPlaceholders = [UMENG_CHANNEL_VALUE: "umeng"]
+    }
+
+    lintOptions {
+        abortOnError false
+        checkReleaseBuilds false
+    }
+
+    signingConfigs {
+        debug {
+            // No debug config
+        }
+
+        release {
+            storeFile file("../axalent.jks")
+            storePassword "axalent"
+            keyAlias "axalent"
+            keyPassword "axalent"
+        }
+    }
+
+    buildTypes {
+
+        debug {
+            // 显示Log
+            buildConfigField "boolean", "LOG_DEBUG", "true"
+
+            versionNameSuffix "-debug"
+            minifyEnabled false
+            zipAlignEnabled false
+            shrinkResources false
+            signingConfig signingConfigs.debug
+        }
+
+        release {
+            // 不显示Log
+            buildConfigField "boolean", "LOG_DEBUG", "false"
+            minifyEnabled false
+            zipAlignEnabled true
+            // 移除无用的resource文件
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+    }
+
+    applicationVariants.all{ variant ->
+        variant.outputs.each{ output ->
+            def outputFile = output.outputFile
+            if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                // 输出apk名称为MyHome_v1.0_2016-07-15_*.apk
+                def fileName = "MyHome_bluetooth_v${defaultConfig.versionName}_${variant.productFlavors[0].name}.apk"
+                output.outputFile = new File(outputFile.parent, fileName)
+            }
+        }
+
+    }
+
+    compileOptions {
+        encoding "UTF-8"
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+
+//    dexOptions {
+//        incremental true
+//        javaMaxHeapSize "4g"
+//    }
+
+    productFlavors {
+        xiaomi {}
+        _360 {}
+        baidu {}
+        tencent {}
+    }
+
+    productFlavors.all { flavor ->
+        flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
+    }
+}
+
+
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    testCompile 'junit:junit:4.12'
+
+    compile 'com.android.support:appcompat-v7:23.0.1'
+    compile 'com.android.support:support-v4:23.0.1'
+    compile 'com.android.support:design:23.0.1'
+    compile 'com.android.support:recyclerview-v7:23.0.1'
+
+    compile 'io.reactivex:rxjava:1.1.6'
+
+    compile 'com.madgag.spongycastle:pkix:1.51.0.0'
+
+    compile 'com.android.support:multidex:1.0.1'
+
+    compile project(':CSRmeshLibrary')
+    compile files('libs/volley.jar')
+}

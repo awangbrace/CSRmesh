@@ -1,0 +1,347 @@
+<ns1:getDeviceTypeListResponse xmlns:ns1="http://arrayent.com/zamapi/">
+    <typeNameList>
+        <id>377</id>
+        <name>AGMS</name>
+        <displayName>Arrayent Generic Motion Sensor</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>378</id>
+        <name>AGCS</name>
+        <displayName>Arrayent Generic Contact Sensor</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>379</id>
+        <name>ASSS</name>
+        <displayName>Arrayent Sample Smoke Sensor</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>380</id>
+        <name>thermostat</name>
+        <displayName>Thermostat Demo</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>381</id>
+        <name>egwmft</name>
+        <displayName>Gateway egw</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>382</id>
+        <name>genericmft</name>
+        <displayName>genericmft</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>383</id>
+        <name>OLSIREN</name>
+        <displayName>OLSIREN</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>384</id>
+        <name>AGCS-new</name>
+        <displayName>Arrayent Generic Contact Sensor New</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>385</id>
+        <name>devDemo</name>
+        <displayName>devoper board demo</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>386</id>
+        <name>gwMgr</name>
+        <displayName>gateway manager</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>387</id>
+        <name>newDevKit</name>
+        <displayName>new dev kit</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>390</id>
+        <name>wicedboard</name>
+        <displayName>wicedboard</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>391</id>
+        <name>SM</name>
+        <displayName>Motion Sensor</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>392</id>
+        <name>SS</name>
+        <displayName>Simple Siren</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>393</id>
+        <name>SL</name>
+        <displayName>Light Bulb</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>394</id>
+        <name>ST</name>
+        <displayName>Thermometer</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>395</id>
+        <name>SW</name>
+        <displayName>Switch</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>396</id>
+        <name>SD</name>
+        <displayName>Dimmer</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>397</id>
+        <name>SSmoke</name>
+        <displayName>Smoke Sensor</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>398</id>
+        <name>Netvox_Z203</name>
+        <displayName>Netvox_z203</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>399</id>
+        <name>gateway</name>
+        <displayName>Gateway</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>400</id>
+        <name>computime_powerplug</name>
+        <displayName>Power Plug</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>401</id>
+        <name>Netvox_Z809</name>
+        <displayName>power plug</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>402</id>
+        <name>Netvox_ZB11</name>
+        <displayName>Motion sensor</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>403</id>
+        <name>Netvox_ZA01</name>
+        <displayName>Aire pollution</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>404</id>
+        <name>SC</name>
+        <displayName>Contact Sensor</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>406</id>
+        <name>HTM</name>
+        <displayName>Health Thermometer</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>407</id>
+        <name>HTS</name>
+        <displayName>Humidity and Temperature Sensor</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>409</id>
+        <name>candyWMachine</name>
+        <displayName>candy Wash Machine </displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>410</id>
+        <name>group</name>
+        <displayName>Group contrl</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>411</id>
+        <name>BPM</name>
+        <displayName>Blood pressure monitor</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>412</id>
+        <name>ASE_pedometer</name>
+        <displayName>ASE Pedometer</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>413</id>
+        <name>ASE_beacon</name>
+        <displayName>ASE Beacon</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>414</id>
+        <name>ASE_ECG</name>
+        <displayName>ASE ECG</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>415</id>
+        <name>beacon</name>
+        <displayName>Beacon</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>418</id>
+        <name>keyfob</name>
+        <displayName>keyfob</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>420</id>
+        <name>ASE_accelerometer</name>
+        <displayName>Accelerometer</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>421</id>
+        <name>ASE_gyroscope</name>
+        <displayName>ASE_gyroscope</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>423</id>
+        <name>LightSensor</name>
+        <displayName>light sensor</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>424</id>
+        <name>RemoteControl</name>
+        <displayName>RemoteControl</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>425</id>
+        <name>ASE_Humidity</name>
+        <displayName>ASE_Humidity</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>426</id>
+        <name>ASE_Pressure</name>
+        <displayName>ASE_Pressure</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>427</id>
+        <name>ASE_Wifi_Temperature</name>
+        <displayName>ASE_Wifi_Temperature</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>428</id>
+        <name>ASE_Wifi_Locker</name>
+        <displayName>ASE_Wifi_Locker</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>429</id>
+        <name>AirPurify</name>
+        <displayName>Air Purify</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>430</id>
+        <name>AXA_FACTORY_TYPE</name>
+        <displayName>AXA_FACTORY_TYPE</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>437</id>
+        <name>scale</name>
+        <displayName>Electronic Scale</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>441</id>
+        <name>doorlock</name>
+        <displayName>Door Lock</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>442</id>
+        <name>scene</name>
+        <displayName>scene</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>444</id>
+        <name>axa_switch_binary_3</name>
+        <displayName>Three-way Switch</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>445</id>
+        <name>axa_gateway_scene</name>
+        <displayName>Scene in gateway</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>447</id>
+        <name>axa_scene</name>
+        <displayName>Axalent Server Scene</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>456</id>
+        <name>axa_gateway_schedule</name>
+        <displayName>Schedule in gateway</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>457</id>
+        <name>axa_window_cover</name>
+        <displayName>Window Cover</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>458</id>
+        <name>axa_switch_binary_2</name>
+        <displayName>Two-way Switch</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>488</id>
+        <name>axa_valve</name>
+        <displayName>Valve</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>489</id>
+        <name>axa_mouse_trap</name>
+        <displayName>Mouse trap</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>490</id>
+        <name>axa_flood_sensor</name>
+        <displayName>Flood sensor</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>501</id>
+        <name>axa_siren</name>
+        <displayName>Siren</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>506</id>
+        <name>axa_gas_sensor</name>
+        <displayName>gas sensor</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>507</id>
+        <name>mtm_epad</name>
+        <displayName>mtm_epad</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>508</id>
+        <name>mtm_motion_sensor</name>
+        <displayName>mtm_motion_sensor</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>510</id>
+        <name>eBio_epad</name>
+        <displayName>Epad</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>516</id>
+        <name>guni_lamp</name>
+        <displayName>GuniTech lamp</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>517</id>
+        <name>guni_plug</name>
+        <displayName>GuniTech smart plug</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>518</id>
+        <name>guni_sensor_PIR</name>
+        <displayName>GuniTech PIR sensor</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>519</id>
+        <name>guni_sensor_light</name>
+        <displayName>GuniTech light sensor</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>520</id>
+        <name>guni_switch</name>
+        <displayName>GuniTech Switch</displayName>
+    </typeNameList>
+    <typeNameList>
+        <id>521</id>
+        <name>SHCK</name>
+        <displayName>Shock Sensor</displayName>
+    </typeNameList>
+</ns1:getDeviceTypeListResponse>

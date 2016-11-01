@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="10dp"
+    android:orientation="vertical" >
+    
+    
+    <com.axalent.view.widget.CircleImageView
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/fragMeAvatar"
+        android:layout_width="95dp"
+        android:layout_height="95dp"
+        android:src="@drawable/default_avatar"
+        app:civ_border_width="0.5dp"
+   	 	app:civ_border_color="@color/grey"/>
+
+	<ListView 
+	    android:layout_marginTop="10dp"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:id="@+id/fragMeListView"/>
+
+</LinearLayout>

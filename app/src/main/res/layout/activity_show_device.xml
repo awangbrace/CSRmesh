@@ -1,0 +1,94 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".view.activity.ShowDeviceActivity" >
+
+
+    <include layout="@layout/actionbar_show_device"/>
+
+    <View
+        android:layout_below="@+id/showDeviceContent"
+        android:id="@+id/atyShowDeviceAnchor"
+        android:layout_width="0.1dp"
+        android:layout_height="0.1dp"
+        android:layout_alignParentRight="true"/>
+
+    <RelativeLayout
+        android:layout_below="@+id/showDeviceContent"
+        android:id="@+id/atyShowDeviceRelative"
+        android:layout_width="match_parent"
+        android:layout_height="95dp"
+        android:background="@drawable/show_device_bg" >
+
+        <ImageView
+            android:id="@+id/atyShowDeviceImg"
+            android:layout_width="95dp"
+            android:layout_height="95dp"
+            android:layout_centerInParent="true" />
+        
+		<include layout="@layout/two_val_layout"/>
+        
+        
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/atyShowDeviceNameLinear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/atyShowDeviceRelative"
+        android:layout_margin="5dp"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/device_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="1.0"
+            android:text="@string/device_name" />
+
+        <TextView
+            android:id="@+id/atyShowDeviceName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:layout_weight="1.0"
+            android:gravity="right" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/atyShowDeviceCustomLinear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/atyShowDeviceNameLinear"
+		android:layout_margin="5dp"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/custom_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="1.0"
+            android:text="@string/custom_name" />
+
+        <TextView
+            android:id="@+id/atyShowDeviceCustName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:layout_weight="1.0"
+            android:gravity="right" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/atyShowDeviceFrame"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/atyShowDeviceCustomLinear"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp" />
+
+</RelativeLayout>

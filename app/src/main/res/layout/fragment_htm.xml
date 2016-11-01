@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+    <include 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/include_date"/>
+    
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        
+        <LinearLayout 
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+            
+	        <TextView 
+	            android:id="@+id/fragHtmHighTxt"
+	            android:text="@string/hig"
+	            android:layout_marginLeft="10dp"
+	            android:layout_width="0dp"
+	            android:layout_weight="1.1"
+	            android:layout_height="wrap_content"/>
+	        
+	         <SeekBar 
+	             android:layout_width="0dp"
+	             android:layout_weight="4.9"
+	             android:max="50"
+	             android:layout_height="wrap_content"
+	             android:id="@+id/fragHtmHighBar"/>
+	        
+        </LinearLayout>
+        
+        <LinearLayout 
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+            
+	      <TextView 
+	            android:text="@string/low"
+	            android:id="@+id/fragHtmLowTxt"
+	            android:layout_width="0dp"
+	            android:layout_weight="1.1"
+	            android:layout_marginLeft="10dp"
+	            android:layout_height="wrap_content"/>
+	      
+	      <SeekBar 
+	             android:layout_width="0dp"
+	             android:layout_weight="4.9"
+	             android:max="50"
+	             android:layout_height="wrap_content"
+	             android:id="@+id/fragHtmLowBar"/>
+        </LinearLayout>
+        
+    </LinearLayout>
+    
+    <include 
+                android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/include_history_btn" />
+
+    <include 
+        android:layout_marginTop="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/include_history_list"/>
+
+</LinearLayout>

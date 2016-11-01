@@ -1,0 +1,291 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.axalent">
+
+
+
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <!-- jPush message -->
+    <uses-permission android:name="com.axalent.permission.JPUSH_MESSAGE" />
+    <!-- user present -->
+    <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
+    <!-- Optional for location -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <!-- 允许使用访问网络状态 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- 允许使用网络 -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <!-- 允许使用摄像头 -->
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
+    <!-- 允许使用闪光灯 -->
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <!-- 允许程序改变网络连接状态 -->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <!-- 允许程序改变WIFI连接状态 -->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
+    <!-- 允许程序改变WIFI多路广播状态 -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!-- 向SD卡写入文件 -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!-- 唤醒屏幕 -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <!-- 震动手机 -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <!-- 允许程序录制音频 -->
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <!-- 允许读取用户数据的权限 -->
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <permission
+        android:name="com.axalent.permission.JPUSH_MESSAGE"
+        android:protectionLevel="signature" />
+    <!-- 摄像头部分 -->
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+
+    <meta-data
+        android:name="UMENG_CHANNEL"
+        android:value="${UMENG_CHANNEL_VALUE}" />
+
+    <application
+        android:name=".application.MyApplication"
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+
+        <activity
+            android:name=".view.activity.LoginActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".view.activity.HomeActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".view.activity.ShowDeviceActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/title_activity_show_device" >
+        </activity>
+        <activity
+            android:name=".view.activity.ShowGroupActivity"
+            android:label="@string/title_activity_show_group"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".view.activity.AddActivity"
+            android:label="@string/title_activity_add"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".view.activity.CaptureActivity"
+            android:label="@string/title_activity_capture"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".view.activity.UserActivity"
+            android:label="@string/title_activity_user"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".view.activity.ShowTriggerActivity"
+            android:label="@string/title_activity_show_trigger"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".view.activity.ShowRecordActivity"
+            android:label="@string/title_activity_show_record"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".view.activity.PlayVideoActivity"
+            android:label="@string/title_activity_play_video">
+        </activity>
+        <activity
+            android:name=".view.activity.DiscoveryGatewayActivity"
+            android:label="@string/title_activity_setting"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".view.activity.EventActivity"
+            android:label="@string/title_activity_event"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".view.activity.MonitoringActivity"
+            android:label="@string/title_activity_monitoring"
+            android:screenOrientation="landscape">
+        </activity>
+        <activity
+            android:name=".view.activity.ChartActivity"
+            android:label="@string/title_activity_chart"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".view.activity.SearchActivity"
+            android:label="@string/title_activity_search"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".view.activity.SwitchGatewayWifiActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity android:name=".view.activity.DetectedDevicesActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity android:name=".view.activity.AddGroupActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity android:name=".view.activity.AddAccountActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity android:name=".view.activity.GatewayConfigActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+
+
+        <!-- Rich push 核心功能 since 2.0.6 -->
+        <activity
+            android:name="cn.jpush.android.ui.PopWinActivity"
+            android:exported="false"
+            android:theme="@style/MyDialogStyle" >
+        </activity>
+
+        <!-- Required SDK核心功能 -->
+        <activity
+            android:name="cn.jpush.android.ui.PushActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:exported="false"
+            android:theme="@android:style/Theme.NoTitleBar" >
+            <intent-filter>
+                <action android:name="cn.jpush.android.ui.PushActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="com.axalent" />
+            </intent-filter>
+        </activity>
+
+        <!-- Required  SDK核心功能 -->
+        <service
+            android:name="cn.jpush.android.service.DownloadService"
+            android:enabled="true"
+            android:exported="false" >
+        </service>
+
+        <!-- Required SDK 核心功能 -->
+        <!-- 可配置android:process参数将PushService放在其他进程中 -->
+        <service
+            android:name="cn.jpush.android.service.PushService"
+            android:enabled="true"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="cn.jpush.android.intent.REGISTER" />
+                <action android:name="cn.jpush.android.intent.REPORT" />
+                <action android:name="cn.jpush.android.intent.PushService" />
+                <action android:name="cn.jpush.android.intent.PUSH_TIME" />
+            </intent-filter>
+        </service>
+
+        <!-- since 1.8.0 option 可选项。用于同一设备中不同应用的JPush服务相互拉起的功能。 -->
+        <!-- 若不启用该功能可删除该组件，将不拉起其他应用也不能被其他应用拉起 -->
+        <service
+            android:name="cn.jpush.android.service.DaemonService"
+            android:enabled="true"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="cn.jpush.android.intent.DaemonService" />
+                <category android:name="com.axalent" />
+            </intent-filter>
+        </service>
+
+        <!-- Required SDK核心功能 -->
+        <receiver
+            android:name="cn.jpush.android.service.PushReceiver"
+            android:enabled="true"
+            android:exported="false" >
+            <intent-filter android:priority="1000" >
+                <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED_PROXY" />
+                <!-- Required  显示通知栏 -->
+                <category android:name="com.axalent" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.USER_PRESENT" />
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+            <!-- Optional -->
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_ADDED" />
+                <action android:name="android.intent.action.PACKAGE_REMOVED" />
+
+                <data android:scheme="package" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Required SDK核心功能 -->
+        <receiver
+            android:name="cn.jpush.android.service.AlarmReceiver"
+            android:exported="false" />
+
+        <!-- User defined.  For test only  用户自定义的广播接收器 -->
+        <receiver
+            android:name=".util.MyReceiver"
+            android:enabled="true"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="cn.jpush.android.intent.REGISTRATION" />
+                <!-- Required  用户注册SDK的intent -->
+                <action android:name="cn.jpush.android.intent.UNREGISTRATION" />
+                <action android:name="cn.jpush.android.intent.MESSAGE_RECEIVED" />
+                <!-- Required  用户接收SDK消息的intent -->
+                <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED" />
+                <!-- Required  用户接收SDK通知栏信息的intent -->
+                <action android:name="cn.jpush.android.intent.NOTIFICATION_OPENED" />
+                <!-- Required  用户打开自定义通知栏的intent -->
+                <action android:name="cn.jpush.android.intent.ACTION_RICHPUSH_CALLBACK" />
+                <!-- Optional 用户接受Rich Push Javascript 回调函数的intent -->
+                <action android:name="cn.jpush.android.intent.CONNECTION" />
+                <!-- 接收网络变化 连接/断开 since 1.6.3 -->
+                <category android:name="com.axalent" />
+            </intent-filter>
+        </receiver>
+
+        <!-- CSRMesh -->
+        <service
+            android:name="com.csr.csrmesh2.MeshService"
+            android:enabled="true"
+            android:exported="false" >
+        </service>
+
+        <service
+            android:name=".presenter.services.SearchSelectedGatewayService"
+            android:exported="false"/>
+
+        <receiver android:name=".presenter.events.ConnectionChangeReceiver"
+            android:label="ConnectionChangeReceiver">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Required  . Enable it you can get statistics data with channel -->
+        <meta-data
+            android:name="JPUSH_CHANNEL"
+            android:value="developer-default" />
+        <meta-data
+            android:name="JPUSH_APPKEY"
+            android:value="e3bb3c51ab2fd6579d7e9bf6" />
+        <!-- </>值来自开发者平台取得的AppKey -->
+
+    </application>
+
+</manifest>
