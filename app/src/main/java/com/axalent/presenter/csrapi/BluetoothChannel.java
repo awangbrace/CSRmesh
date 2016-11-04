@@ -29,7 +29,7 @@ public class BluetoothChannel {
     public static void cancelTransaction(int requestId) {
         int meshRequestId = MeshLibraryManager.getInstance().getMeshRequestId(requestId);
         if (meshRequestId != 0) {
-            
+
             MeshLibraryManager.getInstance().getMeshService().cancelTransaction(meshRequestId);
         }
         else {

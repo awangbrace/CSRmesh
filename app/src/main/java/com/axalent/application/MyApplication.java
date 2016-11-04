@@ -11,6 +11,7 @@ package com.axalent.application;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.support.multidex.MultiDex;
 
 import com.axalent.model.data.database.DBManager;

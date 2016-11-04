@@ -77,9 +77,11 @@ import com.axalent.view.widget.LoadingDialog;
 import com.tutk.IOTC.Camera;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -91,6 +93,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -162,6 +165,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
 		initFragment();
 		loadData();
 		if (isBluetoothMode()) {
+			checkBluetooth();
 			dbManager = DBManager.getDBManagerInstance(this.getApplicationContext());
 			mPlace = dbManager.getPlace(1);
 			MeshLibraryManager.getInstance().setNetworkPassPhrase(mPlace != null ? mPlace.getNetworkKey() : "password");
@@ -235,6 +239,14 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
 		setupPushTagOrAlias();
 	}
 
+	// 检测蓝牙是否开启
+	private void checkBluetooth() {
+		BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+		if (bluetoothAdapter != null && !bluetoothAdapter.isEnabled()) {
+			turnOnBluetooth();
+		}
+	}
+
 	public DBManager getDbManager() {
 		return dbManager;
 	}
@@ -287,9 +299,38 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
 		if (!isBluetoothMode()) {
 			baseActionThread.startAction();
 		}
+
 		super.onResume();
 		checkPermissions();
 	}
+
+	/**
+	 * 自定义的打开 Bluetooth 的请求码，与 onActivityResult 中返回的 requestCode 匹配。
+	 */
+	private static final int REQUEST_CODE_BLUETOOTH_ON = 1313;
+	/**
+	* Bluetooth 设备可见时间，单位：秒。
+	*/
+	private static final int BLUETOOTH_DISCOVERABLE_DURATION = 300;
+
+	private void turnOnBluetooth()
+	{
+		// 请求打开 Bluetooth
+		Intent requestBluetoothOn = new Intent(
+				BluetoothAdapter.ACTION_REQUEST_ENABLE);
+
+		// 设置 Bluetooth 设备可以被其它 Bluetooth 设备扫描到
+		requestBluetoothOn
+				.setAction(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+		// 设置 Bluetooth 设备可见时间
+		requestBluetoothOn.putExtra(
+				BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION,
+				BLUETOOTH_DISCOVERABLE_DURATION);
+		// 请求开启 Bluetooth
+		this.startActivityForResult(requestBluetoothOn,
+				REQUEST_CODE_BLUETOOTH_ON);
+	}
+
 
 	@Override
 	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -1129,27 +1170,40 @@ private boolean filtration(String typeName) {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch (requestCode) {
-		case AxalentUtils.ADD_GROUP:
-			((SceneFragment) fragments.get(fragmentIndex)).loadDatas();
-			break;
-		case AxalentUtils.SET_AVATAR:
-			((MeFragment) fragments.get(fragmentIndex)).setAvatar(data);
-			break;
-		case AxalentUtils.REFRESH_DATA:
-			Log.i("test", "onActivityResult");
-			if (isBluetoothMode()) {
-				// load local data
-				setupCSRDatas();
-				notifyPageRefresh();
-			} else {
+			case AxalentUtils.ADD_GROUP:
+				((SceneFragment) fragments.get(fragmentIndex)).loadDatas();
+				break;
+			case AxalentUtils.SET_AVATAR:
+				((MeFragment) fragments.get(fragmentIndex)).setAvatar(data);
+				break;
+			case AxalentUtils.REFRESH_DATA:
+				Log.i("test", "onActivityResult");
+				if (isBluetoothMode()) {
+					// load local data
+					setupCSRDatas();
+					notifyPageRefresh();
+				} else {
+					loadData();
+				}
+				break;
+			case AxalentUtils.ADD_ACCOUNT:
+				boolean isShowMsg = sp.getBoolean("isShowMsg", false);
+				databaseUpdate.setVisibility(isShowMsg ? View.VISIBLE : View.GONE);
 				loadData();
-			}
-			break;
-		case AxalentUtils.ADD_ACCOUNT:
-			boolean isShowMsg = sp.getBoolean("isShowMsg", false);
-			databaseUpdate.setVisibility(isShowMsg ? View.VISIBLE : View.GONE);
-			loadData();
-			break;
+				syncServerData();
+				break;
+			case REQUEST_CODE_BLUETOOTH_ON:
+				switch (resultCode) {
+					case Activity.RESULT_OK:
+						// 允许打开蓝牙
+						break;
+					case Activity.RESULT_CANCELED:
+						// 不允许打开蓝牙
+						break;
+					default:
+						break;
+				}
+				break;
 		}
 
 		super.onActivityResult(requestCode, resultCode, data);
@@ -1450,7 +1504,9 @@ private boolean filtration(String typeName) {
 				LogUtils.i("deviceType:" + device.getTypeName());
 				if (AxalentUtils.TYPE_GATEWAY.equals(device.getTypeName())) {
 					LogUtils.i("gatewayId:" + device.getDevId());
-					setSyncDbAttr(device.getDevId(), attr);
+					if (device.getState() != null && device.getState().equals("1")) {
+						setSyncDbAttr(device.getDevId(), attr);
+					}
 				}
 			}
 		}

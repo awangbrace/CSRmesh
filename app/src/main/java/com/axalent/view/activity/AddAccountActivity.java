@@ -106,6 +106,7 @@ public class AddAccountActivity extends BaseActivity implements View.OnClickList
                     skipToHome();
                     saveUserInfo(user);
                     loadingDialog.close();
+                    setResult(AxalentUtils.ADD_ACCOUNT);
                     finish();
                 } else {
                     loadingDialog.close();

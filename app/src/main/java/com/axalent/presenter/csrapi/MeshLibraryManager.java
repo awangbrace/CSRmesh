@@ -3,6 +3,7 @@
  ******************************************************************************/
 package com.axalent.presenter.csrapi;
 
+import android.app.Service;
 import android.bluetooth.BluetoothDevice;
 import android.content.ComponentName;
 import android.content.Context;
@@ -13,6 +14,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.axalent.model.data.database.DBManager;
@@ -58,7 +60,6 @@ public class MeshLibraryManager extends Thread {
     private Context mContext;
 
     private String mSelectedGatewayUUID = "";
-
 
     public enum MeshChannel {
         BLUETOOTH,

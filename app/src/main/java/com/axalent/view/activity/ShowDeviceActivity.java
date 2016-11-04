@@ -383,7 +383,9 @@ public class ShowDeviceActivity extends BaseActivity implements OnClickListener 
 					switch (position) {
 					case 0:
 						if (AxalentUtils.getLoginMode() == R.id.atyLoginBluetoothBtn) {
-							showDeleteDeviceDialog();
+							if (result != AxalentUtils.GROUP) {
+								showDeleteDeviceDialog();
+							}
 						} else {
 							if (currentDevice.getTypeName().equalsIgnoreCase(AxalentUtils.TYPE_SENSOR_PIR)) {
 								Intent intent = new Intent(ShowDeviceActivity.this, AddActivity.class);

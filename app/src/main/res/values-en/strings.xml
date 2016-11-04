@@ -2,7 +2,7 @@
 <resources>
 
     <!-- application -->
-    <string name="app_name">MyHome</string>
+    <string name="app_name">MyHome_CN</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_home">HomeActivity</string>
@@ -355,6 +355,7 @@
     <string name="bad_sync">Sync failed. Click try again</string>
 
     <string name="applied">Applied</string>
+    <string name="enable_bluetooth">Turn on Bluetooth</string>
     <string name="is_the_search">search gateway...</string>
     <string name="no_discovery_gateway">no discovery gateway!</string>
     <string name="no_discovery_gateway_find">no discovery gateway,Whether to find again?</string>

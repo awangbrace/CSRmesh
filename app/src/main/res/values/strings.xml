@@ -2,7 +2,7 @@
 <resources>
 
     <!-- application -->
-    <string name="app_name">CN_BTMyHome</string>
+    <string name="app_name">MyHome_CN</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_home">HomeActivity</string>
@@ -355,6 +355,8 @@
     <string name="bad_sync">同步失败，点击重试</string>
 
     <string name="applied">应用中</string>
+
+    <string name="enable_bluetooth">请开启蓝牙</string>
 
 
 
