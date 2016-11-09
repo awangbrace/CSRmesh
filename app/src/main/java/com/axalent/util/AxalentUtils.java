@@ -306,6 +306,7 @@ public class AxalentUtils {
 	public static final int ADD_GROUP = 0x31;
 	public static final int ADD_ACCOUNT = 0x32;
 	public static final int EXIT_ACCOUNT = 0x35;
+	public static final int ACCOUNT_FINISH = 0x9001;
 
 	public static final String GROUP_OR_SING = "group_or_sing";
 	public static final int GROUP = 0x32;

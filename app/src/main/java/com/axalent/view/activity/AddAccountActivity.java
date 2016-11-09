@@ -1,5 +1,6 @@
 package com.axalent.view.activity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -62,6 +63,7 @@ public class AddAccountActivity extends BaseActivity implements View.OnClickList
         cancelGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                setResult(AxalentUtils.ACCOUNT_FINISH);
                 finish();
             }
         });
@@ -103,10 +105,8 @@ public class AddAccountActivity extends BaseActivity implements View.OnClickList
                     resultUser.setPassword(user.getPassword());
                     CacheUtils.saveUser(resultUser);
                     MyCacheData.getInstance().setCacheUser(resultUser);
-                    skipToHome();
                     saveUserInfo(user);
                     loadingDialog.close();
-                    setResult(AxalentUtils.ADD_ACCOUNT);
                     finish();
                 } else {
                     loadingDialog.close();

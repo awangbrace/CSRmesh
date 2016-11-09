@@ -58,6 +58,7 @@ import com.axalent.model.Trigger;
 import com.axalent.presenter.csrapi.ConnectionUtils;
 import com.axalent.presenter.csrapi.MeshLibraryManager;
 import com.axalent.presenter.axaapi.UserAPI;
+import com.axalent.presenter.csrapi.SensorModel;
 import com.axalent.presenter.events.MeshResponseEvent;
 import com.axalent.presenter.events.MeshSystemEvent;
 import com.csr.csrmesh2.MeshConstants;
@@ -1189,8 +1190,10 @@ private boolean filtration(String typeName) {
 			case AxalentUtils.ADD_ACCOUNT:
 				boolean isShowMsg = sp.getBoolean("isShowMsg", false);
 				databaseUpdate.setVisibility(isShowMsg ? View.VISIBLE : View.GONE);
-				loadData();
-				syncServerData();
+				if (resultCode != AxalentUtils.ACCOUNT_FINISH) {
+					loadData();
+					syncServerData();
+				}
 				break;
 			case REQUEST_CODE_BLUETOOTH_ON:
 				switch (resultCode) {

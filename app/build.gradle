@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-def appVersion = '2.0.0'
+def appVersion = '2.0.1'
 def appVersionNums = appVersion.split(/\./)
 def releaseTime() {
     return new Date().format("yyyy-MM-dd", TimeZone.getTimeZone("UTC"))

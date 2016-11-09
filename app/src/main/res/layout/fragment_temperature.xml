@@ -25,7 +25,7 @@ Copyright 2015 Qualcomm Technologies International, Ltd.
 	    android:layout_marginRight="2dip"
 	    android:layout_marginTop="5dip">
 
-     <com.csr.csrmeshdemo2.ui.utils.TemperatureCircle
+     <com.axalent.view.material.TemperatureCircle
          android:id="@+id/temperatureControler"
          android:layout_margin="30dip"
          android:layout_width="wrap_content"

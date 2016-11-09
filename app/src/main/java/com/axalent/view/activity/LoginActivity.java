@@ -57,7 +57,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener, OnCh
 	private RadioGroup changeLoginGroup;
 	private LoadingDialog loadingDialog;
 	private SharedPreferences sp;
-	private boolean isBluetooth;
 	private int exit;
 	private DiscoveryGateway discoveryGateway;
 	private Handler handler = new Handler();
@@ -210,11 +209,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, OnCh
 					resultUser.setPassword(user.getPassword());
 					CacheUtils.saveUser(resultUser);
 					MyCacheData.getInstance().setCacheUser(resultUser);
-//					if (!isBluetooth) {
-						skipToHome();
-//					} else {
-//						skipBluetoothControl(resultUser);
-//					}
+					skipToHome();
 					loadingDialog.close();
 					saveUserInfo(user);
 					finish();
@@ -236,13 +231,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener, OnCh
 		});
 	}
 
-	private void skipBluetoothControl(User user) {
+	private void skipBluetoothControl() {
 		Intent intent = new Intent(this, HomeActivity.class);
-//		if (user != null) {
-//			intent.putExtra("userId", user.getUserId());
-//			intent.putExtra("userName", user.getUsername());
-//			intent.putExtra("secToken", user.getSecurityToken());
-//		}
 		startActivity(intent);
 		finish();
 	}
@@ -290,7 +280,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener, OnCh
 	private void setModeView(int id, boolean toast) {
 		switch (id) {
 			case R.id.atyLoginCloudBtn:
-				isBluetooth = false;
 				changePasswordTxt.setVisibility(View.VISIBLE);
 				changePasswordTxt.setText(R.string.change_password);
 				registerBtn.setVisibility(View.VISIBLE);
@@ -299,12 +288,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener, OnCh
 				passwordEdit.setVisibility(View.VISIBLE);
 				remPasswordBox.setVisibility(View.VISIBLE);
 				sharedPreferences.edit().putBoolean("isRemote", true).commit();
-//				if (toast) {
-//					ToastUtils.show(R.string.change_to_cloud);
-//				}
 				break;
 			case R.id.atyLoginGatewayBtn:
-				isBluetooth = false;
 				changePasswordTxt.setVisibility(View.VISIBLE);
 				changePasswordTxt.setText(R.string.gateway_config);
 				registerBtn.setVisibility(View.GONE);
@@ -312,26 +297,13 @@ public class LoginActivity extends BaseActivity implements OnClickListener, OnCh
 				passwordEdit.setVisibility(View.VISIBLE);
 				remPasswordBox.setVisibility(View.VISIBLE);
 				sharedPreferences.edit().putBoolean("isRemote", false).commit();
-//				if (toast) {
-//					ToastUtils.show(R.string.change_to_gateway);
-//				}
 				if (exit == -1) {
 					searchGateway();
 				}
 				break;
 			case R.id.atyLoginBluetoothBtn:
-				isBluetooth = true;
-//				changePasswordTxt.setVisibility(View.INVISIBLE);
-//				registerBtn.setVisibility(View.VISIBLE);
-//				registerBtn.setText(getString(R.string.local));
-//				usernameEdit.setVisibility(View.VISIBLE);
-//				passwordEdit.setVisibility(View.VISIBLE);
-//				remPasswordBox.setVisibility(View.VISIBLE);
-//				if (toast) {
-//					ToastUtils.show(R.string.change_to_bluetooth);
-//				}
 				sharedPreferences.edit().putBoolean("isRemote", true).commit();
-				skipBluetoothControl(null);
+				skipBluetoothControl();
 				break;
 		}
 	}
