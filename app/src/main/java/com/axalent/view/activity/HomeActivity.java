@@ -1410,12 +1410,15 @@ private boolean filtration(String typeName) {
 									uploadLocalData();
 									break;
 							}
-						} else if (serverTime.isEmpty()) {
+						} else if (serverTime.isEmpty() && time != null) {
 							uploadLocalData();
-						} else {
+						} else if (!serverTime.isEmpty() && time == null){
 							closeRefresh();
 							dbManager.updateLocalDatabase(userAttributes.get(i).getValue());
 							databaseUpdate.setVisibility(View.GONE);
+						} else {
+							closeRefresh();
+							ToastUtils.show("No synchronization!");
 						}
 					}
 				}
@@ -1465,7 +1468,10 @@ private boolean filtration(String typeName) {
 	private void uploadLocalData() {
 		// Get configuration data.
 		String configuration = dbManager.getDataBaseAsJson();
-		Log.i("configuration" ,configuration);
+		Log.i("configuration:" , configuration+"");
+		if (configuration == null) {
+			configuration = "";
+		}
 		// upload configuration to server
 		UserAPI.setUserAttribute(AxalentUtils.ATTRIBUTE_DATABASE, configuration, new Response.Listener<String>() {
 			@Override
