@@ -3,7 +3,6 @@ package com.axalent.view.fragment;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,22 +11,15 @@ import android.widget.TextView;
 
 import com.axalent.R;
 import com.axalent.presenter.RxBus;
-import com.axalent.presenter.csrapi.MeshLibraryManager;
+import com.axalent.presenter.csrapi.SensorModel;
 import com.axalent.presenter.events.MeshRequestEvent;
-import com.axalent.presenter.events.MeshResponseEvent;
 import com.axalent.util.AxalentUtils;
 import com.axalent.view.material.TemperatureCircle;
 import com.axalent.view.material.TemperatureControllerInterface;
-import com.csr.csrmesh2.ActuatorModelApi;
 import com.csr.csrmesh2.MeshConstants;
-import com.csr.csrmesh2.sensor.DesiredAirTemperature;
-import com.csr.csrmesh2.sensor.InternalAirTemperature;
-import com.csr.csrmesh2.sensor.SensorValue;
+import com.csr.csrmesh2.SensorValue;
 
 import java.text.DecimalFormat;
-
-import rx.Subscription;
-import rx.functions.Action1;
 
 /**
  * File Name                   : TemperatureFragment
@@ -46,7 +38,6 @@ public class TemperatureFragment extends Fragment implements TemperatureControll
     // UI elements
     private LinearLayout mGetButton;
     private TextView mCurrentValue;
-    private TextView mCurrentKelvinValue;
     private static double temperatureValue;
 
     // Controllers
@@ -61,14 +52,11 @@ public class TemperatureFragment extends Fragment implements TemperatureControll
     private static final double MIN_TEMPERATURE_VALUE = 0.0;
     private static final double TEMPERATURE_DEFAULT_VALUE = 20.0;
 
-    DesiredAirTemperature mTemperatureToSend = null;
+    SensorValue mTemperatureToSend = null;
     boolean mPendingDesiredTemperatureRequest = false;
     private Handler mHandler = new Handler();
     static int mSendDeviceId;
     int mLastActuatorMeshId;
-
-    private Subscription subscription;
-
 
     public static TemperatureFragment newInstance(int deviceId, double value) {
         TemperatureFragment fragment = new TemperatureFragment();
@@ -84,7 +72,6 @@ public class TemperatureFragment extends Fragment implements TemperatureControll
         mGetButton = (LinearLayout) rootView.findViewById(R.id.buttonGet);
         mCurrentValue = (TextView) rootView.findViewById(R.id.currentValue);
         mCurrentValue.setText(mDecimalFactor.format(temperatureValue));
-        mCurrentKelvinValue = (TextView) rootView.findViewById(R.id.currentKelvinValue);
         mTemperatureControler = (TemperatureCircle) rootView.findViewById(R.id.temperatureControler);
         mGetButton.setOnClickListener(mGetButtonListener);
         mTemperatureControler.setTemperatureInterface(this);
@@ -154,8 +141,7 @@ public class TemperatureFragment extends Fragment implements TemperatureControll
     }
 
     private void setDesiredTemperature(float celsius) {
-        double kelvin = AxalentUtils.convertCelsiusToKelvin(celsius);
-        mTemperatureToSend = new DesiredAirTemperature((float) kelvin);
+        mTemperatureToSend = SensorValue.desiredAirTemperature(AxalentUtils.convertCelsiusToKelvin(celsius));
 
         if (mTemperatureToSend != null) {
             mPendingDesiredTemperatureRequest = true;
@@ -168,9 +154,8 @@ public class TemperatureFragment extends Fragment implements TemperatureControll
         mTemperatureControler.setValueConfirmed(true);
     }
 
-    public void setCurrentTemperature(double value, double value2) {
+    public void setCurrentTemperature(double value) {
         mCurrentValue.setText(mDecimalFactor.format(value));
-//        mCurrentKelvinValue.setText(mDecimalFactor.format(value2));
     }
 
     public void setDesiredTemperature(double value) {
@@ -188,81 +173,10 @@ public class TemperatureFragment extends Fragment implements TemperatureControll
             }
 
             if (mTemperatureToSend != null) {
-                mLastActuatorMeshId = ActuatorModelApi.setValue(mSendDeviceId, mTemperatureToSend, true);
+                mLastActuatorMeshId = SensorModel.setValue(mSendDeviceId, mTemperatureToSend, null, true);
                 mTemperatureControler.setValueConfirmed(false);
             }
         }
     };
 
-    private void subscribeEvent() {
-        subscription = RxBus.getDefaultInstance()
-                .toObservable(MeshResponseEvent.class)
-                .subscribe(new Action1<MeshResponseEvent>() {
-                    @Override
-                    public void call(MeshResponseEvent meshResponseEvent) {
-                        int meshRequestId = meshResponseEvent.data.getInt(MeshLibraryManager.EXTRA_REQUEST_ID);
-                        if (mPendingDesiredTemperatureRequest) {
-                            mPendingDesiredTemperatureRequest = (meshRequestId != mLastActuatorMeshId);
-                        }
-                        switch (meshResponseEvent.what) {
-                            case ACTUATOR_VALUE: {
-                                if (mLastActuatorMeshId == meshRequestId) {
-                                    confirmDesiredTemperature();
-                                }
-                                break;
-                            }
-                            case SENSOR_VALUE: {
-
-                                Log.i("mesh_data", "call: " + meshResponseEvent.data);
-
-                                int deviceId = meshResponseEvent.data.getInt(MeshConstants.EXTRA_DEVICE_ID);
-                                SensorValue value1 = (SensorValue) meshResponseEvent.data.getParcelable(MeshConstants.EXTRA_SENSOR_VALUE1);
-                                SensorValue value2 = null;
-
-                                if (meshResponseEvent.data.containsKey(MeshConstants.EXTRA_SENSOR_VALUE2)) {
-                                    value2 = (SensorValue) meshResponseEvent.data.getParcelable(MeshConstants.EXTRA_SENSOR_VALUE2);
-                                }
-                                if (deviceId == mSendDeviceId) {
-                                    Log.i("SENSOR_VALUE", "call: "+ value1);
-                                    Log.i("SENSOR_VALUE", "call: "+ value2);
-                                    populateSensorValue(value1, value2);
-                                }
-                            }
-                        }
-                    }
-                });
-    }
-
-    private void populateSensorValue(SensorValue... sensorValues) {
-
-        if (sensorValues == null) {
-            return;
-        }
-        for (int i = 0; i < sensorValues.length; i++) {
-            SensorValue sensorValue = sensorValues[i];
-
-            if (sensorValue instanceof InternalAirTemperature) {
-                // store the temperature in the status array.
-                final double tempCelsius = ((InternalAirTemperature) sensorValue).getCelsiusValue();
-                final double kelvins = ((InternalAirTemperature) sensorValue).getKelvinValue();
-                getActivity().runOnUiThread(new Runnable() {
-                    public void run() {
-                        setCurrentTemperature(tempCelsius, kelvins);
-                    }
-                });
-
-            }
-            else if (sensorValue instanceof DesiredAirTemperature) {
-                final double tempCelsius = ((DesiredAirTemperature) sensorValue).getCelsiusValue();
-
-                getActivity().runOnUiThread(new Runnable() {
-                    public void run() {
-                        if (!mPendingDesiredTemperatureRequest) {
-                            setDesiredTemperature(tempCelsius);
-                        }
-                    }
-                });
-            }
-        }
-    }
 }

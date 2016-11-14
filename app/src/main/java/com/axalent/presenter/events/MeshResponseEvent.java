@@ -77,6 +77,25 @@ public class MeshResponseEvent extends MeshEvent {
         SITE_DELETED,
         SITE_UPDATED,
 
+        MESSAGE_NETWORK_SECURITY_UPDATE,
+        LOCAL_ASSOCIATION_PROGRESS,
+        LOCAL_DEVICE_FAILED,
+        LOCAL_DEVICE_ASSOCIATED,
+
+        GATEWAY_FILE_DELETED,
+        GATEWAY_FILE_CREATED,
+        GATEWAY_FILE,
+        GATEWAY_FILE_INFO,
+
+        TIME_STATE,
+        LOT_INTEREST,
+        DIAGNOSTIC_STATE,
+        DIAGNOSTIC_STATS,
+        TRACKER_REPORT,
+        WATCHDOG_INTERVAL,
+        WATCHDOG_MESSAGE,
+        TRACKER_FOUND,
+
         // refresh
         REFRESH_PAGE,
         DATABASE_UPDATE,

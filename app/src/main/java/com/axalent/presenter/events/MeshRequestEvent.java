@@ -20,6 +20,10 @@ public class MeshRequestEvent extends MeshEvent {
         SET_GATEWAY_PARAMS,
         SET_CONTINUOUS_SCANNING,
         KILL_TRANSACTION,
+        START_ADVERTISING,
+        STOP_ADVERTISING,
+        MASP_RESET,
+        SET_CONTROLLER_ADDRESS,
 
         // Actuator model
         ACTUATOR_GET_TYPES,
@@ -61,6 +65,7 @@ public class MeshRequestEvent extends MeshEvent {
         LIGHT_SET_LEVEL,
         LIGHT_SET_POWER_LEVEL,
         LIGHT_SET_RGB,
+        LIGHT_SET_WHITE,
 
         // Ping model
         PING_REQUEST,
@@ -91,7 +96,15 @@ public class MeshRequestEvent extends MeshEvent {
         CLOUD_CREATE_SITE,
         CLOUD_GET_SITE_INFO,
         CLOUD_DELETE_SITE,
-        CLOUD_UPDATE_SITE
+        CLOUD_UPDATE_SITE,
+
+        //Large Object Transfer Model
+        LOT_ANNOUNCE,
+        LOT_INTEREST,
+
+        //Diagnostic Model
+        DIAGNOSTIC_GET_STATS,
+
     }
 
     ;

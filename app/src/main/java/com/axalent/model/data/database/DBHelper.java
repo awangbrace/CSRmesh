@@ -31,7 +31,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String TAG = "DBHelper";
 
     // Database version and name
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 7;
     private static final String DATABASE_NAME = "mesh1.db";
 
     private final Context mContext;
@@ -60,6 +60,7 @@ public class DBHelper extends SQLiteOpenHelper {
                     TableDevices.COLUMN_NAME_N_GROUPS + TYPE_INTEGER + COMMA_SEP +
                     TableDevices.COLUMN_NAME_GROUPS + TYPE_BLOB + COMMA_SEP +
                     TableDevices.COLUMN_NAME_UUID + TYPE_BLOB + COMMA_SEP +
+                    TableDevices.COLUMN_NAME_DM_KEY + TYPE_BLOB + COMMA_SEP +
                     TableDevices.COLUMN_NAME_AUTH_CODE + TYPE_INTEGER + COMMA_SEP +
 
                     TableDevices.COLUMN_NAME_MODEL + TYPE_INTEGER + COMMA_SEP +

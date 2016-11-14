@@ -360,4 +360,21 @@
     <string name="no_discovery_gateway">no discovery gateway!</string>
     <string name="no_discovery_gateway_find">no discovery gateway,Whether to find again?</string>
     <string name="discovery_gateway_title">Discovery Gateway</string>
+
+    <!-- Dialog -->
+    <string name="dialog_action_ok">OK</string>
+    <string name="dialog_action_delete">Delete</string>
+    <string name="dialog_action_cancel">Cancel</string>
+    <string name="dialog_error_ble_not_enabled">Bluetooth not enabled</string>
+    <string name="error_message_please_enable_bluetooth">Please enable bluetooth in settings and restart this application.</string>
+    <string name="error_message_enable_bluetooth"> Would you like Bluetooth to be enabled in the settings?</string>
+    <string name="dialog_error_ble_not_supported"> Bluetooth Low Energy not available</string>
+    <string name="error_message_bluetooth_le_not_supported">Sorry, this device does not support Bluetooth Low Energy.</string>
+    <string name="dialog_error_Location_not_enabled">Location not enabled</string>
+    <string name="error_message_enable_Location">Would you like Location to be enabled in the settings?</string>
+
+    <!-- error -->
+    <string name="error_getting_model_info">Error getting model information</string>
+    <string name="error_getting_group_info">Error getting group information</string>
+    <string name="error_removing_device">Error removing the device</string>
 </resources>

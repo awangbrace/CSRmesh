@@ -27,6 +27,7 @@ public class TableDevices implements BaseColumns {
     public static final String COLUMN_NAME_N_GROUPS = "nGroups";
     public static final String COLUMN_NAME_GROUPS = "groups";
     public static final String COLUMN_NAME_UUID = "uuid";
+    public static final String COLUMN_NAME_DM_KEY = "dmKey";
     public static final String COLUMN_NAME_AUTH_CODE = "authCode";
     public static final String COLUMN_NAME_MODEL = "model";
     public static final String COLUMN_NAME_PLACE_ID = "placeID";
@@ -47,6 +48,7 @@ public class TableDevices implements BaseColumns {
                 TableDevices.COLUMN_NAME_N_GROUPS,
                 TableDevices.COLUMN_NAME_GROUPS,
                 TableDevices.COLUMN_NAME_UUID,
+                TableDevices.COLUMN_NAME_DM_KEY,
                 TableDevices.COLUMN_NAME_AUTH_CODE,
                 TableDevices.COLUMN_NAME_MODEL,
                 TableDevices.COLUMN_NAME_PLACE_ID,
@@ -70,7 +72,7 @@ public class TableDevices implements BaseColumns {
         values.put(TableDevices.COLUMN_NAME_MODEL_LOW, CSRDevice.getModelLow());
         values.put(TableDevices.COLUMN_NAME_N_GROUPS, CSRDevice.getNumGroups());
         values.put(TableDevices.COLUMN_NAME_GROUPS, CSRDevice.getGroupsByteArray());
-        values.put(TableDevices.COLUMN_NAME_UUID, CSRDevice.getUuid());
+        values.put(TableDevices.COLUMN_NAME_DM_KEY, CSRDevice.getDmKey());
         values.put(TableDevices.COLUMN_NAME_AUTH_CODE, CSRDevice.getAuthCode());
         values.put(TableDevices.COLUMN_NAME_MODEL, CSRDevice.getModel());
         values.put(TableDevices.COLUMN_NAME_PLACE_ID, CSRDevice.getPlaceID());
@@ -93,7 +95,7 @@ public class TableDevices implements BaseColumns {
         int modelLow = cursor.getInt(cursor.getColumnIndexOrThrow(TableDevices.COLUMN_NAME_MODEL_LOW));
         int numberGroups = cursor.getInt(cursor.getColumnIndexOrThrow(TableDevices.COLUMN_NAME_N_GROUPS));
         byte[] groups = cursor.getBlob(cursor.getColumnIndexOrThrow(TableDevices.COLUMN_NAME_GROUPS));
-        byte[] uuid = cursor.getBlob(cursor.getColumnIndexOrThrow(TableDevices.COLUMN_NAME_UUID));
+        byte[] dmKey = cursor.getBlob(cursor.getColumnIndexOrThrow(TableDevices.COLUMN_NAME_DM_KEY));
         long authCode = cursor.getLong(cursor.getColumnIndexOrThrow(TableDevices.COLUMN_NAME_AUTH_CODE));
         int model = cursor.getInt(cursor.getColumnIndexOrThrow(TableDevices.COLUMN_NAME_MODEL));
         int placeID = cursor.getInt(cursor.getColumnIndexOrThrow(TableDevices.COLUMN_NAME_PLACE_ID));
@@ -112,7 +114,7 @@ public class TableDevices implements BaseColumns {
         CSRDevice.setModelLow(modelLow);
         CSRDevice.setNumGroups(numberGroups);
         CSRDevice.setGroups(MaterialUtils.byteArrayToIntArray(groups));
-        CSRDevice.setUuid(uuid);
+        CSRDevice.setDmKey(dmKey);
         CSRDevice.setAuthCode(authCode);
         CSRDevice.setModel(model);
         CSRDevice.setPlaceID(placeID);

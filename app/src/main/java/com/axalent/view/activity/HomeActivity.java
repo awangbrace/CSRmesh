@@ -58,12 +58,11 @@ import com.axalent.model.Trigger;
 import com.axalent.presenter.csrapi.ConnectionUtils;
 import com.axalent.presenter.csrapi.MeshLibraryManager;
 import com.axalent.presenter.axaapi.UserAPI;
-import com.axalent.presenter.csrapi.SensorModel;
 import com.axalent.presenter.events.MeshResponseEvent;
 import com.axalent.presenter.events.MeshSystemEvent;
+import com.axalent.util.DialogBuilder;
 import com.csr.csrmesh2.MeshConstants;
-import com.csr.csrmesh2.sensor.InternalAirTemperature;
-import com.csr.csrmesh2.sensor.SensorValue;
+import com.csr.csrmesh2.SensorValue;
 import com.axalent.view.fragment.MainFragment;
 import com.axalent.view.fragment.MeFragment;
 import com.axalent.view.fragment.SceneFragment;
@@ -78,8 +77,9 @@ import com.axalent.view.widget.LoadingDialog;
 import com.tutk.IOTC.Camera;
 
 import android.Manifest;
-import android.app.Activity;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.bluetooth.BluetoothAdapter;
@@ -92,9 +92,9 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -152,6 +152,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
 	public double mTemperature = 0d;
 	public int csrDeviceId = 0;
 
+	private Dialog bleDialog=null;
+
 	private static final int ACCESS_COARSE_LOCATION_RESULT_CODE = 4;
 	private static final int BLUETOOTH_RESULT_CODE = 5;
 	private static final int STORAGE_RESULT_CODE = 6;
@@ -160,13 +162,13 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home);
+		checkLocation();
 		sp = getSharedPreferences(AxalentUtils.USER_FILE_NAME, MODE_PRIVATE);
 		initActionBar();
 		initView();
 		initFragment();
 		loadData();
 		if (isBluetoothMode()) {
-			checkBluetooth();
 			dbManager = DBManager.getDBManagerInstance(this.getApplicationContext());
 			mPlace = dbManager.getPlace(1);
 			MeshLibraryManager.getInstance().setNetworkPassPhrase(mPlace != null ? mPlace.getNetworkKey() : "password");
@@ -240,14 +242,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
 		setupPushTagOrAlias();
 	}
 
-	// 检测蓝牙是否开启
-	private void checkBluetooth() {
-		BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-		if (bluetoothAdapter != null && !bluetoothAdapter.isEnabled()) {
-			turnOnBluetooth();
-		}
-	}
-
 	public DBManager getDbManager() {
 		return dbManager;
 	}
@@ -272,15 +266,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
 		}
 	}
 
-	public List<CSRDevice> loadLocalData() {
-		return dbManager.getAllDevicesList();
-	}
-
 	public boolean isBluetoothMode() {
-		if (AxalentUtils.getLoginMode() == R.id.atyLoginBluetoothBtn) {
-			return true;
-		}
-		return false;
+		return AxalentUtils.getLoginMode() == R.id.atyLoginBluetoothBtn;
 	}
 	
 	@Override
@@ -303,6 +290,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
 
 		super.onResume();
 		checkPermissions();
+		verifyBluetooth();
 	}
 
 	/**
@@ -1195,18 +1183,6 @@ private boolean filtration(String typeName) {
 					syncServerData();
 				}
 				break;
-			case REQUEST_CODE_BLUETOOTH_ON:
-				switch (resultCode) {
-					case Activity.RESULT_OK:
-						// 允许打开蓝牙
-						break;
-					case Activity.RESULT_CANCELED:
-						// 不允许打开蓝牙
-						break;
-					default:
-						break;
-				}
-				break;
 		}
 
 		super.onActivityResult(requestCode, resultCode, data);
@@ -1305,9 +1281,12 @@ private boolean filtration(String typeName) {
 		for (int i = 0; i < sensorValues.length; i++) {
 			SensorValue sensorValue = sensorValues[i];
 
-			if (sensorValue instanceof InternalAirTemperature) {
+			if (sensorValue.getType() == SensorValue.SensorType.INTERNAL_AIR_TEMPERATURE) {
 				// store the temperature in the status array.
-				final double tempCelsius = ((InternalAirTemperature) sensorValue).getCelsiusValue();
+				final double tempCelsius = AxalentUtils.convertKelvinToCelsius((float)sensorValue.getValue().get("temperatureKelvin"));
+
+				LogUtils.i("Celsius:" + tempCelsius);
+
 				mTemperature = tempCelsius;
 				runOnUiThread(new Runnable() {
 					@Override
@@ -1562,6 +1541,78 @@ private boolean filtration(String typeName) {
 			else {
 				// Everything ok.
 			}
+		}
+	}
+
+	@TargetApi(18)
+	public void verifyBluetooth() {
+
+		try {
+			if (!MeshLibraryManager.checkAvailability(getApplicationContext())) {
+				showBTStatusDialog(true);
+			}
+		} catch (RuntimeException e) {
+
+			final Dialog bleDialog = DialogBuilder.createSimpleOkErrorDialog(
+					this,
+					getString(R.string.dialog_error_ble_not_supported),
+					getString(R.string.error_message_bluetooth_le_not_supported)
+			);
+			bleDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+				@Override
+				public void onDismiss(DialogInterface dialog) {
+					finish();
+				}
+			});
+			bleDialog.show();
+		}
+	}
+
+	private void showBTStatusDialog(boolean btDialog) {
+		if(btDialog) {
+			bleDialog = DialogBuilder.createSimpleDialog(
+					this,
+					getString(R.string.dialog_error_ble_not_enabled),
+					getString(R.string.error_message_enable_bluetooth),btDialog
+			);
+
+			bleDialog.show();
+		}else{
+			bleDialog = DialogBuilder.createSimpleDialog(
+					this,
+					getString(R.string.dialog_error_Location_not_enabled),
+					getString(R.string.error_message_enable_Location),btDialog
+			);
+
+			bleDialog.show();
+		}
+	}
+
+	public void checkLocation() {
+		if (Build.VERSION.SDK_INT >=23) {
+			LocationManager lm = null;
+			boolean gps_enabled = false;
+			boolean network_enabled = false;
+
+			lm = (LocationManager) getSystemService(getApplicationContext().LOCATION_SERVICE);
+			// exceptions will be thrown if provider is not permitted.
+			try {
+				gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+			try {
+				network_enabled = lm
+						.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+			if (gps_enabled == false || network_enabled == false) {
+				// Show our settings alert and let the use turn on the GPS/Location
+				showBTStatusDialog(false);
+			}
+
+
 		}
 	}
 

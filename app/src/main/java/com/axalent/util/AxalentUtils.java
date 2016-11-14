@@ -1103,8 +1103,23 @@ public class AxalentUtils {
 	 * @param celsius Temperature in celsius.
 	 * @return Temperature in kelvin.
 	 */
-	static public double convertCelsiusToKelvin(double celsius) {
-		return (273.15 + celsius);
+	static public float convertCelsiusToKelvin(float celsius) {
+		return (273.15f + celsius);
+	}
+
+	/**
+	 * Convert kelvin value to celsius.
+	 *
+	 * @param kelvin Temperature in kelvin.
+	 * @return Temperature in celsius.
+	 */
+	static public float convertKelvinToCelsius(float kelvin) {
+		float result = kelvin;
+		result -= 273.15f;
+		result *= 10.0f;
+		result = Math.round(result);
+		result /= 10.0f;
+		return result;
 	}
 
 	/**

@@ -9,7 +9,7 @@ import com.axalent.presenter.RxBus;
 import com.axalent.presenter.events.MeshRequestEvent;
 import com.csr.csrmesh2.ActuatorModelApi;
 import com.csr.csrmesh2.MeshConstants;
-import com.csr.csrmesh2.sensor.SensorValue;
+import com.csr.csrmesh2.SensorValue;
 
 /**
  *

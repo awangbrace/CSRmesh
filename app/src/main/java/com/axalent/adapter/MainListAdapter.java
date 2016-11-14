@@ -229,7 +229,7 @@ public class MainListAdapter extends BaseAdapter implements OnScrollListener, On
 
 			} else if (csrDevice.getType() == CSRDevice.TYPE_TEMPERATURE) {
 
-				sensorControl(csrDevice);
+				sensorDetail(csrDevice);
 
 			}
 		} else {
@@ -298,6 +298,10 @@ public class MainListAdapter extends BaseAdapter implements OnScrollListener, On
 		else {
 			skipToShowDevice(csrDevice.getId(), hs.iterator().next());
 		}
+	}
+
+	private void sensorDetail(CSRDevice csrDevice) {
+		skipToShowDevice(csrDevice.getId(), csrDevice.getId());
 	}
 
 	private class ControlDevice {

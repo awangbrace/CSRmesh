@@ -9,8 +9,12 @@
  */
 package com.axalent.view.activity;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
+import java.util.UUID;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,6 +35,9 @@ import com.axalent.presenter.controller.impl.UserManagerImpl;
 import com.axalent.model.Device;
 import com.axalent.model.DeviceAttribute;
 import com.axalent.presenter.csrapi.Association;
+import com.axalent.presenter.csrapi.ConfigModel;
+import com.axalent.presenter.csrapi.GroupModel;
+import com.axalent.presenter.csrapi.MeshLibraryManager;
 import com.axalent.presenter.events.MeshResponseEvent;
 import com.axalent.view.fragment.CameraFragment;
 import com.axalent.view.fragment.GasSensorFragment;
@@ -52,8 +59,10 @@ import com.axalent.util.XmlUtils;
 import com.axalent.view.material.Constants;
 import com.axalent.view.material.DialogMaterial;
 import com.axalent.view.widget.LoadingDialog;
-import com.csr.csrmesh2.ConfigModelApi;
+import com.csr.csrmesh2.ConfigCloudApi;
+import com.csr.csrmesh2.DeviceInfo;
 import com.csr.csrmesh2.MeshConstants;
+import com.csr.csrmesh2.MeshService;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -63,10 +72,8 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
@@ -111,8 +118,11 @@ public class ShowDeviceActivity extends BaseActivity implements OnClickListener 
 	private int mHashExpected = Constants.INVALID_VALUE ;
 	private final static int WAITING_RESPONSE_MS = 10* 1000;
 	private int areaId = 0;
+	// A list of model ids that are waiting on a query being sent to find out how many groups are supported.
+	private Queue<Integer> mModelsToQueryForGroups = new LinkedList<Integer>();
+	private DeviceInfo mCurrentRequestState = null;
 
-	private double temperaturValue;
+	private double temperatureValue;
 	private Subscription controlSubscription;
 
 	@Override
@@ -120,7 +130,7 @@ public class ShowDeviceActivity extends BaseActivity implements OnClickListener 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_show_device);
 		result = getIntent().getIntExtra(AxalentUtils.GROUP_OR_SING, 0);
-		temperaturValue = getIntent().getDoubleExtra("temperature", 0d);
+		temperatureValue = getIntent().getDoubleExtra("temperature", 0d);
 		initView();
 		if (AxalentUtils.getLoginMode() == R.id.atyLoginBluetoothBtn) {
 			subscribeEvent();
@@ -128,6 +138,9 @@ public class ShowDeviceActivity extends BaseActivity implements OnClickListener 
 			loadDataBaseCSRDevice();
 			setDisplay();
 			initCSRDeviceFragment();
+			if (result == AxalentUtils.SING) {
+				initGroups();
+			}
 		} else {
 			initExtraData();
 			initData();
@@ -152,6 +165,22 @@ public class ShowDeviceActivity extends BaseActivity implements OnClickListener 
 			if (!AxalentUtils.TYPE_CAMERA.equalsIgnoreCase(currentDevice.getTypeName())) {
 				setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
 			} 
+		}
+	}
+
+	private void initGroups() {
+		if (csrDevice.getNumGroups() == Constants.INVALID_VALUE) {
+
+			mModelsToQueryForGroups.addAll(csrDevice.getModelsSupported());
+
+			if (!mModelsToQueryForGroups.isEmpty()) {
+				GroupModel.getNumberOfModelGroupIds(csrDevice.getDeviceID(), mModelsToQueryForGroups.peek());
+			}
+			else {
+				// No models supported info. request that info again.
+				mCurrentRequestState = DeviceInfo.MODEL_LOW;
+				ConfigModel.getInfo(csrDevice.getDeviceID(), DeviceInfo.MODEL_LOW);
+			}
 		}
 	}
 	
@@ -272,7 +301,7 @@ public class ShowDeviceActivity extends BaseActivity implements OnClickListener 
 					break;
 				case CSRDevice.TYPE_TEMPERATURE:
 					if (areaId != 0) {
-						AxalentUtils.commitFragment(this, TemperatureFragment.newInstance(areaId, temperaturValue), R.id.atyShowDeviceFrame);
+						AxalentUtils.commitFragment(this, TemperatureFragment.newInstance(areaId, temperatureValue), R.id.atyShowDeviceFrame);
 					}
 					break;
 				case CSRDevice.TYPE_UNKNOWN:
@@ -548,12 +577,40 @@ public class ShowDeviceActivity extends BaseActivity implements OnClickListener 
 					dialog.dismiss();
 					startCheckingScanInfo();
 					mHashExpected = csrDevice.getDeviceHash();
-					ConfigModelApi.resetDevice(csrDevice.getDeviceID());
+					if (csrDevice.getUuid() == null) {
+						ConfigModel.getInfo(csrDevice.getDeviceID(), DeviceInfo.UUID_LOW);
+					} else {
+						resetDevice();
+					}
 				}
 
 			}
 		});
 		dialog.show();
+	}
+
+	private void blacklistDevice() {
+		UUID deviceUUID = csrDevice.getUuid();
+		if (deviceUUID != null) {
+			ConfigCloudApi.addDeviceToBlacklist(
+					csrDevice.getDeviceID(),
+					MeshService.getDeviceHash64FromUuid(csrDevice.getUuid()),
+					csrDevice.getDmKey(),
+					0
+			);
+		}
+	}
+
+	private void resetDevice() {
+		UUID deviceUUID = csrDevice.getUuid();
+		if (deviceUUID != null) {
+			ConfigModel.resetDevice(csrDevice.getDeviceID(),
+					MeshService.getDeviceHash64FromUuid(csrDevice.getUuid()),
+					csrDevice.getDmKey());
+		}
+		else {
+			Association.resetDevice(csrDevice.getDeviceID(), csrDevice.getDmKey());
+		}
 	}
 	
 	private void deleteDevice() {
@@ -752,10 +809,112 @@ public class ShowDeviceActivity extends BaseActivity implements OnClickListener 
 				.toObservable(MeshResponseEvent.class)
 				.subscribe(new Action1<MeshResponseEvent>() {
 					@Override
-					public void call(MeshResponseEvent meshResponseEvent) {
-						switch (meshResponseEvent.what) {
+					public void call(MeshResponseEvent event) {
+						switch (event.what) {
+							case GROUP_NUMBER_OF_MODEL_GROUPIDS: {
+
+								// This statement is just to avoid crashes.
+								if (!mModelsToQueryForGroups.isEmpty()) {
+									int numIds = event.data.getInt(MeshConstants.EXTRA_NUM_GROUP_IDS);
+									int modelNo = event.data.getInt(MeshConstants.EXTRA_MODEL_NO);
+									int expectedModelNo = mModelsToQueryForGroups.peek();
+									int deviceId = event.data.getInt(MeshConstants.EXTRA_DEVICE_ID);
+
+									if (expectedModelNo == modelNo && csrDevice.getDeviceID() == deviceId) {
+
+										if (numIds > 0) {
+											int minNumGroups = csrDevice.getNumGroups() <= 0 ? numIds : Math.min(csrDevice.getNumGroups(), numIds);
+											csrDevice.setNumGroups(minNumGroups);
+										}
+
+										// We know how many groups are supported for this model now so remove it from the queue.
+										mModelsToQueryForGroups.remove();
+										if (mModelsToQueryForGroups.isEmpty()) {
+											dbManager.createOrUpdateDevice(csrDevice);
+
+										} else {
+											// Otherwise ask how many groups the next model supports, by taking the next model number from the queue.
+											GroupModel.getNumberOfModelGroupIds(csrDevice.getDeviceID(), mModelsToQueryForGroups.peek());
+										}
+
+									}
+								}
+
+								break;
+							}
+							case CONFIG_INFO: {
+								int deviceId = event.data.getInt(MeshConstants.EXTRA_DEVICE_ID);
+								DeviceInfo type = DeviceInfo.values()[event.data.getInt(MeshConstants.EXTRA_DEVICE_INFO_TYPE)];
+
+								if (deviceId == csrDevice.getDeviceID()) {
+									if (type == DeviceInfo.MODEL_LOW) {
+										long modelLow = event.data.getLong(MeshConstants.EXTRA_DEVICE_INFORMATION);
+										csrDevice.setModelLow(modelLow);
+										csrDevice = dbManager.createOrUpdateDevice(csrDevice);
+										mCurrentRequestState = DeviceInfo.MODEL_HIGH;
+										ConfigModel.getInfo(csrDevice.getDeviceID(), DeviceInfo.MODEL_HIGH);
+									}
+									else if (type == DeviceInfo.MODEL_HIGH) {
+										long modelHigh = event.data.getLong(MeshConstants.EXTRA_DEVICE_INFORMATION);
+										csrDevice.setModelHigh(modelHigh);
+										csrDevice = dbManager.createOrUpdateDevice(csrDevice);
+									}
+									else if (type == DeviceInfo.UUID_LOW) {
+
+										long uuidLow = event.data.getLong(MeshConstants.EXTRA_DEVICE_INFORMATION);
+										csrDevice.setUuidLow(uuidLow);
+										mCurrentRequestState = DeviceInfo.UUID_HIGH;
+										ConfigModel.getInfo(csrDevice.getDeviceID(), DeviceInfo.UUID_HIGH);
+									}
+									else if (type == DeviceInfo.UUID_HIGH) {
+										long uuidHigh = event.data.getLong(MeshConstants.EXTRA_DEVICE_INFORMATION);
+										csrDevice.setUuidHigh(uuidHigh);
+
+										// if we are in Bluetooth run Config.Reset if over rest call Blacklist
+										if (MeshLibraryManager.getInstance().getChannel() == MeshLibraryManager.MeshChannel.BLUETOOTH) {
+											resetDevice();
+										} else {
+											blacklistDevice();
+										}
+									}
+								}
+								break;
+							}
+							case TIMEOUT: {
+								if (event.data.getInt(MeshConstants.EXTRA_EXPECTED_MESSAGE) == MeshConstants.MESSAGE_GROUP_NUM_GROUPIDS) {
+									runOnUiThread(new Runnable() {
+										@Override
+										public void run() {
+											Toast.makeText(ShowDeviceActivity.this, R.string.error_getting_group_info, Toast.LENGTH_SHORT).show();
+										}
+									});
+								}
+								else if (event.data.getInt(MeshConstants.EXTRA_EXPECTED_MESSAGE) == MeshConstants.MESSAGE_CONFIG_DEVICE_INFO) {
+									int deviceId = event.data.getInt(MeshConstants.EXTRA_DEVICE_ID);
+
+									if (deviceId == csrDevice.getDeviceID()) {
+										if (mCurrentRequestState == DeviceInfo.MODEL_HIGH || mCurrentRequestState == DeviceInfo.MODEL_LOW) {
+											runOnUiThread(new Runnable() {
+												@Override
+												public void run() {
+													Toast.makeText(ShowDeviceActivity.this, R.string.error_getting_model_info, Toast.LENGTH_SHORT).show();
+												}
+											});
+										}
+										if (mCurrentRequestState == DeviceInfo.UUID_LOW || mCurrentRequestState == DeviceInfo.UUID_HIGH) {
+											runOnUiThread(new Runnable() {
+												@Override
+												public void run() {
+													Toast.makeText(ShowDeviceActivity.this, R.string.error_removing_device, Toast.LENGTH_SHORT).show();
+												}
+											});
+										}
+									}
+								}
+								break;
+							}
 							case DEVICE_UUID:
-								int uuidHash = meshResponseEvent.data.getInt(MeshConstants.EXTRA_UUIDHASH_31);
+								int uuidHash = event.data.getInt(MeshConstants.EXTRA_UUIDHASH_31);
 								if (uuidHash == mHashExpected) {
 									deleteDeviceAndFinish();
 								}

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import com.axalent.presenter.RxBus;
 import com.axalent.presenter.events.MeshRequestEvent;
 import com.csr.csrmesh2.ConfigModelApi;
+import com.csr.csrmesh2.DeviceInfo;
 import com.csr.csrmesh2.MeshConstants;
 
 /**
@@ -21,7 +22,7 @@ public class ConfigModel {
         RxBus.getDefaultInstance().post(new MeshRequestEvent(MeshRequestEvent.RequestEvent.CONFIG_DISCOVER_DEVICE, data));
     }
 
-    public static int getInfo(final int deviceId, ConfigModelApi.DeviceInfo infoType) {
+    public static int getInfo(final int deviceId, DeviceInfo infoType) {
         Bundle data = new Bundle();
         int id = MeshLibraryManager.getInstance().getNextRequestId();
         data.putInt(MeshLibraryManager.EXTRA_REQUEST_ID, id);
@@ -31,9 +32,11 @@ public class ConfigModel {
         return id;
     }
 
-    public static void resetDevice(int deviceId) {
+    public static void resetDevice(int deviceId, long deviceHash, byte[] dmKey) {
         Bundle data = new Bundle();
         data.putInt(MeshConstants.EXTRA_DEVICE_ID, deviceId);
+        data.putLong(MeshConstants.EXTRA_UUIDHASH_64, deviceHash);
+        data.putByteArray(MeshConstants.EXTRA_RESET_KEY, dmKey);
         RxBus.getDefaultInstance().post(new MeshRequestEvent(MeshRequestEvent.RequestEvent.CONFIG_RESET_DEVICE, data));
     }
 
@@ -95,13 +98,15 @@ public class ConfigModel {
                 deviceId = event.data.getInt(MeshConstants.EXTRA_DEVICE_ID);
                 deviceInfo = event.data.getInt(MeshConstants.EXTRA_DEVICE_INFO_TYPE);
                 // Do API call
-                libId = ConfigModelApi.getInfo(deviceId, ConfigModelApi.DeviceInfo.values()[deviceInfo]);
+                libId = ConfigModelApi.getInfo(deviceId, DeviceInfo.values()[deviceInfo]);
                 break;
 
             case CONFIG_RESET_DEVICE:
                 deviceId = event.data.getInt(MeshConstants.EXTRA_DEVICE_ID);
+                long deviceHash = event.data.getLong(MeshConstants.EXTRA_UUIDHASH_64);
+                byte[] dmKey = event.data.getByteArray(MeshConstants.EXTRA_RESET_KEY);
                 // Do API call
-                ConfigModelApi.resetDevice(deviceId);
+                ConfigModelApi.resetDevice(deviceId, deviceHash, dmKey);
                 break;
 
             case CONFIG_SET_DEVICE_IDENTIFIER:

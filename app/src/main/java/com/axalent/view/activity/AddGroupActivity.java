@@ -15,6 +15,9 @@ import com.axalent.application.BaseActivity;
 import com.axalent.model.data.database.DBManager;
 import com.axalent.model.data.model.Area;
 import com.axalent.model.data.model.devices.CSRDevice;
+import com.axalent.presenter.RxBus;
+import com.axalent.presenter.events.MeshRequestEvent;
+import com.axalent.presenter.events.MeshResponseEvent;
 import com.axalent.util.AxalentUtils;
 import com.axalent.util.DividerItemDecoration;
 import com.axalent.adapter.DevicePickerAdapter;
@@ -155,6 +158,7 @@ public class AddGroupActivity extends BaseActivity {
             if (!area.getName().equals(tempAreaName)) {
                 dbManager.createOrUpdateArea(area);
                 setResult(AxalentUtils.ADD_GROUP);
+                RxBus.getDefaultInstance().post(new MeshResponseEvent(MeshResponseEvent.ResponseEvent.REFRESH_PAGE));
                 Log.i("confirmGroup", "confirmGroup: no add and delete");
             }
             finish();
@@ -176,6 +180,7 @@ public class AddGroupActivity extends BaseActivity {
                         loadingDialog.close();
                         Toast.makeText(this, "Area applied!", Toast.LENGTH_SHORT).show();
                         setResult(AxalentUtils.ADD_GROUP);
+                        RxBus.getDefaultInstance().post(new MeshResponseEvent(MeshResponseEvent.ResponseEvent.REFRESH_PAGE));
                         finish();
                     } else {
                         loadingDialog.close();

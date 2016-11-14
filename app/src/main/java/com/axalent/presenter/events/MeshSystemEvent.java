@@ -10,6 +10,9 @@ public class MeshSystemEvent extends MeshEvent {
     public enum SystemEvent {
         SERVICE_SHUTDOWN,
         SERVICE_BIND,
+        DEVICE_SCANNED,
+        BRIDGE_CONNECTED,
+        BRIDGE_DISCONNECTED,
         CHANNEL_READY,
         CHANNEL_NOT_READY,
         PLACE_CHANGED,

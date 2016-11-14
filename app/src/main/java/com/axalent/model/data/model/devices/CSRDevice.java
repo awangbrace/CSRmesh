@@ -19,6 +19,7 @@ import com.csr.csrmesh2.SwitchModelApi;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 /**
  *
@@ -50,9 +51,11 @@ public abstract class CSRDevice {
     protected int appearance = Constants.INVALID_VALUE;
     protected long modelHigh;
     protected long modelLow;
+    protected long uuidHigh = Constants.INVALID_VALUE;
+    protected long uuidLow = Constants.INVALID_VALUE;
     protected int numGroups = Constants.INVALID_VALUE;
     protected int[] groups = new int[0];
-    protected byte[] uuid;
+    protected byte[] dmKey;
     protected long authCode = Constants.INVALID_VALUE;
     protected int model;
     protected int placeID;
@@ -121,12 +124,37 @@ public abstract class CSRDevice {
         this.modelLow = modelLow;
     }
 
-    public byte[] getUuid() {
-        return uuid;
+    public long getUuidHigh() {
+        return uuidHigh;
     }
 
-    public void setUuid(byte[] uuid) {
-        this.uuid = uuid;
+    public void setUuidHigh(long uuidHigh) {
+        this.uuidHigh = uuidHigh;
+    }
+
+    public long getUuidLow() {
+        return uuidLow;
+    }
+
+    public void setUuidLow(long uuidLow) {
+        this.uuidLow = uuidLow;
+    }
+
+    public byte[] getDmKey() {
+        return dmKey;
+    }
+
+    public void setDmKey(byte[] dmKey) {
+        this.dmKey = dmKey;
+    }
+
+    public UUID getUuid() {
+        if (uuidLow == Constants.INVALID_VALUE || uuidHigh == Constants.INVALID_VALUE ) {
+            return null;
+        }
+        else {
+            return new UUID(uuidHigh, uuidLow);
+        }
     }
 
     public long getAuthCode() {

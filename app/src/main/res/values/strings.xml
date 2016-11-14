@@ -374,6 +374,7 @@
     <string name="association_failed">Association has failed</string>
     <string name="wrong_short_code">Short code field can not be empty</string>
     <string name="wrong_auth_code">Wrong auth code. Association cancelled.</string>
+    <string name="input_auth_code">Please input auth code.</string>
     <string name="decibel_milliwatts">dBm</string>
 
     <!-- Temperature controller view -->
@@ -402,4 +403,22 @@
     <string name="security">Security</string>
     <string name="security_associating">If your device has been furnished with an authorisation code you have to give it here. Otherwise you acan skip this step.</string>
     <string name="associating_dialog1">How do you want to set up your new device?</string>
+
+    <!-- Dialog -->
+    <string name="dialog_action_ok">确定</string>
+    <string name="dialog_action_delete">删除</string>
+    <string name="dialog_action_cancel">取消</string>
+    <string name="dialog_error_ble_not_enabled">蓝牙未启用</string>
+    <string name="error_message_please_enable_bluetooth">请在系统设置界面开启蓝牙并重启应用</string>
+    <string name="error_message_enable_bluetooth">您要在设置中启用蓝牙吗?</string>
+    <string name="dialog_error_ble_not_supported">蓝牙低功耗不可用</string>
+    <string name="error_message_bluetooth_le_not_supported">对不起，此设备不支持蓝牙低功耗。</string>
+    <string name="dialog_error_Location_not_enabled">位置信息未启用</string>
+    <string name="error_message_enable_Location">您要在设置中启用位置信息吗?</string>
+
+    <!-- error -->
+    <string name="error_getting_model_info">获取模型信息出错</string>
+    <string name="error_getting_group_info">获取组信息出错</string>
+    <string name="error_removing_device">移除设备出错</string>
+
 </resources>

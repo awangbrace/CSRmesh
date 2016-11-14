@@ -15,7 +15,10 @@ import android.content.Intent;
 import android.support.multidex.MultiDex;
 
 import com.axalent.model.data.database.DBManager;
+import com.axalent.presenter.csrapi.LogLevel;
 import com.axalent.presenter.csrapi.MeshLibraryManager;
+import com.facebook.stetho.Stetho;
+import com.facebook.stetho.inspector.protocol.module.Inspector;
 
 import cn.jpush.android.api.JPushInterface;
 
@@ -30,8 +33,10 @@ public class MyApplication extends Application {
 		JPushInterface.setDebugMode(false);
 		JPushInterface.init(this);
 
+		Stetho.initializeWithDefaults(this);
+
 		// connect bluetooth channel
-		MeshLibraryManager.initInstance(this, MeshLibraryManager.MeshChannel.BLUETOOTH);
+		MeshLibraryManager.initInstance(this, MeshLibraryManager.MeshChannel.BLUETOOTH, LogLevel.DEBUG);
 	}
 
 	public static synchronized MyApplication getInstance() {

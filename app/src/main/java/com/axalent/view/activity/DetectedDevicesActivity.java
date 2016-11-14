@@ -39,6 +39,7 @@ import com.axalent.view.material.Constants;
 import com.axalent.view.material.DialogMaterial;
 import com.axalent.view.material.ProgressBarDeterminateMaterial;
 import com.csr.csrmesh2.ConfigModelApi;
+import com.csr.csrmesh2.DeviceInfo;
 import com.csr.csrmesh2.MeshConstants;
 
 import java.util.ArrayList;
@@ -83,7 +84,7 @@ public class DetectedDevicesActivity extends BaseActivity {
     private android.os.Handler mHandler = new android.os.Handler();
 
     private CSRDevice mTempCSRDevice;
-    private ConfigModelApi.DeviceInfo mCurrentRequestState = null;
+    private DeviceInfo mCurrentRequestState = null;
 
     private static final int SCANNING_PERIOD_MS = 20 * 1000;
     public final static int FIRST_ID_IN_RANGE = 0x8001;
@@ -162,28 +163,44 @@ public class DetectedDevicesActivity extends BaseActivity {
                 @Override
                 public void onClick(View view) {
                     String authcode = authCodeText.getText().toString();
-                    try {
-
-                        if (authcode.length() != 0) {
-                            long auth = ((Long.parseLong(authcode.substring(0, 8), 16) & 0xFFFFFFFFFFFFFFFFL) << 32)
-                                    | ((Long.parseLong(authcode.substring(8), 16) & 0xFFFFFFFFFFFFFFFFL));
-                            device.setAuthCode(auth);
+                    boolean isNext = false;
+                    if (device.appearance.getAppearanceType() == AppearanceDevice.LIGHT_APPEARANCE
+                            || device.appearance.getAppearanceType() == AppearanceDevice.GATEWAY_APPEARANCE) {
+                        isNext = true;
+                    }
+                    else {
+                        if (authcode.isEmpty()) {
+                            isNext = false;
+                        } else {
+                            isNext = true;
                         }
+                    }
+
+                    if (isNext) {
+                        try {
+
+                            if (authcode.length() != 0) {
+                                long auth = ((Long.parseLong(authcode.substring(0, 8), 16) & 0xFFFFFFFFFFFFFFFFL) << 32)
+                                        | ((Long.parseLong(authcode.substring(8), 16) & 0xFFFFFFFFFFFFFFFFL));
+                                device.setAuthCode(auth);
+                            }
 
 
-                    } catch (Exception e) {
-                        Toast.makeText(DetectedDevicesActivity.this, getString(R.string.wrong_auth_code), Toast.LENGTH_SHORT).show();
+                        } catch (Exception e) {
+                            Toast.makeText(DetectedDevicesActivity.this, getString(R.string.wrong_auth_code), Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
+                            dialog = null;
+                            deselectDevice();
+                            hide_keyboard();
+                            return;
+                        }
                         dialog.dismiss();
                         dialog = null;
-                        deselectDevice();
                         hide_keyboard();
-                        return;
+                        startAssociation(device);
+                    } else {
+                        Toast.makeText(DetectedDevicesActivity.this, getString(R.string.input_auth_code), Toast.LENGTH_SHORT).show();
                     }
-                    dialog.dismiss();
-                    dialog = null;
-                    hide_keyboard();
-                    startAssociation(device);
-
                 }
             });
         }
@@ -502,11 +519,14 @@ public class DetectedDevicesActivity extends BaseActivity {
                             case DEVICE_ASSOCIATED: {
                                 int deviceId = meshResponseEvent.data.getInt(MeshConstants.EXTRA_DEVICE_ID);
                                 int uuidHash = meshResponseEvent.data.getInt(MeshConstants.EXTRA_UUIDHASH_31);
+                                byte[] dhmKey = meshResponseEvent.data.getByteArray(MeshConstants.EXTRA_RESET_KEY);
 
                                 mTempCSRDevice = new UnknownCSRDevice();
                                 mTempCSRDevice.setDeviceID(deviceId);
                                 mTempCSRDevice.setDeviceHash(uuidHash);
+                                mTempCSRDevice.setDmKey(dhmKey);
                                 mTempCSRDevice.setPlaceID(dbManager.getPlace(1).getId());
+                                mTempCSRDevice.setAssociated(true);
                                 AppearanceDevice appearanceDevice = mAppearances.get(uuidHash);
 
                                 if (appearanceDevice != null) {
@@ -515,14 +535,14 @@ public class DetectedDevicesActivity extends BaseActivity {
 
 
                                     // Request model low from the device.
-                                    mCurrentRequestState = ConfigModelApi.DeviceInfo.MODEL_LOW;
-                                    ConfigModel.getInfo(mTempCSRDevice.getDeviceID(), ConfigModelApi.DeviceInfo.MODEL_LOW);
+                                    mCurrentRequestState = DeviceInfo.MODEL_LOW;
+                                    ConfigModel.getInfo(mTempCSRDevice.getDeviceID(), DeviceInfo.MODEL_LOW);
                                 }
                                 else {
                                     mTempCSRDevice.setName(getString(R.string.unknown) + " " + (deviceId - Constants.MIN_DEVICE_ID));
                                     // Request appearance from the device.
-                                    mCurrentRequestState = ConfigModelApi.DeviceInfo.APPEARANCE;
-                                    ConfigModel.getInfo(mTempCSRDevice.getDeviceID(), ConfigModelApi.DeviceInfo.APPEARANCE);
+                                    mCurrentRequestState = DeviceInfo.APPEARANCE;
+                                    ConfigModel.getInfo(mTempCSRDevice.getDeviceID(), DeviceInfo.APPEARANCE);
                                 }
 
                                 mTempCSRDevice = dbManager.createOrUpdateDevice(mTempCSRDevice);
@@ -530,9 +550,9 @@ public class DetectedDevicesActivity extends BaseActivity {
                             }
                             case CONFIG_INFO: {
                                 int deviceId = meshResponseEvent.data.getInt(MeshConstants.EXTRA_DEVICE_ID);
-                                ConfigModelApi.DeviceInfo type = ConfigModelApi.DeviceInfo.values()[meshResponseEvent.data.getInt(MeshConstants.EXTRA_DEVICE_INFO_TYPE)];
+                                DeviceInfo type = DeviceInfo.values()[meshResponseEvent.data.getInt(MeshConstants.EXTRA_DEVICE_INFO_TYPE)];
 
-                                if (type == ConfigModelApi.DeviceInfo.APPEARANCE) {
+                                if (type == DeviceInfo.APPEARANCE) {
 
                                     // Store appearance into the database
                                     int appearance = (int) meshResponseEvent.data.getLong(MeshConstants.EXTRA_DEVICE_INFORMATION);
@@ -544,20 +564,20 @@ public class DetectedDevicesActivity extends BaseActivity {
 
 
                                     // Request model low from the device.
-                                    mCurrentRequestState = ConfigModelApi.DeviceInfo.MODEL_LOW;
-                                    ConfigModel.getInfo(deviceId, ConfigModelApi.DeviceInfo.MODEL_LOW);
+                                    mCurrentRequestState = DeviceInfo.MODEL_LOW;
+                                    ConfigModel.getInfo(deviceId, DeviceInfo.MODEL_LOW);
                                 }
-                                else if (type == ConfigModelApi.DeviceInfo.MODEL_LOW) {
+                                else if (type == DeviceInfo.MODEL_LOW) {
                                     // Store modelLow into the database
                                     long modelLow = meshResponseEvent.data.getLong(MeshConstants.EXTRA_DEVICE_INFORMATION);
                                     mTempCSRDevice.setModelLow(modelLow);
                                     mTempCSRDevice = dbManager.createOrUpdateDevice(mTempCSRDevice);
 
                                     // Request model high from the device.
-                                    mCurrentRequestState = ConfigModelApi.DeviceInfo.MODEL_HIGH;
-                                    ConfigModel.getInfo(deviceId, ConfigModelApi.DeviceInfo.MODEL_HIGH);
+                                    mCurrentRequestState = DeviceInfo.MODEL_HIGH;
+                                    ConfigModel.getInfo(deviceId, DeviceInfo.MODEL_HIGH);
                                 }
-                                else if (type == ConfigModelApi.DeviceInfo.MODEL_HIGH) {
+                                else if (type == DeviceInfo.MODEL_HIGH) {
                                     // Store modelHigh into the database
                                     long modelHigh = meshResponseEvent.data.getLong(MeshConstants.EXTRA_DEVICE_INFORMATION);
                                     mTempCSRDevice.setModelHigh(modelHigh);
@@ -582,22 +602,22 @@ public class DetectedDevicesActivity extends BaseActivity {
                                 else if (meshResponseEvent.data.getInt(MeshConstants.EXTRA_EXPECTED_MESSAGE) == MeshConstants.MESSAGE_CONFIG_DEVICE_INFO) {
                                     int deviceId = meshResponseEvent.data.getInt(MeshConstants.EXTRA_DEVICE_ID);
 
-                                    if (mCurrentRequestState == ConfigModelApi.DeviceInfo.APPEARANCE) {
+                                    if (mCurrentRequestState == DeviceInfo.APPEARANCE) {
 
                                         mTempCSRDevice.setName(getString(R.string.device) + " " + (deviceId - Constants.MIN_DEVICE_ID));
                                         mTempCSRDevice = dbManager.createOrUpdateDevice(mTempCSRDevice);
 
                                         // Request model low from the device.
-                                        mCurrentRequestState = ConfigModelApi.DeviceInfo.MODEL_LOW;
-                                        ConfigModel.getInfo(deviceId, ConfigModelApi.DeviceInfo.MODEL_LOW);
+                                        mCurrentRequestState = DeviceInfo.MODEL_LOW;
+                                        ConfigModel.getInfo(deviceId, DeviceInfo.MODEL_LOW);
                                     }
-                                    else if (mCurrentRequestState == ConfigModelApi.DeviceInfo.MODEL_LOW) {
+                                    else if (mCurrentRequestState == DeviceInfo.MODEL_LOW) {
 
                                         // Request model high from the device.
-                                        mCurrentRequestState = ConfigModelApi.DeviceInfo.MODEL_HIGH;
-                                        ConfigModel.getInfo(deviceId, ConfigModelApi.DeviceInfo.MODEL_HIGH);
+                                        mCurrentRequestState = DeviceInfo.MODEL_HIGH;
+                                        ConfigModel.getInfo(deviceId, DeviceInfo.MODEL_HIGH);
                                     }
-                                    else if (mCurrentRequestState == ConfigModelApi.DeviceInfo.MODEL_HIGH) {
+                                    else if (mCurrentRequestState == DeviceInfo.MODEL_HIGH) {
                                         mCurrentRequestState = null;
                                         associationComplete(true);
                                     }

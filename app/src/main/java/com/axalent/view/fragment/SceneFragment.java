@@ -167,16 +167,12 @@ public class SceneFragment extends Fragment implements Manager, OnItemClickListe
 			}
 			listView.setAdapter(adapter);
 		} else {
-			if (aty.isBluetoothMode()) {
-				adapter.notifyDataSetChanged();
-			} else {
-				aty.runOnUiThread(new Runnable() {
+			aty.runOnUiThread(new Runnable() {
 					@Override
 					public void run() {
 						adapter.notifyDataSetChanged();
 					}
 				});
-			}
 		}
 	}
 

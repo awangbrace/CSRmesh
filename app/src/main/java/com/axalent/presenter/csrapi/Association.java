@@ -9,6 +9,8 @@ import com.axalent.presenter.RxBus;
 import com.axalent.presenter.events.MeshRequestEvent;
 import com.csr.csrmesh2.MeshConstants;
 
+import java.util.UUID;
+
 public class Association {
     public static void discoverDevices(boolean enabled) {
         Bundle data = new Bundle();
@@ -28,12 +30,33 @@ public class Association {
         return id;
     }
 
+    public static void startAdvertising(String shortName, UUID uuid, boolean useAuthCode, long authCode) {
+        Bundle data = new Bundle();
+        data.putString(MeshConstants.EXTRA_SHORTNAME, shortName);
+        data.putString(MeshConstants.EXTRA_UUID, uuid.toString());
+        data.putBoolean(MeshConstants.EXTRA_AUTH_CODE_KNOWN, useAuthCode);
+        data.putLong(MeshConstants.EXTRA_AUTH_CODE, authCode);
+        RxBus.getDefaultInstance().post(new MeshRequestEvent(MeshRequestEvent.RequestEvent.START_ADVERTISING, data));
+    }
+
+    public static void stopAdvertising() {
+        Bundle data = new Bundle();
+        RxBus.getDefaultInstance().post(new MeshRequestEvent(MeshRequestEvent.RequestEvent.STOP_ADVERTISING, data));
+    }
+
     public static void attentionPreAssociation(int deviceHash, boolean enabled, int duration) {
         Bundle data = new Bundle();
         data.putInt(MeshConstants.EXTRA_UUIDHASH_31, deviceHash);
         data.putBoolean(MeshConstants.EXTRA_ENABLED, enabled);
         data.putInt(MeshConstants.EXTRA_DURATION, duration);
         RxBus.getDefaultInstance().post(new MeshRequestEvent(MeshRequestEvent.RequestEvent.ATTENTION_PRE_ASSOCIATION, data));
+    }
+
+    public static void resetDevice(int deviceId, byte[] resetKey) {
+        Bundle data = new Bundle();
+        data.putInt(MeshConstants.EXTRA_DEVICE_ID, deviceId);
+        data.putByteArray(MeshConstants.EXTRA_RESET_KEY, resetKey);
+        RxBus.getDefaultInstance().post(new MeshRequestEvent(MeshRequestEvent.RequestEvent.MASP_RESET, data));
     }
 
     /*package*/
@@ -49,6 +72,16 @@ public class Association {
                         event.data.getBoolean(MeshConstants.EXTRA_ENABLED),
                         event.data.getInt(MeshConstants.EXTRA_DURATION));
                 break;
+            case STOP_ADVERTISING:
+                MeshLibraryManager.getInstance().getMeshService().stopAdvertiseForAssociation();
+                break;
+            case START_ADVERTISING:
+                MeshLibraryManager.getInstance().getMeshService().advertiseForAssociation(
+                        event.data.getString(MeshConstants.EXTRA_SHORTNAME),
+                        UUID.fromString(event.data.getString(MeshConstants.EXTRA_UUID)),
+                        event.data.getBoolean(MeshConstants.EXTRA_AUTH_CODE_KNOWN),
+                        event.data.getLong(MeshConstants.EXTRA_AUTH_CODE));
+                break;
             case ASSOCIATE_DEVICE:
                 libId = MeshLibraryManager.getInstance().getMeshService().associateDevice(
                         event.data.getInt(MeshConstants.EXTRA_UUIDHASH_31),
@@ -56,6 +89,11 @@ public class Association {
                         event.data.getBoolean(MeshConstants.EXTRA_AUTH_CODE_KNOWN),
                         event.data.getInt(MeshConstants.EXTRA_DEVICE_ID));
 
+                break;
+            case MASP_RESET:
+                MeshLibraryManager.getInstance().getMeshService().resetDevice(
+                        event.data.getInt(MeshConstants.EXTRA_DEVICE_ID),
+                        event.data.getByteArray(MeshConstants.EXTRA_RESET_KEY));
                 break;
         }
         if (libId != 0) {

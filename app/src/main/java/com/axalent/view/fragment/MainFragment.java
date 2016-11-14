@@ -68,11 +68,12 @@ public class MainFragment extends Fragment implements Manager, OnRefreshListener
 	@Override
 	public void onRefresh() {
 		aty.loadData();
-//		aty.sendMsgToGateway();
 		if (aty.isBluetoothMode()) {
 			Log.i("test", "onRefresh");
 			aty.setupCSRDatas();
 			notifyPageRefresh();
+		} else {
+			aty.sendMsgToGateway();
 		}
 		refreshLayout.setRefreshing(false);
 	}

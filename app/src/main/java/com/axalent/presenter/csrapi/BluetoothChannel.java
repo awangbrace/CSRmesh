@@ -9,7 +9,7 @@ package com.axalent.presenter.csrapi;
 public class BluetoothChannel {
 
     public static void disconnect() {
-        MeshLibraryManager.getInstance().getMeshService().disconnectBridge();
+        MeshLibraryManager.getInstance().getMeshService().shutDown();
     }
 
     public static void setContinuousScanEnabled(boolean enabled) {
@@ -19,7 +19,7 @@ public class BluetoothChannel {
     public static void killTransaction(int requestId) {
         int meshRequestId = MeshLibraryManager.getInstance().getMeshRequestId(requestId);
         if (meshRequestId != 0) {
-            MeshLibraryManager.getInstance().getMeshService().killTransaction(meshRequestId);
+            MeshLibraryManager.getInstance().getMeshService().cancelTransaction(meshRequestId);
         }
         else {
             throw new IllegalArgumentException("Request id is not valid.");

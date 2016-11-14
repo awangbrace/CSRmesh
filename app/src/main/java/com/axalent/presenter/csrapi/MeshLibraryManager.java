@@ -3,32 +3,34 @@
  ******************************************************************************/
 package com.axalent.presenter.csrapi;
 
-import android.app.Service;
+import android.annotation.TargetApi;
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothManager;
+import android.bluetooth.le.ScanSettings;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.axalent.model.data.database.DBManager;
 import com.axalent.presenter.RxBus;
 import com.axalent.presenter.events.MeshRequestEvent;
 import com.axalent.presenter.events.MeshResponseEvent;
 import com.axalent.presenter.events.MeshSystemEvent;
-import com.axalent.presenter.services.SearchSelectedGatewayService;
 import com.axalent.util.LogUtils;
-import com.csr.csrmesh2.LeScanCallback;
 import com.csr.csrmesh2.MeshConstants;
 import com.csr.csrmesh2.MeshService;
+import com.csr.internal.mesh.client.api.common.Config;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -42,6 +44,7 @@ public class MeshLibraryManager extends Thread {
     private MeshService mService;
     private Subscription subscription;
 
+    public static LogLevel logLevel = LogLevel.NONE;
     private static MeshLibraryManager mSingleInstance;
 
     public static final String EXTRA_NETWORK_PASS_PHRASE = "NETWORKPHRASE";
@@ -57,7 +60,10 @@ public class MeshLibraryManager extends Thread {
     private boolean mShutdown = false;
     private boolean isChannelReady = false;
     private boolean mIsInternetAvailable;
-    private Context mContext;
+    private boolean mContinuousScanningWear = false;
+    private boolean mContinuousScanningMobile = false;
+    private boolean mCurrentContinuousScanning = false;
+    private WeakReference<Context> mContext;
 
     private String mSelectedGatewayUUID = "";
 
@@ -77,35 +83,63 @@ public class MeshLibraryManager extends Thread {
         return (mService != null);
     }
 
-    private MeshLibraryManager(Context context, MeshChannel channel) {
+    private MeshLibraryManager(Context context, MeshChannel channel, LogLevel lgLevel) {
+        // Log message has a tag and a priority associated with it.
+        logLevel= lgLevel;
         subscribeEvent();
-        mContext = context;
+        mContext = new WeakReference<Context>(context);
         mCurrentChannel = channel;
         Intent bindIntent = new Intent(context, MeshService.class);
         context.bindService(bindIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
     }
 
 
-    public static void initInstance(Context context, MeshChannel channel) {
+    public static void initInstance(Context context, MeshChannel channel, LogLevel logLevel) {
         if (mSingleInstance == null) {
-            mSingleInstance = new MeshLibraryManager(context, channel);
+            mSingleInstance = new MeshLibraryManager(context, channel, logLevel);
             mSingleInstance.start();
         }
     }
 
     public void shutdown() {
         mShutdown = true;
-        mService.disconnectBridge();
+        if (mCurrentChannel == MeshChannel.BLUETOOTH) {
+            mService.shutDown();
+        } else {
+            RxBus.getDefaultInstance().post(new MeshSystemEvent(MeshSystemEvent.SystemEvent.SERVICE_SHUTDOWN));
+        }
         subscription.unsubscribe();
     }
 
-    public void onDestroy(Context context) {
-        context.unbindService(mServiceConnection);
+    public void onDestroy() {
+        mContext.get().unbindService(mServiceConnection);
+        mSingleInstance = null;
     }
 
+    /**
+     * Return the list of bluetooth addresses of bridges connected.
+     * @return List of bluetooth addresses of bridges connected.
+     */
+    public ArrayList<String> getConnectedBridges() {
+        return mService.getConnectedBridges();
+    }
 
     /*package*/ MeshService getMeshService() {
         return mService;
+    }
+
+    /**
+     * Send a message to a device to see if it needs to update it's security parameters.
+     * If the device requests an update then this will be handled internally by the library, and
+     * when it is complete the app will receive MESSAGE_DEVICE_KEY_IV_CHANGED.
+     * @param deviceId The id of the device.
+     * @param resetKey The key returned when the device was associated.
+     * @param networkPassPhrase The network pass phrase to respond with. If this doesn't match then the device will request an update.
+     * @param networkIV The network IV to respond with. If this doesn't match then the device will request an update.
+     * @return  Unique id to identify the request. Included in the response or timeout message as EXTRA_MESH_REQUEST_ID.
+     */
+    public int updateNetworkSecurity (  int deviceId, byte[] resetKey, String networkPassPhrase, byte [] networkIV) {
+        return mService.updateNetworkSecurity(deviceId, resetKey, networkPassPhrase, networkIV);
     }
 
     /**
@@ -116,10 +150,20 @@ public class MeshLibraryManager extends Thread {
      */
     public void setBluetoothChannelEnabled() {
         if (mCurrentChannel == MeshChannel.BLUETOOTH) {
-            return;
+            enableBluetooth();
         }
+    }
+
+    private void enableBluetooth() {
         mCurrentChannel = MeshChannel.BLUETOOTH;
-        setBluetoothAndConnect();
+        isChannelReady = false;
+        RxBus.getDefaultInstance().post(new MeshSystemEvent(MeshSystemEvent.SystemEvent.CHANNEL_NOT_READY));
+        if (Build.VERSION.SDK_INT >= 21) {
+            mService.setBluetoothBearerEnabled(ScanSettings.SCAN_MODE_LOW_LATENCY);
+        }
+        else {
+            mService.setBluetoothBearerEnabled();
+        }
     }
 
     public boolean isChannelReady() {
@@ -132,9 +176,24 @@ public class MeshLibraryManager extends Thread {
      */
     public void setRestChannelEnabled(RestChannel.RestMode restMode, String tenantId, String siteId) {
         mCurrentRestMode = restMode;
+
+        if(restMode == RestChannel.RestMode.GATEWAY) {
+            mService.setRestChannel(Config.Channel.CHANNEL_GATEWAY);
+        } else {
+            mService.setRestChannel(Config.Channel.CHANNEL_CLOUD);
+        }
+
         setRest(tenantId, siteId);
     }
 
+    /**
+     * Returns the authentication state
+     * @return AuthenticationState
+     */
+    public boolean isRestAuthenticated() {
+
+        return mService.isRestAuthenticated();
+    }
 
     /**
      * Enable REST channel without setting tenant nor site. Existing value set in library will be used if available.
@@ -170,12 +229,20 @@ public class MeshLibraryManager extends Thread {
         }
     }
 
+    public void setControllerAddress(int address) {
+        mService.setControllerAddress(address);
+    }
+
     public void setApplicationCode(String applicationCode) {
         mService.setApplicationCode(applicationCode);
     }
 
     public void setIsInternetAvailable(boolean state) {
         mIsInternetAvailable = state;
+    }
+
+    public void setNetworkKey(byte[] networkKey) {
+        mService.setNetworkKey(networkKey);
     }
 
     /*package*/ int getNextRequestId() {
@@ -213,12 +280,57 @@ public class MeshLibraryManager extends Thread {
     /**
      * Set bluetooth channel as bearer and connect to a bridge
      */
-    private void setBluetoothAndConnect() {
-        isChannelReady = false;
-        RxBus.getDefaultInstance().post(new MeshSystemEvent(MeshSystemEvent.SystemEvent.CHANNEL_NOT_READY));
-        mService.setBluetoothBearerEnabled();
-        mService.setMeshListeningMode(true, true);
-        mService.autoConnect(1, 25000, 0, 2);
+    private void connectBluetooth() {
+        mService.setMeshListeningMode(true, false);
+        mService.startAutoConnect(1);
+        //mService.setContinuousLeScanEnabled(true);
+    }
+
+    /**
+     * Automatically connect to numBridges bridges.
+     * @param numDevices Number of devices desired to be connected to.
+     */
+    public void startAutoConnect(int numDevices) {
+        mService.startAutoConnect(numDevices);
+    }
+
+    /**
+     * Return if autoconnect to bridges is enabled or not.
+     * @return True if autoconnect is enabled
+     */
+    public boolean isAutoConnectEnabled() {
+        return mService.isAutoConnectEnabled();
+    }
+
+    /**
+     * Stop the autoconnection with bridges.
+     */
+    public void stopAutoconnect() {
+        mService.stopAutoConnect();
+    }
+
+    /**
+     * Connect to a specific bluetooth device.
+     * @param device
+     */
+    public void connectDevice(BluetoothDevice device) {
+        mService.connectBridge(device);
+    }
+
+    /**
+     * Disconnect from all connected Bluetooth LE bridge devices.
+     * Bridges will not be automatically reconnected after disconnect.
+     */
+    public void disconnectAllDevices() {
+        mService.disconnectAllBridges();
+    }
+
+    /**
+     * Disconnect from a specific bluetooth device.
+     * @param btAddress Bluetooth device address to disconnect.
+     */
+    public void disconnectDevice (String btAddress) {
+        mService.disconnectBridge(btAddress);
     }
 
     /**
@@ -231,11 +343,6 @@ public class MeshLibraryManager extends Thread {
         RxBus.getDefaultInstance().post(new MeshSystemEvent(MeshSystemEvent.SystemEvent.CHANNEL_NOT_READY));
         mCurrentChannel = MeshChannel.REST;
         mService.setRestBearerEnabled(tenantId, siteId);
-        mService.disconnectBridge();
-        if(mService.isRestConfigured()){
-            RxBus.getDefaultInstance().post(new MeshSystemEvent(MeshSystemEvent.SystemEvent.CHANNEL_READY));
-            isChannelReady = true;
-        }
     }
 
     private ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -244,19 +351,20 @@ public class MeshLibraryManager extends Thread {
             if (mService != null) {
                 mService.setHandler(getHandler());
                 mService.setLeScanCallback(mScanCallBack);
-
-                // Search for Selected GW
-                int connectionType = ConnectionUtils.getConnectionType(mContext);
-                if(connectionType == ConnectionUtils.TYPE_WIFI) {
-                    Intent serviceIntent = new Intent(mContext, SearchSelectedGatewayService.class);
-                    mContext.startService(serviceIntent);
-                }
-
                 if (mCurrentChannel == MeshChannel.BLUETOOTH) {
-                    setBluetoothAndConnect();
+                    /* Set the Bluetooth bearer. This will start the stack, but
+                       we don't connect until we receive MESSAGE_LE_BEARER_READY.*/
+                    enableBluetooth();
                 }
-
-                RxBus.getDefaultInstance().post(new MeshSystemEvent(MeshSystemEvent.SystemEvent.SERVICE_BIND));
+                else if (mCurrentChannel == MeshChannel.REST) {
+                    // Retrieve & set appropriate REST parameters.
+                    RestChannel.RestMode restMode = getRestMode();
+                    if (restMode != null) {
+//                        String tenantId = mDBManager.getFirstSetting().getCloudTenantId();
+//                        String siteId = mDBManager.getPlace(Utils.getLatestPlaceIdUsed(mContext.get())).getCloudSiteID();
+//                        setRestChannelEnabled(restMode, tenantId, siteId);
+                    }
+                }
             }
         }
 
@@ -266,9 +374,20 @@ public class MeshLibraryManager extends Thread {
     };
 
 
-    private LeScanCallback mScanCallBack = new com.csr.csrmesh2.LeScanCallback() {
+    private BluetoothAdapter.LeScanCallback mScanCallBack = new BluetoothAdapter.LeScanCallback() {
         @Override
         public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
+            if (mService != null) {
+                if (mService.processMeshAdvert(device, scanRecord, rssi)) {
+                    // Notify about the new device scanned.
+                    {
+                        Bundle data = new Bundle();
+                        data.putParcelable(MeshConstants.EXTRA_DEVICE, device);
+                        data.putInt(MeshConstants.EXTRA_RSSI, rssi);
+                        RxBus.getDefaultInstance().post(new MeshSystemEvent(MeshSystemEvent.SystemEvent.DEVICE_SCANNED, data));
+                    }
+                }
+            }
             mService.processMeshAdvert(device, scanRecord, rssi);
         }
     };
@@ -302,12 +421,25 @@ public class MeshLibraryManager extends Thread {
             }
             // Handle mesh API messages and notify. Use the data variable NOT msg.getData() when retrieving data.
             switch (msg.what) {
+                case MeshConstants.MESSAGE_LE_BEARER_READY: {
+                    // The library is ready for connection now.
+                    mParent.get().connectBluetooth();
+                    break;
+                }
+                case MeshConstants.MESSAGE_REST_BEARER_READY: {
+                    if (mParent.get().mService.isRestConfigured()) {
+                        RxBus.getDefaultInstance().post(new MeshSystemEvent(MeshSystemEvent.SystemEvent.CHANNEL_READY));
+                        mParent.get().isChannelReady = true;
+                    }
+                    break;
+                }
                 case MeshConstants.MESSAGE_LE_CONNECTED: {
                     Log.d(TAG, "MeshConstants.MESSAGE_LE_CONNECTED " + msg.getData().getString(MeshConstants.EXTRA_DEVICE_ADDRESS));
                     if (mParent.get().getChannel() == MeshChannel.BLUETOOTH) {
-                        RxBus.getDefaultInstance().post(new MeshSystemEvent(MeshSystemEvent.SystemEvent.CHANNEL_READY, data));
                         mParent.get().isChannelReady = true;
+                        RxBus.getDefaultInstance().post(new MeshSystemEvent(MeshSystemEvent.SystemEvent.CHANNEL_READY, data));
                     }
+                    RxBus.getDefaultInstance().post(new MeshSystemEvent(MeshSystemEvent.SystemEvent.BRIDGE_CONNECTED, data));
                     break;
                 }
                 case MeshConstants.MESSAGE_LE_DISCONNECTED: {
@@ -316,6 +448,7 @@ public class MeshLibraryManager extends Thread {
                         RxBus.getDefaultInstance().post(new MeshSystemEvent(MeshSystemEvent.SystemEvent.CHANNEL_NOT_READY, data));
                         mParent.get().isChannelReady = false;
                     }
+                    RxBus.getDefaultInstance().post(new MeshSystemEvent(MeshSystemEvent.SystemEvent.BRIDGE_DISCONNECTED, data));
                     break;
                 }
                 case MeshConstants.MESSAGE_LE_DISCONNECT_COMPLETE: {
@@ -358,6 +491,22 @@ public class MeshLibraryManager extends Thread {
                 }
                 case MeshConstants.MESSAGE_ASSOCIATING_DEVICE: {
                     RxBus.getDefaultInstance().post(new MeshResponseEvent(MeshResponseEvent.ResponseEvent.ASSOCIATION_PROGRESS, data));
+                    break;
+                }
+                case MeshConstants.MESSAGE_LOCAL_DEVICE_ASSOCIATED: {
+                    RxBus.getDefaultInstance().post(new MeshResponseEvent(MeshResponseEvent.ResponseEvent.LOCAL_DEVICE_ASSOCIATED, data));
+                    break;
+                }
+                case MeshConstants.MESSAGE_LOCAL_ASSOCIATION_FAILED: {
+                    RxBus.getDefaultInstance().post(new MeshResponseEvent(MeshResponseEvent.ResponseEvent.LOCAL_DEVICE_FAILED, data));
+                    break;
+                }
+                case MeshConstants.MESSAGE_ASSOCIATION_PROGRESS: {
+                    RxBus.getDefaultInstance().post(new MeshResponseEvent(MeshResponseEvent.ResponseEvent.LOCAL_ASSOCIATION_PROGRESS, data));
+                    break;
+                }
+                case MeshConstants.MESSAGE_NETWORK_SECURITY_UPDATE: {
+                    RxBus.getDefaultInstance().post(new MeshResponseEvent(MeshResponseEvent.ResponseEvent.MESSAGE_NETWORK_SECURITY_UPDATE, data));
                     break;
                 }
                 case MeshConstants.MESSAGE_REQUEST_BT: {
@@ -495,6 +644,22 @@ public class MeshLibraryManager extends Thread {
                     RxBus.getDefaultInstance().post(new MeshResponseEvent(MeshResponseEvent.ResponseEvent.SITE_UPDATED, data));
                     break;
                 }
+                case MeshConstants.MESSAGE_GATEWAY_FILE_INFO: {
+                    RxBus.getDefaultInstance().post(new MeshResponseEvent(MeshResponseEvent.ResponseEvent.GATEWAY_FILE_INFO, data));
+                    break;
+                }
+                case MeshConstants.MESSAGE_GATEWAY_FILE: {
+                    RxBus.getDefaultInstance().post(new MeshResponseEvent(MeshResponseEvent.ResponseEvent.GATEWAY_FILE, data));
+                    break;
+                }
+                case MeshConstants.MESSAGE_GATEWAY_FILE_CREATED: {
+                    RxBus.getDefaultInstance().post(new MeshResponseEvent(MeshResponseEvent.ResponseEvent.GATEWAY_FILE_CREATED, data));
+                    break;
+                }
+                case MeshConstants.MESSAGE_GATEWAY_FILE_DELETED: {
+                    RxBus.getDefaultInstance().post(new MeshResponseEvent(MeshResponseEvent.ResponseEvent.GATEWAY_FILE_DELETED, data));
+                    break;
+                }
                 case MeshConstants.MESSAGE_FIRMWARE_UPDATE_ACKNOWLEDGED: {
                     RxBus.getDefaultInstance().post(new MeshResponseEvent(MeshResponseEvent.ResponseEvent.FIRMWARE_UPDATE_ACKNOWLEDGED, data));
                     break;
@@ -503,8 +668,53 @@ public class MeshLibraryManager extends Thread {
                     break;
                 }
 
-                case MeshConstants.MESSAGE_ERROR:{
+                case MeshConstants.MESSAGE_REST_ERROR:{
                     RxBus.getDefaultInstance().post(new MeshResponseEvent(MeshResponseEvent.ResponseEvent.ERROR, data));
+                    break;
+                }
+                case MeshConstants.MESSAGE_TIME_STATE: {
+                    int timeInterval = data.getInt(MeshConstants.EXTRA_TIME_INTERVAL);
+                    RxBus.getDefaultInstance().post(new MeshResponseEvent(MeshResponseEvent.ResponseEvent.TIME_STATE, data));
+                    break;
+                }
+                case MeshConstants.MESSAGE_LOT_ANNOUNCE: {
+                    Log.w(TAG, "Lot announce response");
+                    RxBus.getDefaultInstance().post(new MeshResponseEvent(MeshResponseEvent.ResponseEvent.LOT_INTEREST, data));
+                    break;
+                }
+                case MeshConstants.MESSAGE_LOT_INTEREST: {
+                    Log.w(TAG, "Lot interest response");
+                    RxBus.getDefaultInstance().post(new MeshResponseEvent(MeshResponseEvent.ResponseEvent.LOT_INTEREST, data));
+                    break;
+                }
+                case MeshConstants.MESSAGE_DIAGNOSTIC_STATE: {
+                    Log.w(TAG, "response for DIAGNOSTIC_STATE ");
+                    RxBus.getDefaultInstance().post(new MeshResponseEvent(MeshResponseEvent.ResponseEvent.DIAGNOSTIC_STATE, data));
+                    break;
+                }
+                case MeshConstants.MESSAGE_DIAGNOSTIC_STATS: {
+                    Log.w(TAG, "response for DIAGNOSTIC_STATES");
+                    RxBus.getDefaultInstance().post(new MeshResponseEvent(MeshResponseEvent.ResponseEvent.DIAGNOSTIC_STATS, data));
+                    break;
+                }
+                case MeshConstants.MESSAGE_TRACKER_REPORT: {
+                    Log.w(TAG, "response for TRACKER_REPORT");
+                    RxBus.getDefaultInstance().post(new MeshResponseEvent(MeshResponseEvent.ResponseEvent.TRACKER_REPORT, data));
+                    break;
+                }
+                case MeshConstants.MESSAGE_WATCHDOG_INTERVAL: {
+                    Log.w(TAG, "response for WATCHDOG_INTERVAL");
+                    RxBus.getDefaultInstance().post(new MeshResponseEvent(MeshResponseEvent.ResponseEvent.WATCHDOG_INTERVAL, data));
+                    break;
+                }
+                case MeshConstants.MESSAGE_WATCHDOG_MESSAGE: {
+                    Log.w(TAG, "response for WATCHDOG_MESSAGE");
+                    RxBus.getDefaultInstance().post(new MeshResponseEvent(MeshResponseEvent.ResponseEvent.WATCHDOG_MESSAGE, data));
+                    break;
+                }
+                case MeshConstants.MESSAGE_TRACKER_FOUND: {
+                    Log.w(TAG, "response for TRACKER_FOUND");
+                    RxBus.getDefaultInstance().post(new MeshResponseEvent(MeshResponseEvent.ResponseEvent.TRACKER_FOUND, data));
                     break;
                 }
 
@@ -523,11 +733,20 @@ public class MeshLibraryManager extends Thread {
                     @Override
                     public void call(MeshRequestEvent meshRequestEvent) {
                         switch (meshRequestEvent.what) {
+                            // Killing transactions
+                            case KILL_TRANSACTION:
+
+                                int id = getMeshRequestId(meshRequestEvent.data.getInt(MeshConstants.EXTRA_DATA));
+                                mService.cancelTransaction(id);
+                                break;
                             // Association:
                             case DISCOVER_DEVICES:
                             case ATTENTION_PRE_ASSOCIATION:
                             case ASSOCIATE_DEVICE:
                             case ASSOCIATE_GATEWAY:
+                            case START_ADVERTISING:
+                            case STOP_ADVERTISING:
+                            case MASP_RESET:
                                 Association.handleRequest(meshRequestEvent);
                                 break;
 
@@ -551,6 +770,7 @@ public class MeshLibraryManager extends Thread {
                             case LIGHT_SET_COLOR_TEMPERATURE:
                             case LIGHT_SET_POWER_LEVEL:
                             case LIGHT_SET_RGB:
+                            case LIGHT_SET_WHITE:
                                 LightModel.handleRequest(meshRequestEvent);
                                 break;
 
@@ -627,6 +847,44 @@ public class MeshLibraryManager extends Thread {
                             case CLOUD_UPDATE_SITE:
                                 ConfigCloud.handleRequest(meshRequestEvent);
                                 break;
+
+                            // Configuration
+                            case SET_CONTINUOUS_SCANNING:
+                                if (getChannel() == MeshChannel.BLUETOOTH) {
+                                    boolean enable = meshRequestEvent.data.getBoolean(MeshConstants.EXTRA_DATA);
+                                    boolean wear = meshRequestEvent.data.getBoolean(MeshConstants.EXTRA_WEAR);
+                                    if (wear) {
+                                        mContinuousScanningWear = enable;
+                                    }
+                                    else {
+                                        mContinuousScanningMobile = enable;
+                                    }
+
+                                    if ( (mContinuousScanningWear == true || mContinuousScanningMobile == true) && !mCurrentContinuousScanning) {
+                                        // enabling continuous scan.
+                                        mCurrentContinuousScanning = true;
+                                        BluetoothChannel.setContinuousScanEnabled(mCurrentContinuousScanning);
+                                    }
+                                    else if (mContinuousScanningWear == false && mContinuousScanningMobile == false && mCurrentContinuousScanning) {
+                                        // disabling continuous scan.
+                                        mCurrentContinuousScanning = false;
+                                        BluetoothChannel.setContinuousScanEnabled(mCurrentContinuousScanning);
+                                    }
+                                }
+                                break;
+
+                            case SET_CONTROLLER_ADDRESS:
+                                int address = meshRequestEvent.data.getInt(MeshConstants.EXTRA_DATA);
+                                mService.setControllerAddress(address);
+                                break;
+
+                            case LOT_ANNOUNCE:
+                            case LOT_INTEREST:
+                                LargeObjectTransferModel.handleRequest(meshRequestEvent);
+                                break;
+                            case DIAGNOSTIC_GET_STATS:
+
+                                break;
                         }
                     }
                 });
@@ -683,6 +941,18 @@ public class MeshLibraryManager extends Thread {
     }
     public String getSelectedGatewayUUID() {
         return mSelectedGatewayUUID;
+    }
+
+    //---- BT and BLE
+    @TargetApi(18)
+    public static boolean checkAvailability(Context mContext) throws BleNotAvailableException {
+        if(Build.VERSION.SDK_INT < 18) {
+            throw new BleNotAvailableException("Bluetooth LE not supported by this device");
+        } else if(!mContext.getPackageManager().hasSystemFeature("android.hardware.bluetooth_le")) {
+            throw new BleNotAvailableException("Bluetooth LE not supported by this device");
+        } else {
+            return ((BluetoothManager)mContext.getSystemService(mContext.BLUETOOTH_SERVICE)).getAdapter().isEnabled();
+        }
     }
 
 }
