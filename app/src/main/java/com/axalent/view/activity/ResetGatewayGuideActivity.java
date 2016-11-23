@@ -4,9 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.os.SystemClock;
+import android.os.Handler;
 import android.view.View;
-import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -15,7 +14,6 @@ import com.axalent.R;
 import com.axalent.application.BaseActivity;
 import com.axalent.application.MyRequestQueue;
 import com.axalent.model.Gateway;
-import com.axalent.presenter.ssdp.SSDPSearchMsg;
 import com.axalent.presenter.ssdp.SSDPSocket;
 import com.axalent.util.AxalentUtils;
 import com.axalent.util.LogUtils;
@@ -29,7 +27,6 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.DatagramPacket;
-import java.util.HashMap;
 
 /**
  * File Name                   : ResetGatewayGuideActivity
@@ -44,7 +41,8 @@ import java.util.HashMap;
 public class ResetGatewayGuideActivity extends BaseActivity implements View.OnClickListener {
 
     private boolean stop = false;
-    private HashMap<String, String> filterMap = new HashMap<String, String>();
+    private static final int SEND_PERIOD_MS = 60 * 1000;
+    private Handler mHandler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,8 +79,23 @@ public class ResetGatewayGuideActivity extends BaseActivity implements View.OnCl
     }
 
     private void sendSearchMessage() {
+        mHandler.postDelayed(searchTimeout, SEND_PERIOD_MS);
         new Thread(searchRunnable).start();
     }
+
+    @Override
+    protected void onDestroy() {
+        mHandler.removeCallbacks(searchTimeout);
+        super.onDestroy();
+    }
+
+    private Runnable searchTimeout = new Runnable() {
+        @Override
+        public void run() {
+            ToastUtils.show(R.string.time_out);
+            finish();
+        }
+    };
 
     private Runnable searchRunnable = new Runnable() {
         public void run() {
@@ -90,9 +103,14 @@ public class ResetGatewayGuideActivity extends BaseActivity implements View.OnCl
             try {
                 sock = new SSDPSocket("");
                 while(!stop) {
-                    DatagramPacket dp = sock.receiveAck();
+                    DatagramPacket dp = sock.receive();
 
                     LogUtils.i("result:" + new String(dp.getData()));
+                    LogUtils.i("result_address:" + dp.getAddress());
+                    LogUtils.i("result_length:" + dp.getLength());
+                    LogUtils.i("result_port:" + dp.getPort());
+                    LogUtils.i("result_socket_address:" + dp.getSocketAddress());
+
                     parserResult(new String(dp.getData()));
                 }
             } catch (IOException e) {
@@ -102,17 +120,8 @@ public class ResetGatewayGuideActivity extends BaseActivity implements View.OnCl
     };
 
     private void parserResult(String result) {
-        final String[] LOCATIONS = result.split("LOCATION: ");
-        if (LOCATIONS.length < 2) {
-            return;
-        }
-        String content = LOCATIONS[1];
-        int start = 0;
-        int end = content.indexOf("\r\n");
-        String url = content.substring(start, end);
-        if (filterMap.get(url) == null) {
-            filterMap.put(url, url);
-            findGateway(url);
+        if (result.contains(AxalentUtils.SWITCH_WIFI_SUCCESS_FEEDBACK)) {
+            configSuccess();
         }
     }
 
@@ -164,6 +173,7 @@ public class ResetGatewayGuideActivity extends BaseActivity implements View.OnCl
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.barShowGroupBack:
+                setResult(AxalentUtils.SWITCH_GATEWAY_STOP_SEND_PACKET);
                 finish();
                 break;
         }

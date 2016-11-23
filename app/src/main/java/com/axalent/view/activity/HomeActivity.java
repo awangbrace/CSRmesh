@@ -972,7 +972,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
 						Log.i("type_group_name",typeName);
 
 						if (device.getTypeName() != null && !device.getTypeName().equalsIgnoreCase(typeName) &&
-								!device.getTypeName().equalsIgnoreCase(AxalentUtils.TYPE_AXALENT_SCENE)) {
+								!device.getTypeName().equalsIgnoreCase(AxalentUtils.TYPE_AXALENT_SCENE) &&
+								!device.getTypeName().equalsIgnoreCase(AxalentUtils.TYPE_GATEWAY_GROUP)) {
 							// ���Ͳ�ƥ��,֤��֮ǰ����д��󣬣��Ƶ� ChildInfoValue��82 ������ֵ����82��ɾ���������
 							deviceManager.removeDeviceFromUser(device.getDevId(), new Listener<XmlPullParser>() {
 								@Override
@@ -1094,6 +1095,8 @@ private boolean filtration(String typeName) {
 			return false;
 		} else if (AxalentUtils.TYPE_GATEWAY.equalsIgnoreCase(typeName)) {
 			return sharedPreferences.getBoolean("showGateway", false);
+		} else if (AxalentUtils.TYPE_GATEWAY_GROUP.equals(typeName)) {
+			return false;
 		}
 		return true;
 	}

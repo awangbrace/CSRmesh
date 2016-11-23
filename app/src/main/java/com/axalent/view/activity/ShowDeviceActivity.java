@@ -191,6 +191,10 @@ public class ShowDeviceActivity extends BaseActivity implements OnClickListener 
 		RelativeLayout back = (RelativeLayout) customView.findViewById(R.id.barShowDeviceBack);
 		back.setOnClickListener(this);
 		RelativeLayout menu = (RelativeLayout) customView.findViewById(R.id.barShowDeviceMenu);
+		menu.setVisibility(currentDevice != null
+				&& AxalentUtils.TYPE_GATEWAY_GROUP
+				.equalsIgnoreCase(currentDevice.getTypeName()) ?
+				View.GONE : View.VISIBLE);
 		menu.setOnClickListener(this);
 
 		if (AxalentUtils.getLoginMode() == R.id.atyLoginBluetoothBtn) {
@@ -202,7 +206,11 @@ public class ShowDeviceActivity extends BaseActivity implements OnClickListener 
 				menu.setVisibility(View.VISIBLE);
 			}
 		} else {
-			titleTxt.setText(currentDevice.getDisplayName());
+			if (AxalentUtils.TYPE_GATEWAY_GROUP.equals(currentDevice.getTypeName())) {
+				titleTxt.setText(getString(R.string.group));
+			} else {
+				titleTxt.setText(currentDevice.getDisplayName());
+			}
 		}
 	}
 	
@@ -235,7 +243,8 @@ public class ShowDeviceActivity extends BaseActivity implements OnClickListener 
 	
 	private void initFragment() {
 		final String typeName = currentDevice.getTypeName();
-		if (AxalentUtils.TYPE_SL.equalsIgnoreCase(typeName) || AxalentUtils.TYPE_GUNI_LAMP.equalsIgnoreCase(typeName)) {
+		if (AxalentUtils.TYPE_SL.equalsIgnoreCase(typeName) || AxalentUtils.TYPE_GUNI_LAMP.equalsIgnoreCase(typeName)
+				|| AxalentUtils.TYPE_GATEWAY_GROUP.equalsIgnoreCase(typeName)) {
 			// Light Bulb
 			AxalentUtils.commitFragment(this, new LightFragment(), R.id.atyShowDeviceFrame);
 		} else if (AxalentUtils.TYPE_SM.equalsIgnoreCase(typeName)) {

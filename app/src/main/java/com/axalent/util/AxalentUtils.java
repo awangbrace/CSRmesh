@@ -166,11 +166,14 @@ public class AxalentUtils {
 
 	public static final String ATTRIBUTE_DATABASE = "DataBase";
 
+	public static final String SWITCH_WIFI_SUCCESS_FEEDBACK = "Axalent Solutions";
+
 	public static final int SWITCH_GATEWAY_WIFI = 0x31;
 	public static final int SAVE_GATEWAY_IP = 0x32;
 
 	public static final int SWITCH_GATEWAY_WIFI_SUCCESS = 0x33;
-	
+	public static final int SWITCH_GATEWAY_STOP_SEND_PACKET = 0x34;
+
 	
 	/**
 	 * �������
@@ -504,7 +507,8 @@ public class AxalentUtils {
 	}
 
 	public static int getDeviceImageByTypeName(String typeName) {
-		if (TYPE_AXALENT_SCENE.equalsIgnoreCase(typeName)) {
+		if (TYPE_AXALENT_SCENE.equalsIgnoreCase(typeName) ||
+				TYPE_GATEWAY_GROUP.equalsIgnoreCase(typeName)) {
 			return R.drawable.scene_user_define;
 		} else if (TYPE_GATEWAY_SCHEDULE.equalsIgnoreCase(typeName)) {
 			return R.drawable.schedule;

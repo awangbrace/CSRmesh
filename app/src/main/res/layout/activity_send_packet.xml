@@ -5,6 +5,15 @@
 
     <include layout="@layout/actionbar_gateway_config"/>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="22sp"
+        android:textColor="@color/black"
+        android:layout_above="@+id/atyWifiSsidEdit"
+        android:padding="20dp"
+        android:text="@string/config_wifi_send_guide"/>
+
     <EditText
         android:textSize="15sp"
         android:paddingLeft="10dp"

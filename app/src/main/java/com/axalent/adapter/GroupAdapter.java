@@ -120,7 +120,15 @@ public class GroupAdapter extends BaseAdapter {
 	
 	private void setNameAndBackground(ViewHolder holder, Device device) {
 		holder.txt.setText(device.getCustomName());
-		holder.img.setBackgroundResource(AxalentUtils.TYPE_AXALENT_SCENE.equals(device.getTypeName()) ? R.drawable.scene_user_define : R.drawable.schedule);
+		int resources = 0;
+		if (AxalentUtils.TYPE_AXALENT_SCENE.equals(device.getTypeName())) {
+			resources = R.drawable.scene_user_define;
+		} else if (AxalentUtils.TYPE_GATEWAY_GROUP.equals(device.getTypeName())) {
+			resources = R.drawable.scene_user_define;
+		} else if (AxalentUtils.TYPE_GATEWAY_SCHEDULE.equals(device.getTypeName())) {
+			resources = R.drawable.schedule;
+		}
+		holder.img.setBackgroundResource(resources);
 	}
 
 	private void setNameAndBackground(ViewHolder holder, final Area area) {

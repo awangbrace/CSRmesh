@@ -2,6 +2,7 @@ package com.axalent.view.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
@@ -21,6 +22,7 @@ import com.axalent.util.LogUtils;
 import com.axalent.util.ToastUtils;
 import com.axalent.util.XmlUtils;
 import com.axalent.view.activity.HomeActivity;
+import com.axalent.view.activity.ShowDeviceActivity;
 import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
@@ -130,15 +132,15 @@ public class GroupFragment extends Fragment implements Manager, OnItemClickListe
 
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-
-        return false;
+        controllerGroupAttr(groups.get(position));
+        return true;
     }
 
     private void controllerGroup(Device group) {
-        aty.getDeviceManager().setDeviceAttribute(group.getDevId(), AxalentUtils.ATTRIBUTE_LIGHT, AxalentUtils.ON, new Response.Listener<XmlPullParser>() {
+        aty.getDeviceManager().setDeviceAttribute(group.getDevId(), AxalentUtils.ATTRIBUTE_LIGHT, getValue(group), new Response.Listener<XmlPullParser>() {
             @Override
             public void onResponse(XmlPullParser response) {
-
+                ToastUtils.show(R.string.action_success);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -146,6 +148,17 @@ public class GroupFragment extends Fragment implements Manager, OnItemClickListe
                 ToastUtils.show(XmlUtils.converErrorMsg(error));
             }
         });
+    }
+
+    private String getValue(Device device) {
+        String value = device.getToggle();
+        return AxalentUtils.ON.equals(value) ? AxalentUtils.OFF : AxalentUtils.ON;
+    }
+
+    private void controllerGroupAttr(Device group) {
+        Intent intent = new Intent(aty, ShowDeviceActivity.class);
+        intent.putExtra(AxalentUtils.KEY_DEVICE, group);
+        startActivity(intent);
     }
 
     @Override

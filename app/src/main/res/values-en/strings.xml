@@ -445,6 +445,7 @@
     <string name="config_wifi_name">1.The current wifi is: </string>
     <string name="config_wifi_guide">Is it the wifi you want to set? If not please</string>
     <string name="config_wifi_setting">Go Settings</string>
+    <string name="config_wifi_send_guide">2.Please enter wifi password and click next button</string>
     <string name="config_wifi_long_click_button">3.Press and hold the button on the gateway for 3 seconds</string>
     <string name="config_wifi_next">next</string>
     <string name="config_wifi_send">determine</string>

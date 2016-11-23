@@ -304,7 +304,8 @@ public class LightFragment extends Fragment implements OnTouchListener, OnSeekBa
 			} else {
 				String name = "";
 				String value = "";
-				if (device.getTypeName().equals(AxalentUtils.TYPE_SL)) {
+				if (device.getTypeName().equals(AxalentUtils.TYPE_SL)
+						|| device.getTypeName().equals(AxalentUtils.TYPE_GATEWAY_GROUP)) {
 					name = AxalentUtils.ATTRIBUTE_HSV;
 					value = hsv[0]+" "+hsv[1]+" "+hsv[2];
 				} else {

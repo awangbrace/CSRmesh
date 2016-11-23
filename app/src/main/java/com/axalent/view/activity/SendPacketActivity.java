@@ -134,6 +134,8 @@ public class SendPacketActivity extends BaseActivity implements View.OnClickList
         if (resultCode == AxalentUtils.SWITCH_GATEWAY_WIFI_SUCCESS) {
             setResult(AxalentUtils.SWITCH_GATEWAY_WIFI_SUCCESS);
             finish();
+        } else if (resultCode == AxalentUtils.SWITCH_GATEWAY_STOP_SEND_PACKET) {
+            destroyConfigThread();
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
