@@ -75,6 +75,7 @@
     <string name="activate_code_length_error">Activation code at least six</string>
     <string name="change_password_title">Change Password</string>
     <string name="change_password"><u>Change Password</u></string>
+    <string name="create_account"><u>Create a Account</u></string>
     <string name="forget_password">Forget</string>
     <string name="alter">Alter</string>
     <string name="switch_gateway_wifi">Switch Gateway Wifi</string>
@@ -342,8 +343,6 @@
 
     <!-- Wizard -->
     <string name="associating_device">Associating device</string>
-    <string name="device_associated">associated</string>
-    <string name="association_failed">Association has failed</string>
 
     <!-- group -->
     <string name="cancel_group">cancel</string>
@@ -377,4 +376,95 @@
     <string name="error_getting_model_info">Error getting model information</string>
     <string name="error_getting_group_info">Error getting group information</string>
     <string name="error_removing_device">Error removing the device</string>
+
+    <!-- Associating -->
+    <string name="detected_devices">Detected devices</string>
+    <string name="scan_qr_code">Scan qr code</string>
+    <string name="associating">Associating</string>
+    <string name="device">Device</string>
+    <string name="select_a_device">Select a device</string>
+    <string name="associate_device">Associate device</string>
+    <string name="qr_to_uuid_fail">Failed to read UUID from QR code</string>
+    <string name="select_device">Association not possible. Select a device first.</string>
+    <string name="no_result_found">No devices found around you. We will populate them as soon as we detect them.</string>
+    <string name="device_associated">associated</string>
+    <string name="association_failed">Association has failed</string>
+    <string name="wrong_short_code">Short code field can not be empty</string>
+    <string name="wrong_auth_code">Wrong auth code. Association cancelled.</string>
+    <string name="input_auth_code">Please input auth code.</string>
+    <string name="decibel_milliwatts">dBm</string>
+
+    <!-- Temperature controller view -->
+    <string name="desired_temperature">Desired temperature (°C)</string>
+    <!--<string name="current_temperature">Current temperature (°C)</string>-->
+    <string name="unknown_temperature_value">-</string>
+
+    <!-- Devices list -->
+    <string name="no_devices">No devices associated yet. To associate a device tap on the "+" button.</string>
+    <string name="bluetooth_needed_to_add_devices">You need bluetooth channel ready to add new devices.</string>
+    <string name="bluetooth_needed_to_control_devices">You need bluetooth channel ready to control devices.</string>
+    <string name="bluetooth_selected_to_add_devices">You need bluetooth channel selected to add new devices.</string>
+    <string name="bluetooth_selected_to_control_devices">You need bluetooth channel selected to control devices.</string>
+
+    <string name="deleting_device">Deleting device</string>
+
+    <!-- delete dialog -->
+    <string name="dialog_delete_gateway">Delete Gateway</string>
+    <string name="dialog_delete_gateway_not_use_fun">If you delete the gateway you will not be able to use the remote function</string>
+    <string name="dialog_delete_device">Delete device</string>
+    <string name="dialog_delete_device_anyway">Device wasn\'t found. Do you want to delete it anyway?</string>
+    <string name="dialog_want_delete_device">Are you sure that you want to delete this device?</string>
+    <string name="removed_success"> removed successfully.</string>
+    <string name="resetting_device">Resetting your device. Please wait&#8230;</string>
+
+    <!-- group -->
+    <string name="group_name">Group Name:</string>
+    <string name="group_name_hint">enter your group name</string>
+    <string name="group_select_devices">Select Devices:</string>
+    <string name="group_name_not_empty">group name can not empty!</string>
+    <string name="area_applied">Area applied</string>
+    <string name="create_area_failure">Create Area failure!</string>
+    <string name="area_failure">Area applied failure!</string>
+    <string name="maximum_areas">Maximum areas reached. Un-select one area first.</string>
+
+    <string name="belong_to_group">The device must to belong to a group before being able to be controlled.</string>
+
+    <!-- Wizard -->
+    <string name="new_device">New device</string>
+    <string name="auth_code">Authorization code</string>
+    <string name="accept">Accept</string>
+    <string name="devices_discovered">Devices discovered</string>
+    <string name="set_short_code">Set short code</string>
+    <string name="short_code">Short code</string>
+    <string name="associating_device_percent">Associating device %d %</string>
+    <string name="security">Security</string>
+    <string name="security_associating">If your device has been furnished with an authorisation code you have to give it here. Otherwise you acan skip this step.</string>
+    <string name="associating_dialog1">How do you want to set up your new device?</string>
+
+    <!-- gateway config -->
+    <string name="config_wifi_name">1.The current wifi is: </string>
+    <string name="config_wifi_guide">Is it the wifi you want to set? If not please</string>
+    <string name="config_wifi_setting">Go Settings</string>
+    <string name="config_wifi_long_click_button">3.Press and hold the button on the gateway for 3 seconds</string>
+    <string name="config_wifi_next">next</string>
+    <string name="config_wifi_send">determine</string>
+    <string name="configuration">Configuration...</string>
+    <string name="dialog_authorization_code">Authorization code</string>
+
+    <string name="config_success">configuration succeeds!</string>
+    <string name="config_enter_pass">please enter password!</string>
+    <string name="config_pass_less">password can not less then 8 characters!</string>
+    <string name="config_failure">Config failure!!</string>
+
+    <!-- sync state -->
+    <string name="sync_success_homepage">success!</string>
+    <string name="sync_failure_homepage">failure!</string>
+    <string name="upload_success_homepage">upload success!</string>
+    <string name="upload_failure_homepage">upload failure!</string>
+    <string name="get_server_data_error">get server data error!</string>
+    <string name="no_synchronization">No synchronization!</string>
+    <string name="have_channel">You are connected to the Bluetooth channel</string>
+    <string name="wait_channel">Wait for the Bluetooth channel connection</string>
+    <string name="denided_permission">permissions_denided</string>
+
 </resources>

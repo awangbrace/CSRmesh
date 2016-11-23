@@ -187,19 +187,23 @@ public class ShowDeviceActivity extends BaseActivity implements OnClickListener 
 	private void initActionBar() {
 		View customView = findViewById(R.id.showDeviceContent);
 		titleTxt = (TextView) customView.findViewById(R.id.barShowDeviceTitleTxt);
-		if (AxalentUtils.getLoginMode() == R.id.atyLoginBluetoothBtn) {
-			if (result == AxalentUtils.GROUP) {
-				titleTxt.setText(area.getName());
-			} else if (result == AxalentUtils.SING) {
-				titleTxt.setText(csrDevice.getName());
-			}
-		} else {
-			titleTxt.setText(currentDevice.getDisplayName());
-		}
+
 		RelativeLayout back = (RelativeLayout) customView.findViewById(R.id.barShowDeviceBack);
 		back.setOnClickListener(this);
 		RelativeLayout menu = (RelativeLayout) customView.findViewById(R.id.barShowDeviceMenu);
 		menu.setOnClickListener(this);
+
+		if (AxalentUtils.getLoginMode() == R.id.atyLoginBluetoothBtn) {
+			if (result == AxalentUtils.GROUP) {
+				titleTxt.setText(area.getName());
+				menu.setVisibility(View.GONE);
+			} else if (result == AxalentUtils.SING) {
+				titleTxt.setText(csrDevice.getName());
+				menu.setVisibility(View.VISIBLE);
+			}
+		} else {
+			titleTxt.setText(currentDevice.getDisplayName());
+		}
 	}
 	
 	private void initView() {
@@ -554,15 +558,17 @@ public class ShowDeviceActivity extends BaseActivity implements OnClickListener 
 	private void deleteCSRDevice(final boolean force) {
 		final DialogMaterial dialog;
 		if (csrDevice.getType() == CSRDevice.TYPE_GATEWAY) {
-			dialog = new DialogMaterial(this, "Delete Gateway", "", true, R.color.red);
+			dialog = new DialogMaterial(this, getString(R.string.dialog_delete_gateway), "", true, R.color.red);
 			TextView tv = new TextView(this);
 			tv.setTextColor(getResources().getColor(R.color.red));
 			tv.setTextSize(20f);
-			tv.setText("If you delete the gateway you will not be able to use the remote function");
+			tv.setText(getString(R.string.dialog_delete_gateway_not_use_fun));
 			dialog.setBodyView(tv);
 
 		} else {
-			dialog = new DialogMaterial(this, "Delete device", force?"Device wasn't found. Do you want to delete it anyway?":"Are you sure that you want to delete this device?");
+			dialog = new DialogMaterial(this, getString(R.string.dialog_delete_device),
+					force ? getString(R.string.dialog_delete_device_anyway)
+							:getString(R.string.dialog_want_delete_device));
 		}
 
 		dialog.addCancelButton(getString(R.string.cancel));
@@ -672,7 +678,7 @@ public class ShowDeviceActivity extends BaseActivity implements OnClickListener 
 	}
 
 	private void deleteDeviceAndFinish() {
-		Toast.makeText(this,csrDevice.getName() + " removed successfully.",Toast.LENGTH_SHORT).show();
+		Toast.makeText(this,csrDevice.getName() + getString(R.string.removed_success),Toast.LENGTH_SHORT).show();
 		dbManager.removeDevice(csrDevice.getId());
 		setResult(AxalentUtils.REFRESH_DATA);
 		finish();
@@ -690,7 +696,7 @@ public class ShowDeviceActivity extends BaseActivity implements OnClickListener 
 	private void showProgress() {
 		mDialog = new DialogMaterial(this, getString(R.string.deleting_device), null);
 		TextView text = new TextView(this);
-		text.setText("Resetting your device. Please wait...");
+		text.setText(getString(R.string.resetting_device));
 		mDialog.setBodyView(text);
 		mDialog.setCancelable(false);
 		mDialog.setShowProgress(true);

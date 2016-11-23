@@ -77,6 +77,7 @@
     <string name="change_password_title">修改密码</string>
     <string name="change_password"><u>修改密码</u></string>
     <string name="forget_password">忘记密码</string>
+    <string name="create_account"><u>注册新用户</u></string>
     <string name="alter">修改</string>
     <string name="login_token_is_null">登录密钥为空</string>
     <string name="username_or_password_is_null">用户名或密码为空</string>
@@ -361,21 +362,25 @@
 
 
     <!-- Associating -->
-    <string name="detected_devices">Detected devices</string>
-    <string name="scan_qr_code">Scan qr code</string>
-    <string name="associating">Associating</string>
-    <string name="device">Device</string>
-    <string name="select_a_device">Select a device</string>
-    <string name="associate_device">Associate device</string>
-    <string name="qr_to_uuid_fail">Failed to read UUID from QR code</string>
-    <string name="select_device">Association not possible. Select a device first.</string>
-    <string name="no_result_found">No devices found around you. We will populate them as soon as we detect them.</string>
-    <string name="device_associated">associated</string>
-    <string name="association_failed">Association has failed</string>
-    <string name="wrong_short_code">Short code field can not be empty</string>
-    <string name="wrong_auth_code">Wrong auth code. Association cancelled.</string>
-    <string name="input_auth_code">Please input auth code.</string>
+    <string name="detected_devices">检索设备</string>
+    <string name="scan_qr_code">扫描二维码</string>
+    <string name="associating">关联</string>
+    <string name="device">设备</string>
+    <string name="select_a_device">选择一个设备</string>
+    <string name="associate_device">关联设备</string>
+    <string name="qr_to_uuid_fail">无法从QR码读取UUID</string>
+    <string name="select_device">关联不可用,首先选择设备。</string>
+    <string name="no_result_found">在周围没有发现设备. 一旦检测到它们,我们就会展示出来.</string>
+    <string name="device_associated">关联</string>
+    <string name="association_failed">关联失败</string>
+    <string name="wrong_short_code">短码字段不能为空</string>
+    <string name="wrong_auth_code">验证码错误,关联取消</string>
+    <string name="input_auth_code">请输入验证码</string>
     <string name="decibel_milliwatts">dBm</string>
+    <string name="config_success">配置成功!</string>
+    <string name="config_enter_pass">请输入密码!</string>
+    <string name="config_pass_less">密码不能少于8个字符!</string>
+    <string name="config_failure">配置失败!</string>
 
     <!-- Temperature controller view -->
     <string name="desired_temperature">Desired temperature (°C)</string>
@@ -383,26 +388,47 @@
     <string name="unknown_temperature_value">-</string>
 
     <!-- Devices list -->
-    <string name="no_devices">No devices associated yet. To associate a device tap on the "+" button.</string>
-    <string name="bluetooth_needed_to_add_devices">You need bluetooth channel ready to add new devices.</string>
-    <string name="bluetooth_needed_to_control_devices">You need bluetooth channel ready to control devices.</string>
-    <string name="bluetooth_selected_to_add_devices">You need bluetooth channel selected to add new devices.</string>
-    <string name="bluetooth_selected_to_control_devices">You need bluetooth channel selected to control devices.</string>
+    <string name="no_devices">尚未关联任何设备.请在“+”按钮关联设备.</string>
+    <string name="bluetooth_needed_to_add_devices">您需要准备好蓝牙通道才能添加设备.</string>
+    <string name="bluetooth_needed_to_control_devices">您需要准备好蓝牙通道才能控制设备.</string>
+    <string name="bluetooth_selected_to_add_devices">您需要选择蓝牙频道才能添加新设备.</string>
+    <string name="bluetooth_selected_to_control_devices">您需要选择蓝牙频道才能控制设备.</string>
 
-    <string name="deleting_device">Deleting device</string>
+    <string name="deleting_device">正在删除设备</string>
+
+    <!-- delete dialog -->
+    <string name="dialog_delete_gateway">删除网关</string>
+    <string name="dialog_delete_gateway_not_use_fun">如果您删除网关，远程功能将不能使用</string>
+    <string name="dialog_delete_device">删除设备</string>
+    <string name="dialog_delete_device_anyway">设备没有找到，您要继续删除吗？</string>
+    <string name="dialog_want_delete_device">您确定删除该设备吗？</string>
+    <string name="removed_success"> 移除成功.</string>
+    <string name="resetting_device">正在重置设备，请稍等&#8230;</string>
+
+    <!-- group -->
+    <string name="group_name">组名:</string>
+    <string name="group_name_hint">请输入组名</string>
+    <string name="group_select_devices">请选择设备:</string>
+    <string name="group_name_not_empty">组名不能为空!</string>
+    <string name="area_applied">应用成功</string>
+    <string name="create_area_failure">创建组失败!</string>
+    <string name="area_failure">应用失败!</string>
+    <string name="maximum_areas">已达到最大选择数，请先取消一个已选择的.</string>
+
+    <string name="belong_to_group">这个设备必须加入一个组才能控制</string>
 
     <!-- Wizard -->
-    <string name="new_device">New device</string>
-    <string name="auth_code">Authorization code</string>
-    <string name="accept">Accept</string>
-    <string name="devices_discovered">Devices discovered</string>
-    <string name="set_short_code">Set short code</string>
-    <string name="short_code">Short code</string>
-    <string name="associating_device_percent">Associating device %d %</string>
-    <string name="associating_device">Associating device</string>
-    <string name="security">Security</string>
-    <string name="security_associating">If your device has been furnished with an authorisation code you have to give it here. Otherwise you acan skip this step.</string>
-    <string name="associating_dialog1">How do you want to set up your new device?</string>
+    <string name="new_device">新设备</string>
+    <string name="auth_code">授权码</string>
+    <string name="accept">接受</string>
+    <string name="devices_discovered">已发现设备</string>
+    <string name="set_short_code">设置短码</string>
+    <string name="short_code">短码</string>
+    <string name="associating_device_percent">关联设备 %d %</string>
+    <string name="associating_device">关联设备</string>
+    <string name="security">安全</string>
+    <string name="security_associating">如果您的设备配有授权码，您必须在此处提供。 否则，您可以跳过此步骤。</string>
+    <string name="associating_dialog1">您要如何设置新设备？</string>
 
     <!-- Dialog -->
     <string name="dialog_action_ok">确定</string>
@@ -420,5 +446,26 @@
     <string name="error_getting_model_info">获取模型信息出错</string>
     <string name="error_getting_group_info">获取组信息出错</string>
     <string name="error_removing_device">移除设备出错</string>
+
+    <!-- gateway config -->
+    <string name="config_wifi_name">1.当前wifi是: </string>
+    <string name="config_wifi_guide">它是您要设置的wifi吗?如果不是请</string>
+    <string name="config_wifi_setting">去设置</string>
+    <string name="config_wifi_long_click_button">3.请长按网关上的按钮3秒钟</string>
+    <string name="config_wifi_next">下一步</string>
+    <string name="config_wifi_send">确定</string>
+    <string name="configuration">配置中...</string>
+    <string name="dialog_authorization_code">授权码</string>
+
+    <!-- sync state -->
+    <string name="sync_success_homepage">成功!</string>
+    <string name="sync_failure_homepage">失败!</string>
+    <string name="upload_success_homepage">上传成功!</string>
+    <string name="upload_failure_homepage">上传失败!</string>
+    <string name="get_server_data_error">获取服务器数据失败!</string>
+    <string name="no_synchronization">不需要要同步!</string>
+    <string name="have_channel">您已经连接到蓝牙通道了</string>
+    <string name="wait_channel">请等待蓝牙通道连接</string>
+    <string name="denided_permission">拒绝访问</string>
 
 </resources>

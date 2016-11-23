@@ -10,12 +10,19 @@ public class SSDPSocket {
 	
 	SocketAddress mSSDPMulticastGroup;
 	MulticastSocket mSSDPSocket;
+	MulticastSocket mSSDPSocketAck;
 	InetAddress broadcastAddress;
 	
 	public SSDPSocket() throws IOException {
 		mSSDPSocket = new MulticastSocket(58000); // Bind some random port for receiving datagram
 		broadcastAddress = InetAddress.getByName(SSDPConstants.ADDRESS);
 		mSSDPSocket.joinGroup(broadcastAddress);
+	}
+
+	public SSDPSocket(String ack) throws IOException {
+		mSSDPSocketAck = new MulticastSocket(9958); // Bind some random port for receiving datagram
+		InetAddress broadcastAddress = InetAddress.getByName(SSDPConstants.ADDRESS_ACK);
+		mSSDPSocketAck.joinGroup(broadcastAddress);
 	}
 	
 	/* Used to send SSDP packet */
@@ -29,6 +36,14 @@ public class SSDPSocket {
 		byte[] buf = new byte[1024];
 		DatagramPacket dp = new DatagramPacket(buf, buf.length);
 		mSSDPSocket.receive(dp);
+		return dp;
+	}
+
+	/* Used to receive SSDP packet */
+	public DatagramPacket receiveAck() throws IOException {
+		byte[] buf = new byte[1024];
+		DatagramPacket dp = new DatagramPacket(buf, buf.length);
+		mSSDPSocketAck.receive(dp);
 		return dp;
 	}
 	

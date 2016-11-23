@@ -16,6 +16,7 @@ import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.axalent.R;
 import com.axalent.model.data.model.Area;
+import com.axalent.presenter.controller.GroupsInterface;
 import com.axalent.presenter.controller.DeviceManager;
 import com.axalent.model.Device;
 import com.axalent.util.AxalentUtils;
@@ -26,6 +27,7 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -38,6 +40,7 @@ public class GroupAdapter extends BaseAdapter {
 	// bluetooth mode
 	private List<Area> areas;
 	private boolean isBluetooth = false;
+	private GroupsInterface mGroupsInterface;
 	
 	public GroupAdapter(Context ctx, List<Device> devices, DeviceManager deviceManager) {
 		this.ctx = ctx;
@@ -45,10 +48,11 @@ public class GroupAdapter extends BaseAdapter {
 		this.deviceManager = deviceManager;
 	}
 
-	public GroupAdapter(Context ctx, List<Area> areas, boolean isBluetooth) {
+	public GroupAdapter(Context ctx, List<Area> areas, boolean isBluetooth, GroupsInterface groupsInterface) {
 		this.ctx = ctx;
 		this.areas = areas;
 		this.isBluetooth = isBluetooth;
+		mGroupsInterface = groupsInterface;
 	}
 	
 	@Override
@@ -90,10 +94,13 @@ public class GroupAdapter extends BaseAdapter {
 		
 		TextView txt;
 		ImageView img;
+		ImageButton ib;
 		
 		public ViewHolder(View view) {
 			this.img = (ImageView) view.findViewById(R.id.adapterGroupImg);
 			this.txt = (TextView) view.findViewById(R.id.adapterGroupTxt);
+			this.ib = (ImageButton) view.findViewById(R.id.group_setting);
+			this.ib.setVisibility(isBluetooth ? View.VISIBLE : View.GONE);
 		}
 	}
 	
@@ -116,9 +123,15 @@ public class GroupAdapter extends BaseAdapter {
 		holder.img.setBackgroundResource(AxalentUtils.TYPE_AXALENT_SCENE.equals(device.getTypeName()) ? R.drawable.scene_user_define : R.drawable.schedule);
 	}
 
-	private void setNameAndBackground(ViewHolder holder, Area area) {
+	private void setNameAndBackground(ViewHolder holder, final Area area) {
 		holder.txt.setText(area.getName());
 		holder.img.setBackgroundResource(R.drawable.scene_user_define);
+		holder.ib.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				mGroupsInterface.goToAddGroup(area.getId());
+			}
+		});
 	}
 	
 	private void getDeviceAttribute(final ViewHolder holder, final Device device) {

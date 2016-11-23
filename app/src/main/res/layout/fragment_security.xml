@@ -26,7 +26,7 @@ Copyright 2015 Qualcomm Technologies International, Ltd.
     <EditText
         android:id="@+id/auth_code"
         android:layout_width="match_parent"
-        android:hint="Authorization code"
+        android:hint="@string/dialog_authorization_code"
         android:layout_height="wrap_content" />
 
 

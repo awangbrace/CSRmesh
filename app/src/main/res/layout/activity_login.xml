@@ -41,18 +41,18 @@
             android:layout_width="0dp"
             android:layout_height="35dp"/>
         
-        <RadioButton 
-            android:layout_marginLeft="2.5dp"
-            android:id="@+id/atyLoginGatewayBtn"
-            android:textSize="12sp"
-            android:textColor="@color/white"
-            android:background="@drawable/selector_login_group_btn"
-            android:gravity="center"
-            android:button="@null"
-            android:text="@string/gateway"
-            android:layout_weight="1.0"
-            android:layout_width="0dp"
-            android:layout_height="35dp"/>
+        <!--<RadioButton -->
+            <!--android:layout_marginLeft="2.5dp"-->
+            <!--android:id="@+id/atyLoginGatewayBtn"-->
+            <!--android:textSize="12sp"-->
+            <!--android:textColor="@color/white"-->
+            <!--android:background="@drawable/selector_login_group_btn"-->
+            <!--android:gravity="center"-->
+            <!--android:button="@null"-->
+            <!--android:text="@string/gateway"-->
+            <!--android:layout_weight="1.0"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="35dp"/>-->
 
 		<RadioButton
 			android:layout_marginLeft="2.5dp"
@@ -124,10 +124,10 @@
             
             <TextView 
                 android:padding="5dp"
-                android:id="@+id/atyLoginChangePasswordTxt"
+                android:id="@+id/atyLoginGatewayTxt"
 		        android:textSize="12sp"
-		        android:textColor="@color/white"
-		        android:text="@string/change_password"
+		        android:textColor="@color/baby_blue"
+		        android:text="@string/gateway_config"
 		        android:gravity="center"
 		        android:layout_width="match_parent"
 		        android:layout_height="30dp"
@@ -153,19 +153,45 @@
 	        android:layout_weight="1.0"
 	        android:layout_width="0dp"
 	        android:layout_height="50dp"/>
-	    
-	    
-	   <Button
-	        android:layout_marginLeft="2.5dp"
-	        android:textStyle="bold"
-	        android:textSize="15sp"
-	        android:textColor="@color/white"
-	        android:text="@string/register"
-	        android:background="@drawable/selector_base_btn"
-	        android:id="@+id/atyLoginRegisterBtn"
-	        android:layout_weight="1.0"
-	        android:layout_width="0dp"
-	        android:layout_height="50dp"/>
+
+	   <!--<Button-->
+	        <!--android:layout_marginLeft="2.5dp"-->
+	        <!--android:textStyle="bold"-->
+	        <!--android:textSize="15sp"-->
+	        <!--android:textColor="@color/white"-->
+	        <!--android:text="@string/register"-->
+	        <!--android:background="@drawable/selector_base_btn"-->
+	        <!--android:id="@+id/atyLoginRegisterBtn"-->
+	        <!--android:layout_weight="1.0"-->
+	        <!--android:layout_width="0dp"-->
+	        <!--android:layout_height="50dp"/>-->
     </LinearLayout>
+
+	<RelativeLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:layout_marginBottom="10dp"
+		android:gravity="bottom">
+
+		<TextView
+			android:padding="5dp"
+			android:id="@+id/atyLoginChangePasswordTxt"
+			android:textSize="15sp"
+			android:textColor="@color/baby_blue"
+			android:text="@string/change_password"
+			android:layout_width="wrap_content"
+			android:layout_height="30dp"/>
+
+		<TextView
+			android:padding="5dp"
+			android:id="@+id/atyLoginCreateAccountTxt"
+			android:textSize="15sp"
+			android:textColor="@color/baby_blue"
+			android:layout_alignParentRight="true"
+			android:text="@string/create_account"
+			android:layout_width="wrap_content"
+			android:layout_height="30dp"/>
+
+	</RelativeLayout>
     
 </LinearLayout>

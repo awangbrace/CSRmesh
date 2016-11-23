@@ -15,21 +15,21 @@
             android:layout_weight="3"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            android:text="Group Name:"/>
+            android:text="@string/group_name"/>
         <EditText
             android:id="@+id/group_name"
             android:layout_width="0dp"
             android:layout_weight="7"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            android:hint="enter your group name"/>
+            android:hint="@string/group_name_hint"/>
     </LinearLayout>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="10dp"
-        android:text="Select Devices:"/>
+        android:text="@string/group_select_devices"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/device_list"

@@ -19,6 +19,7 @@ import com.axalent.R;
 import com.axalent.model.data.database.DBManager;
 import com.axalent.model.data.model.Area;
 import com.axalent.model.data.model.devices.CSRDevice;
+import com.axalent.presenter.controller.GroupsInterface;
 import com.axalent.view.activity.AddActivity;
 import com.axalent.view.activity.AddGroupActivity;
 import com.axalent.view.activity.HomeActivity;
@@ -42,6 +43,9 @@ import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.baoyz.swipemenulistview.SwipeMenuListView.OnMenuItemClickListener;
+import com.csr.csrmesh2.PowerModelApi;
+import com.csr.csrmesh2.PowerState;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
@@ -54,7 +58,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,7 +65,9 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 
-public class SceneFragment extends Fragment implements Manager, OnItemClickListener, OnMenuItemClickListener, OnItemLongClickListener, OnRefreshListener{
+import static android.content.Context.MODE_PRIVATE;
+
+public class SceneFragment extends Fragment implements Manager, OnItemClickListener, OnMenuItemClickListener, OnItemLongClickListener, OnRefreshListener, GroupsInterface {
 
 	private HomeActivity aty;
 	private GroupAdapter adapter;
@@ -73,10 +78,12 @@ public class SceneFragment extends Fragment implements Manager, OnItemClickListe
 	// bluetooth mode
 	private DBManager dbManager;
 	private List<Area> areas = new ArrayList<>();
+	private SharedPreferences sp;
 	
 	@Override
 	public void onAttach(Activity activity) {
 		aty = (HomeActivity) activity;
+		sp = aty.getSharedPreferences(AxalentUtils.USER_FILE_NAME, MODE_PRIVATE);
 		dbManager = DBManager.getDBManagerInstance(aty.getApplicationContext());
 		super.onAttach(activity);
 	}
@@ -102,7 +109,13 @@ public class SceneFragment extends Fragment implements Manager, OnItemClickListe
 		listView.setOnSwipeListener(new MyOnSwipeListener(refreshLayout));
 		loadDatas();
 	}
-	
+
+	@Override
+	public void onPause() {
+		refreshLayout.setRefreshing(false);
+		super.onPause();
+	}
+
 	@Override
 	public void notifyPageRefresh() {
 		loadDatas();
@@ -161,7 +174,7 @@ public class SceneFragment extends Fragment implements Manager, OnItemClickListe
 	private void setAdapter() {
 		if (adapter == null) {
 			if (aty.isBluetoothMode()) {
-				adapter = new GroupAdapter(aty, areas, true);
+				adapter = new GroupAdapter(aty, areas, true, this);
 			} else {
 				adapter = new GroupAdapter(aty, scenes, aty.getDeviceManager());
 			}
@@ -188,7 +201,7 @@ public class SceneFragment extends Fragment implements Manager, OnItemClickListe
 	@Override
 	public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 		if (aty.isBluetoothMode()) {
-			goToAddGroup(areas.get(position).getId());
+			goToController(areas.get(position).getId());
 		} else {
 			skipToShowScene(scenes.get(position));
 		}
@@ -293,19 +306,31 @@ public class SceneFragment extends Fragment implements Manager, OnItemClickListe
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		if (aty.isBluetoothMode()) {
-			goToController(areas.get(position).getId());
+			controllerArea(areas.get(position));
 		} else {
 			controllerScene(scenes.get(position));
 		}
 	}
 
-	private void goToAddGroup(int areaId) {
+	private void controllerArea(Area area) {
+		boolean isChecked = sp.getBoolean("area-" + area.getAreaID(), false);
+		LogUtils.i("isCheck_scene:" + isChecked);
+		isChecked = !isChecked;
+		PowerState state = isChecked ? PowerState.ON : PowerState.OFF;
+		// If the destination id is a group, then the message can't be an ack message.
+		PowerModelApi.setState(area.getAreaID(), state, false);
+		sp.edit().putBoolean("area-" + area.getAreaID(),isChecked).apply();
+	}
+
+	@Override
+	public void goToAddGroup(int areaId) {
 		Intent intent = new Intent(aty, AddGroupActivity.class);
 		intent.putExtra(AddGroupActivity.KEY_AREA_ID, areaId);
 		startActivityForResult(intent, AxalentUtils.ADD_GROUP);
 	}
 
-	private void goToController (int areaId) {
+	@Override
+	public void goToController (int areaId) {
 		Intent intent = new Intent(aty, ShowDeviceActivity.class);
 		intent.putExtra(AddGroupActivity.KEY_AREA_ID, areaId);
 		intent.putExtra(AxalentUtils.GROUP_OR_SING, AxalentUtils.GROUP);

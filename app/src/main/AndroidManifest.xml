@@ -156,6 +156,15 @@
         <activity android:name=".view.activity.GatewayConfigActivity"
             android:screenOrientation="portrait" >
         </activity>
+        <activity android:name=".view.activity.SwitchWifiGuideActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity android:name=".view.activity.SendPacketActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity android:name=".view.activity.ResetGatewayGuideActivity"
+            android:screenOrientation="portrait" >
+        </activity>
 
 
         <!-- Rich push 核心功能 since 2.0.6 -->

@@ -53,8 +53,9 @@ public class LoginActivity extends BaseActivity implements OnClickListener, OnCh
 	private UserManager userManager = new UserManagerImpl();
 	private EditText usernameEdit;
 	private EditText passwordEdit;
-	private Button registerBtn;
 	private TextView changePasswordTxt;
+	private TextView createAccountTxt;
+	private TextView gatewayConfigTxt;
 	private CheckBox remPasswordBox;
 	private RadioGroup changeLoginGroup;
 	private LoadingDialog loadingDialog;
@@ -77,15 +78,14 @@ public class LoginActivity extends BaseActivity implements OnClickListener, OnCh
 		case R.id.atyLoginLoginBtn:
 			userLogin();
 			break;
-		case R.id.atyLoginRegisterBtn:
+		case R.id.atyLoginCreateAccountTxt:
 			skipToRegisterUser();
 			break;
 		case R.id.atyLoginChangePasswordTxt:
-			if (changeLoginGroup.getCheckedRadioButtonId() == R.id.atyLoginGatewayBtn) {
-				skipGatewayConfig();
-			} else {
-				skipAlterPassword();
-			}
+			skipAlterPassword();
+			break;
+		case R.id.atyLoginGatewayTxt:
+			skipGatewayConfig();
 			break;
 		}
 	}
@@ -98,12 +98,15 @@ public class LoginActivity extends BaseActivity implements OnClickListener, OnCh
 		passwordEdit.setTypeface(Typeface.SANS_SERIF);
 		passwordEdit.setTransformationMethod(PasswordTransformationMethod.getInstance());
 		Button loginBtn = (Button) findViewById(R.id.atyLoginLoginBtn);
-		registerBtn = (Button) findViewById(R.id.atyLoginRegisterBtn);
 		changePasswordTxt = (TextView) findViewById(R.id.atyLoginChangePasswordTxt);
+		createAccountTxt = (TextView) findViewById(R.id.atyLoginCreateAccountTxt);
+		gatewayConfigTxt = (TextView) findViewById(R.id.atyLoginGatewayTxt);
 		changeLoginGroup = (RadioGroup) findViewById(R.id.atyLoginChangeGroup);
+
 		loginBtn.setOnClickListener(this);
-		registerBtn.setOnClickListener(this);
 		changePasswordTxt.setOnClickListener(this);
+		createAccountTxt.setOnClickListener(this);
+		gatewayConfigTxt.setOnClickListener(this);
 		loadingDialog = new LoadingDialog(this);
 	}
 
@@ -175,20 +178,20 @@ public class LoginActivity extends BaseActivity implements OnClickListener, OnCh
 				}
 				login(new User(username, password));
 				break;
-			case R.id.atyLoginGatewayBtn:
-
-
-				if (TextUtils.isEmpty(username) || TextUtils.isEmpty(password)) {
-					ToastUtils.show(R.string.username_or_password_is_null);
-					return;
-				}
-				final String localUrl = sp.getString("localUrl", "");
-				if (TextUtils.isEmpty(localUrl)) {
-					showConfigLocalIPDialog();
-				} else {
-					login(new User(username, password));
-				}
-				break;
+//			case R.id.atyLoginGatewayBtn:
+//
+//
+//				if (TextUtils.isEmpty(username) || TextUtils.isEmpty(password)) {
+//					ToastUtils.show(R.string.username_or_password_is_null);
+//					return;
+//				}
+//				final String localUrl = sp.getString("localUrl", "");
+//				if (TextUtils.isEmpty(localUrl)) {
+//					showConfigLocalIPDialog();
+//				} else {
+//					login(new User(username, password));
+//				}
+//				break;
 			case R.id.atyLoginBluetoothBtn:
 				if (TextUtils.isEmpty(username) || TextUtils.isEmpty(password)) {
 					ToastUtils.show(R.string.username_or_password_is_null);
@@ -224,11 +227,11 @@ public class LoginActivity extends BaseActivity implements OnClickListener, OnCh
 			@Override
 			public void onErrorResponse(VolleyError error) {
 				loadingDialog.close();
-				if (changeLoginGroup.getCheckedRadioButtonId() == R.id.atyLoginGatewayBtn) {
-					showSyncDialog(user);
-				} else {
+//				if (changeLoginGroup.getCheckedRadioButtonId() == R.id.atyLoginGatewayBtn) {
+//					showSyncDialog(user);
+//				} else {
 					ToastUtils.show(XmlUtils.converErrorMsg(error));
-				}
+//				}
 			}
 		});
 	}
@@ -284,25 +287,22 @@ public class LoginActivity extends BaseActivity implements OnClickListener, OnCh
 			case R.id.atyLoginCloudBtn:
 				changePasswordTxt.setVisibility(View.VISIBLE);
 				changePasswordTxt.setText(R.string.change_password);
-				registerBtn.setVisibility(View.VISIBLE);
-				registerBtn.setText(getString(R.string.register));
 				usernameEdit.setVisibility(View.VISIBLE);
 				passwordEdit.setVisibility(View.VISIBLE);
 				remPasswordBox.setVisibility(View.VISIBLE);
 				sharedPreferences.edit().putBoolean("isRemote", true).commit();
 				break;
-			case R.id.atyLoginGatewayBtn:
-				changePasswordTxt.setVisibility(View.VISIBLE);
-				changePasswordTxt.setText(R.string.gateway_config);
-				registerBtn.setVisibility(View.GONE);
-				usernameEdit.setVisibility(View.VISIBLE);
-				passwordEdit.setVisibility(View.VISIBLE);
-				remPasswordBox.setVisibility(View.VISIBLE);
-				sharedPreferences.edit().putBoolean("isRemote", false).commit();
-				if (exit == -1) {
-					searchGateway();
-				}
-				break;
+//			case R.id.atyLoginGatewayBtn:
+//				changePasswordTxt.setVisibility(View.VISIBLE);
+//				changePasswordTxt.setText(R.string.gateway_config);
+//				usernameEdit.setVisibility(View.VISIBLE);
+//				passwordEdit.setVisibility(View.VISIBLE);
+//				remPasswordBox.setVisibility(View.VISIBLE);
+//				sharedPreferences.edit().putBoolean("isRemote", false).commit();
+//				if (exit == -1) {
+//					searchGateway();
+//				}
+//				break;
 			case R.id.atyLoginBluetoothBtn:
 				sharedPreferences.edit().putBoolean("isRemote", true).commit();
 				skipBluetoothControl();

@@ -67,6 +67,12 @@ public class ScheduleFragment extends Fragment implements Manager, OnMenuItemCli
 		aty = (HomeActivity) activity;
 		super.onAttach(activity);
 	}
+
+	@Override
+	public void onPause() {
+		refreshLayout.setRefreshing(false);
+		super.onPause();
+	}
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

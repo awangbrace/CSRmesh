@@ -45,7 +45,7 @@ public class MainFragment extends Fragment implements Manager, OnRefreshListener
 		aty = (HomeActivity) activity;
 		super.onAttach(activity);
 	}
-	
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		return inflater.inflate(R.layout.fragment_main, null);

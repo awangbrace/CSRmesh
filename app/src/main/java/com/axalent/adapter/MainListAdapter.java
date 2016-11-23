@@ -292,7 +292,7 @@ public class MainListAdapter extends BaseAdapter implements OnScrollListener, On
 		hs.addAll(groups);
 		hs.remove(0);
 		if (hs.isEmpty()) {
-			Toast.makeText(ctx, "The device must to belong to a group before being able to be controlled.", Toast.LENGTH_SHORT).show();
+			Toast.makeText(ctx, ctx.getString(R.string.belong_to_group), Toast.LENGTH_SHORT).show();
 			return;
 		}
 		else {

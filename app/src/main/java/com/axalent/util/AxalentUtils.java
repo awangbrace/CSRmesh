@@ -134,6 +134,7 @@ public class AxalentUtils {
 	public static final String TYPE_SWITCH_TWO = "axa_switch_binary_2";
 	public static final String TYPE_GATEWAY_SCHEDULE = "axa_gateway_schedule";
 	public static final String TYPE_AXALENT_SCENE = "axa_scene";
+	public static final String TYPE_GATEWAY_GROUP = "axa_gateway_group";
 	public static final String TYPE_GATEWAY_SCENE = "axa_gateway_scene";
 	public static final String TYPE_SWITCH_THREE = "axa_switch_binary_3";
 	public static final String TYPE_WINDOW_COVER = "axa_window_cover";
@@ -167,6 +168,8 @@ public class AxalentUtils {
 
 	public static final int SWITCH_GATEWAY_WIFI = 0x31;
 	public static final int SAVE_GATEWAY_IP = 0x32;
+
+	public static final int SWITCH_GATEWAY_WIFI_SUCCESS = 0x33;
 	
 	
 	/**
@@ -249,6 +252,7 @@ public class AxalentUtils {
 	public static final String CHILDINFO_WINDOW_COVER = "90";
 	public static final String CHILDINFO_VIRTUAL_SCENE = "C1";
 	public static final String CHILDINFO_VIRTUAL_SCHEDULE = "C2";
+	public static final String CHILDINFO_VIRTUAL_GROUP = "C4";
 	public static final String CHILDINFO_SCALE = "8F";
 	public static final String CHILDINFO_REMOTECONTROL = "8E";
 	public static final String CHILDINFO_LIGHTSENSOR = "8C";
@@ -657,6 +661,8 @@ public class AxalentUtils {
 				return TYPE_GATEWAY_SCENE;
 			} else if (CHILDINFO_VIRTUAL_SCHEDULE.equalsIgnoreCase(childInfoValue)) {
 				return TYPE_GATEWAY_SCHEDULE;
+			} else if (CHILDINFO_VIRTUAL_GROUP.equalsIgnoreCase(childInfoValue)) {
+				return TYPE_GATEWAY_GROUP;
 			} else if (CHILDINFO_WINDOW_COVER.equalsIgnoreCase(childInfoValue)) {
 				return TYPE_WINDOW_COVER;
 			} else if (CHILDINFO_SWITCH_BINARY_2.equalsIgnoreCase(childInfoValue)) {

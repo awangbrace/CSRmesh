@@ -33,6 +33,7 @@ import com.csr.csrmesh2.PowerState;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -46,6 +47,8 @@ import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Switch;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class LightFragment extends Fragment implements OnTouchListener, OnSeekBarChangeListener{
 	
@@ -74,6 +77,7 @@ public class LightFragment extends Fragment implements OnTouchListener, OnSeekBa
 
 	// True if the device id of the light being controlled is a group.
 	private static boolean mIsGroup = false;
+	private SharedPreferences sp;
 
 	public static LightFragment newInstance(boolean isGroup) {
 		LightFragment fragment = new LightFragment();
@@ -84,6 +88,7 @@ public class LightFragment extends Fragment implements OnTouchListener, OnSeekBa
 	@Override
 	public void onAttach(Activity activity) {
 		aty = (ShowDeviceActivity) activity;
+		sp = aty.getSharedPreferences(AxalentUtils.USER_FILE_NAME, MODE_PRIVATE);
 		if (AxalentUtils.getLoginMode() == R.id.atyLoginBluetoothBtn) {
 			csrDevice = aty.getCurrentCSRDevice();
 			area = aty.getCurrentArea();
@@ -415,6 +420,7 @@ public class LightFragment extends Fragment implements OnTouchListener, OnSeekBa
 	 */
 	private void switchONPowerToggleUI(){
 		if(mPowerSwitch != null && !mPowerSwitch.isChecked()) {
+			LogUtils.i("isChecked:" + mPowerSwitch.isChecked());
 			mSwitchOnlyUI = true;
 			mPowerSwitch.setChecked(true);
 		}
@@ -427,7 +433,6 @@ public class LightFragment extends Fragment implements OnTouchListener, OnSeekBa
 
 		@Override
 		public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
 			// do call if switch is not UI only toggle (avoiding unnecessary call to PowerState.ON)
 			if(!mSwitchOnlyUI) {
 				PowerState state = isChecked ? PowerState.ON : PowerState.OFF;
@@ -435,6 +440,7 @@ public class LightFragment extends Fragment implements OnTouchListener, OnSeekBa
 				// If the destination id is a group, then the message can't be an ack message.
 				PowerModelApi.setState(area.getAreaID(), state, !mIsGroup);
 			}
+			sp.edit().putBoolean("area-" + area.getAreaID(), isChecked).apply();
 			mSwitchOnlyUI = false;
 		}
 	};

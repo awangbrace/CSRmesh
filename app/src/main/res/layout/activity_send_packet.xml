@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include layout="@layout/actionbar_gateway_config"/>
+
+    <EditText
+        android:textSize="15sp"
+        android:paddingLeft="10dp"
+        android:background="@color/white"
+        android:id="@+id/atyWifiSsidEdit"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:inputType="text"
+        android:focusable="false"
+        android:layout_above="@+id/atyWifiPasswordEdit"
+        android:maxLength="30" />
+
+    <EditText
+        android:textSize="15sp"
+        android:hint="@string/please_enter_the_password"
+        android:paddingLeft="10dp"
+        android:layout_marginTop="2dp"
+        android:background="@color/white"
+        android:id="@+id/atyWifiPasswordEdit"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:inputType="textPassword"
+        android:layout_centerInParent="true"
+        android:maxLength="30"/>
+
+    <TextView
+        android:id="@+id/atyOkBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/config_wifi_next"
+        android:textColor="@color/white"
+        android:padding="10dp"
+        android:textSize="20sp"
+        android:background="@drawable/selector_base_btn"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"/>
+
+</RelativeLayout>

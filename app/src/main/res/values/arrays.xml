@@ -25,7 +25,7 @@
         <item>网关配置</item>
        	<item>网关显示</item>
         <item>语言：</item>
-        <item>版本号 : 0.2.2</item>
+        <item>版本号 : 2.0.1</item>
         
     </string-array>
     <string-array name="array_frag_schedule">

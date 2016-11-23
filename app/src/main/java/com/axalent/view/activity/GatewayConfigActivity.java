@@ -90,24 +90,28 @@ public class GatewayConfigActivity extends BaseActivity implements View.OnClickL
 				break;
 			case R.id.wifi_name_layout:
 				//switch WiFi
-				String localUrl = sharedPreferences.getString("localUrl", "");
-				if (localUrl.equals("")) {
-					new AlertDialog.Builder(this)
-					.setIcon(R.drawable.app_logo_1)
-					.setTitle(R.string.config_ip)
-					.setMessage(R.string.hint_config_local_ip)
-					.setPositiveButton(R.string.confirm, new OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							gotoDiscoveryGateway();
-						}
-					})
-					.setNegativeButton(R.string.cancel, null)
-					.create()
-					.show();
-				} else {
-					gotoSwitchGatewatWiFi();
-				}
+//				String localUrl = sharedPreferences.getString("localUrl", "");
+//				if (localUrl.equals("")) {
+//					new AlertDialog.Builder(this)
+//					.setIcon(R.drawable.app_logo_1)
+//					.setTitle(R.string.config_ip)
+//					.setMessage(R.string.hint_config_local_ip)
+//					.setPositiveButton(R.string.confirm, new OnClickListener() {
+//						@Override
+//						public void onClick(DialogInterface dialog, int which) {
+//							gotoDiscoveryGateway();
+//						}
+//					})
+//					.setNegativeButton(R.string.cancel, null)
+//					.create()
+//					.show();
+//				} else {
+//					gotoSwitchGatewatWiFi();
+//				}
+
+				Intent intent = new Intent(GatewayConfigActivity.this, SwitchWifiGuideActivity.class);
+				startActivityForResult(intent, AxalentUtils.SWITCH_GATEWAY_WIFI_SUCCESS);
+
 				break;
 			default:
 				break;
@@ -182,6 +186,8 @@ public class GatewayConfigActivity extends BaseActivity implements View.OnClickL
 				gatewayIpValueTxt.setVisibility(View.VISIBLE);
 				gatewayIpValueTxt.setText(getIp());
 			}
+		} else if (resultCode == AxalentUtils.SWITCH_GATEWAY_WIFI_SUCCESS) {
+			finish();
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}

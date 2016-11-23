@@ -139,7 +139,7 @@ public class AddGroupActivity extends BaseActivity {
     private void confirmGroup() {
         String groupName = mGroupName.getText().toString().trim();
         if (groupName.isEmpty()) {
-            Toast.makeText(this, "group name can not empty!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.group_name_not_empty), Toast.LENGTH_SHORT).show();
             return;
         } else {
             area.setName(groupName);
@@ -178,22 +178,22 @@ public class AddGroupActivity extends BaseActivity {
                     }
                     if (device != null) {
                         loadingDialog.close();
-                        Toast.makeText(this, "Area applied!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getString(R.string.area_applied), Toast.LENGTH_SHORT).show();
                         setResult(AxalentUtils.ADD_GROUP);
                         RxBus.getDefaultInstance().post(new MeshResponseEvent(MeshResponseEvent.ResponseEvent.REFRESH_PAGE));
                         finish();
                     } else {
                         loadingDialog.close();
-                        Toast.makeText(this, "Create Area failure!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getString(R.string.create_area_failure), Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     loadingDialog.close();
-                    Toast.makeText(this, "Area applied failure!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.area_failure), Toast.LENGTH_SHORT).show();
                 }
             }
             else {
                 loadingDialog.close();
-                Toast.makeText(this, "Area applied failure!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.area_failure), Toast.LENGTH_SHORT).show();
                 finish();
             }
         }
@@ -211,7 +211,7 @@ public class AddGroupActivity extends BaseActivity {
                     int groupIndex = mDeviceToApply.getGroupsList().indexOf(area.getAreaID());
                     if (groupIndex == Constants.INVALID_VALUE) {
                         mDevicesToDelete.remove();
-                        Toast.makeText(this,"Maximum areas reached. Un-select one area first.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this,getString(R.string.maximum_areas), Toast.LENGTH_SHORT).show();
                         operation = false;
                     }
                     else {
@@ -234,7 +234,7 @@ public class AddGroupActivity extends BaseActivity {
                     int groupIndex = mDeviceToApply.getGroupsList().indexOf(0);
                     if (groupIndex == Constants.INVALID_VALUE) {
                         mDevicesToAdd.remove();
-                        Toast.makeText(this,"Maximum areas reached. Un-select one area first.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this,getString(R.string.maximum_areas), Toast.LENGTH_SHORT).show();
                         operation = false;
                     }
                     else {

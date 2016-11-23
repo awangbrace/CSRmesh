@@ -4,6 +4,7 @@ public class SSDPConstants {
 	/* New line definition */
 	public static final String NEWLINE = "\r\n";
 	public static final String ADDRESS = "239.255.255.250";
+	public static final String ADDRESS_ACK = "239.50.60.254";
 	public static final int PORT = 1900;
 	public static final String SL_MSEARCH = "M-SEARCH * HTTP/1.1";
 	public static final String SL_OK = "HTTP/1.1 200 OK";

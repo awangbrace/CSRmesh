@@ -32,6 +32,7 @@ import com.android.volley.VolleyError;
 import com.axalent.R;
 import com.axalent.adapter.MenuAdapter;
 import com.axalent.application.BaseActivity;
+import com.axalent.application.MyRequestQueue;
 import com.axalent.model.HorizontalCSRDeviceData;
 import com.axalent.model.User;
 import com.axalent.model.UserAttribute;
@@ -61,6 +62,7 @@ import com.axalent.presenter.axaapi.UserAPI;
 import com.axalent.presenter.events.MeshResponseEvent;
 import com.axalent.presenter.events.MeshSystemEvent;
 import com.axalent.util.DialogBuilder;
+import com.axalent.view.fragment.GroupFragment;
 import com.csr.csrmesh2.MeshConstants;
 import com.csr.csrmesh2.SensorValue;
 import com.axalent.view.fragment.MainFragment;
@@ -162,7 +164,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home);
-		checkLocation();
 		sp = getSharedPreferences(AxalentUtils.USER_FILE_NAME, MODE_PRIVATE);
 		initActionBar();
 		initView();
@@ -290,36 +291,10 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
 
 		super.onResume();
 		checkPermissions();
-		verifyBluetooth();
+		if (isBluetoothMode()) {
+			verifyBluetooth();
+		}
 	}
-
-	/**
-	 * 自定义的打开 Bluetooth 的请求码，与 onActivityResult 中返回的 requestCode 匹配。
-	 */
-	private static final int REQUEST_CODE_BLUETOOTH_ON = 1313;
-	/**
-	* Bluetooth 设备可见时间，单位：秒。
-	*/
-	private static final int BLUETOOTH_DISCOVERABLE_DURATION = 300;
-
-	private void turnOnBluetooth()
-	{
-		// 请求打开 Bluetooth
-		Intent requestBluetoothOn = new Intent(
-				BluetoothAdapter.ACTION_REQUEST_ENABLE);
-
-		// 设置 Bluetooth 设备可以被其它 Bluetooth 设备扫描到
-		requestBluetoothOn
-				.setAction(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-		// 设置 Bluetooth 设备可见时间
-		requestBluetoothOn.putExtra(
-				BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION,
-				BLUETOOTH_DISCOVERABLE_DURATION);
-		// 请求开启 Bluetooth
-		this.startActivityForResult(requestBluetoothOn,
-				REQUEST_CODE_BLUETOOTH_ON);
-	}
-
 
 	@Override
 	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -332,7 +307,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
 					checkPermissions();
 				} else {
 					// permission denied, notify and close the app
-					Toast.makeText(this, "permissions_denided", Toast.LENGTH_LONG).show();
+					Toast.makeText(this, getString(R.string.denided_permission), Toast.LENGTH_LONG).show();
 					finish();
 				}
 				return;
@@ -399,9 +374,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
 			case R.id.atyLoginCloudBtn:
 				titleId = R.string.cloud;
 				break;
-			case R.id.atyLoginGatewayBtn:
-				titleId = R.string.gateway;
-				break;
+//			case R.id.atyLoginGatewayBtn:
+//				titleId = R.string.gateway;
+//				break;
 			case R.id.atyLoginBluetoothBtn:
 				titleId = R.string.bluetooth;
 				channelStatusButton.setVisibility(View.VISIBLE);
@@ -658,6 +633,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
 			sceneBtn.setText(getString(R.string.navigation_group));
 			RadioButton scheduleBtn = (RadioButton) findViewById(R.id.atyHomeScheduleBtn);
 			scheduleBtn.setVisibility(View.GONE);
+			RadioButton groupBtn = (RadioButton) findViewById(R.id.atyHomeGroupBtn);
+			groupBtn.setVisibility(View.GONE);
 			databaseUpdate = (TextView) findViewById(R.id.database_update);
 			databaseUpdate.setVisibility(sp.getBoolean("isShowMsg", false) ? View.VISIBLE : View.GONE);
 			databaseUpdate.setOnClickListener(this);
@@ -673,7 +650,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
 	}
 	
 	private void changeFragment(int checkedId) {
-		closeRefresh();
+//		cancelRequests();
 		FragmentTransaction transaction = getFragmentManager().beginTransaction();
 		Fragment hideFragment = fragments.get(fragmentIndex);
 		hideFragment.onPause();
@@ -692,16 +669,16 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
 
 
 	}
-	
+
 	private void changeTitle() {
 		int titleId = R.string.cloud;
 		switch (AxalentUtils.getLoginMode()) {
 			case R.id.atyLoginCloudBtn:
 				titleId = R.string.cloud;
 				break;
-			case R.id.atyLoginGatewayBtn:
-				titleId = R.string.gateway;
-				break;
+//			case R.id.atyLoginGatewayBtn:
+//				titleId = R.string.gateway;
+//				break;
 			case R.id.atyLoginBluetoothBtn:
 				titleId = R.string.bluetooth;
 				break;
@@ -718,6 +695,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
 				return R.string.group;
 			}
 			return R.string.scene;
+		case R.id.atyHomeGroupBtn:
+			return R.string.group;
 		case R.id.atyHomeScheduleBtn:
 			return R.string.schedule;
 		default:
@@ -738,6 +717,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
 			return new SceneFragment();
 		case R.id.atyHomeScheduleBtn:
 			return new ScheduleFragment();
+		case R.id.atyHomeGroupBtn:
+			return new GroupFragment();
 		default:
 			return new MeFragment();
 		}
@@ -975,6 +956,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
 			int index = 0; 
 			StringBuilder sb = new StringBuilder();
 			char[] c = childInfo.toCharArray();
+
 			for (int i = 0; i < c.length; i++) {
 				sb.append(c[i]);
 				if (sb.length() == 2) {
@@ -986,6 +968,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
 					if (device != null) {
 						// ���豸
 						final String typeName = AxalentUtils.getTypeName(childInfoValue);
+
+						Log.i("type_group_name",typeName);
+
 						if (device.getTypeName() != null && !device.getTypeName().equalsIgnoreCase(typeName) &&
 								!device.getTypeName().equalsIgnoreCase(AxalentUtils.TYPE_AXALENT_SCENE)) {
 							// ���Ͳ�ƥ��,֤��֮ǰ����д��󣬣��Ƶ� ChildInfoValue��82 ������ֵ����82��ɾ���������
@@ -1308,13 +1293,13 @@ private boolean filtration(String typeName) {
 					if (MeshLibraryManager.getInstance().isChannelReady()) {
 						channelStatusButton.setImageDrawable(AxalentUtils.getDrawable(HomeActivity.this, R.drawable.ic_bluetooth_black_24dp));
 						channelStatusButton.setColorFilter(0xffffffff);
-						ToastUtils.show("You are connected to the Bluetooth channel");
+						ToastUtils.show(getString(R.string.have_channel));
 						RxBus.getDefaultInstance().post(new MeshResponseEvent(MeshResponseEvent.ResponseEvent.POWER_STATUS));
 					}
 					else {
 						channelStatusButton.setImageDrawable(AxalentUtils.getDrawable(HomeActivity.this, R.drawable.ic_bluetooth_disabled_black_24dp));
 						channelStatusButton.setColorFilter(Color.parseColor("#3f51b5"));
-						ToastUtils.show("Wait for the Bluetooth channel connection");
+						ToastUtils.show(getString(R.string.wait_channel));
 					}
 				}
 			}
@@ -1356,6 +1341,13 @@ private boolean filtration(String typeName) {
 		}
 	}
 
+	// 切换页面时取消网络请求
+	private void cancelRequests() {
+		LogUtils.i("取消网络请求");
+		MyRequestQueue.cancelPendingRequests();
+		closeRefresh();
+	}
+
 	// sync data to cloud
 	private void configuration() {
 		showRefresh();
@@ -1378,7 +1370,7 @@ private boolean filtration(String typeName) {
 									SharedPreferences.Editor editor = sp.edit();
 									editor.putBoolean("isShowMsg", false);
 									editor.apply();
-									ToastUtils.show("No synchronization!");
+									ToastUtils.show(getString(R.string.no_synchronization));
 									break;
 								case AxalentUtils.GREATER_TIME:
 									closeRefresh();
@@ -1397,7 +1389,7 @@ private boolean filtration(String typeName) {
 							databaseUpdate.setVisibility(View.GONE);
 						} else {
 							closeRefresh();
-							ToastUtils.show("No synchronization!");
+							ToastUtils.show(getString(R.string.no_synchronization));
 						}
 					}
 				}
@@ -1410,7 +1402,7 @@ private boolean filtration(String typeName) {
 				SharedPreferences.Editor editor = sp.edit();
 				editor.putBoolean("isShowMsg", true);
 				editor.apply();
-				ToastUtils.show("get server data error!");
+				ToastUtils.show(getString(R.string.get_server_data_error));
 			}
 		});
 	}
@@ -1460,7 +1452,7 @@ private boolean filtration(String typeName) {
 				editor.putBoolean("isShowMsg", false);
 				editor.apply();
 				databaseUpdate.setVisibility(View.GONE);
-				ToastUtils.show("upload success!");
+				ToastUtils.show(getString(R.string.upload_success_homepage));
 			}
 		}, new ErrorListener() {
 			@Override
@@ -1470,7 +1462,7 @@ private boolean filtration(String typeName) {
 				SharedPreferences.Editor editor = sp.edit();
 				editor.putBoolean("isShowMsg", true);
 				editor.apply();
-				ToastUtils.show("upload failure!");
+				ToastUtils.show(getString(R.string.upload_failure_homepage));
 			}
 		});
 	}
@@ -1505,13 +1497,13 @@ private boolean filtration(String typeName) {
 		deviceManager.setDeviceAttribute(gatewayId, AxalentUtils.ATTRIBUTE_SYNCDB, attr, new Listener<XmlPullParser>() {
 			@Override
 			public void onResponse(XmlPullParser xmlPullParser) {
-				ToastUtils.show("success!");
+				ToastUtils.show(getString(R.string.sync_success_homepage));
 				closeRefresh();
 			}
 		}, new ErrorListener() {
 			@Override
 			public void onErrorResponse(VolleyError volleyError) {
-				ToastUtils.show("failure!");
+				ToastUtils.show(getString(R.string.sync_failure_homepage));
 				closeRefresh();
 			}
 		});
@@ -1585,34 +1577,6 @@ private boolean filtration(String typeName) {
 			);
 
 			bleDialog.show();
-		}
-	}
-
-	public void checkLocation() {
-		if (Build.VERSION.SDK_INT >=23) {
-			LocationManager lm = null;
-			boolean gps_enabled = false;
-			boolean network_enabled = false;
-
-			lm = (LocationManager) getSystemService(getApplicationContext().LOCATION_SERVICE);
-			// exceptions will be thrown if provider is not permitted.
-			try {
-				gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
-			try {
-				network_enabled = lm
-						.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
-			if (gps_enabled == false || network_enabled == false) {
-				// Show our settings alert and let the use turn on the GPS/Location
-				showBTStatusDialog(false);
-			}
-
-
 		}
 	}
 
