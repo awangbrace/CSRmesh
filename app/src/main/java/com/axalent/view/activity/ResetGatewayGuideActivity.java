@@ -41,7 +41,7 @@ import java.net.DatagramPacket;
 public class ResetGatewayGuideActivity extends BaseActivity implements View.OnClickListener {
 
     private boolean stop = false;
-    private static final int SEND_PERIOD_MS = 60 * 1000;
+    private static final int SEND_PERIOD_MS = 2 * 60 * 1000;
     private Handler mHandler = new Handler();
 
     @Override

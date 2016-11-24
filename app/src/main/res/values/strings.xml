@@ -232,7 +232,7 @@
     <string name="please_change_to_cloud_mode">网关模式暂不支持,请切换到云模式编辑</string>
     <string name="input_address">输入地址</string>
     <string name="gateway_config_title">网关配置</string>
-    <string name="gateway_config"><u>网关配置</u></string>
+    <string name="gateway_config"><u>切换网关WIFI</u></string>
     <string name="configuration_success">配置成功</string>
     <string name="please_input_address">请输入本地IP地址</string>
     <string name="is_the_search">正在搜索网关...</string>
@@ -468,5 +468,10 @@
     <string name="have_channel">您已经连接到蓝牙通道了</string>
     <string name="wait_channel">请等待蓝牙通道连接</string>
     <string name="denided_permission">拒绝访问</string>
+
+    <string name="get_gateway_time_error">获取网关时间失败</string>
+    <string name="set_gateway_time_success">设置网关时间成功</string>
+    <string name="set_gateway_time_error">设置网关时间失败</string>
+    <string name="gateway_not_online">网关不在线</string>
 
 </resources>

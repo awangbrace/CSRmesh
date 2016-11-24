@@ -150,6 +150,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
 
 	private TextView databaseUpdate;
 	private SharedPreferences sp;
+	private String updateTime;
 
 	public double mTemperature = 0d;
 	public int csrDeviceId = 0;
@@ -825,7 +826,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
 	};
 	
 	/****************************������ݳɹ�ʧ�ܼ���*************************************/
-	
+
 	private void assertEnd() {
 		count++;
 		if (ok()) {
@@ -836,7 +837,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
 		}
 		
 	}
-	
+
 	private void setupDatas() {
 		List<DeviceType> deviceTypes = CacheUtils.getDeviceTypes();
 		List<Device> currentDevices = CacheUtils.getDevices();
@@ -1361,7 +1362,8 @@ private boolean filtration(String typeName) {
 				for (int i = 0; i < userAttributes.size(); i++) {
 					if (AxalentUtils.ATTRIBUTE_DATABASE.equals(userAttributes.get(i).getName())) {
 						String serverTime = paresServerTime(userAttributes.get(i).getValue());
-						LogUtils.i("pares:" + serverTime);
+						updateTime = userAttributes.get(i).getUpdTime();
+						LogUtils.i("updateTime:" + updateTime);
 						Time time = dbManager.getTime(1);
 						if (time != null && !serverTime.isEmpty()) {
 							String updTime = AxalentUtils.gmtToLoLocal2(serverTime);
@@ -1381,11 +1383,11 @@ private boolean filtration(String typeName) {
 									databaseUpdate.setVisibility(View.GONE);
 									break;
 								case AxalentUtils.LESS_TIME:
-									uploadLocalData();
+									uploadLocalData(updateTime);
 									break;
 							}
 						} else if (serverTime.isEmpty() && time != null) {
-							uploadLocalData();
+							uploadLocalData(updateTime);
 						} else if (!serverTime.isEmpty() && time == null){
 							closeRefresh();
 							dbManager.updateLocalDatabase(userAttributes.get(i).getValue());
@@ -1439,7 +1441,7 @@ private boolean filtration(String typeName) {
 	}
 
 	// upload local data to server
-	private void uploadLocalData() {
+	private void uploadLocalData(final String unpTime) {
 		// Get configuration data.
 		String configuration = dbManager.getDataBaseAsJson();
 		Log.i("configuration:" , configuration+"");
@@ -1450,7 +1452,7 @@ private boolean filtration(String typeName) {
 		UserAPI.setUserAttribute(AxalentUtils.ATTRIBUTE_DATABASE, configuration, new Response.Listener<String>() {
 			@Override
 			public void onResponse(String response) {
-				sendMsgToGateway();
+				sendMsgToGateway(unpTime);
 				SharedPreferences.Editor editor = sp.edit();
 				editor.putBoolean("isShowMsg", false);
 				editor.apply();
@@ -1470,7 +1472,7 @@ private boolean filtration(String typeName) {
 		});
 	}
 
-	public void sendMsgToGateway() {
+	public void sendMsgToGateway(final String unpTime) {
 		if (MyCacheData.getInstance().getCacheUser().getSecurityToken() == null) {
 			closeRefresh();
 			goToAddAccount();
@@ -1483,16 +1485,51 @@ private boolean filtration(String typeName) {
 			final String attr = sb.append(name).append(" ").append(pass).append(" ").append(appId).toString();
 			LogUtils.i(CacheUtils.getDevices().size()+"");
 			LogUtils.i(attr);
-			for (Device device : CacheUtils.getDevices()) {
+			for (final Device device : CacheUtils.getDevices()) {
 				LogUtils.i("deviceType:" + device.getTypeName());
 				if (AxalentUtils.TYPE_GATEWAY.equals(device.getTypeName())) {
 					LogUtils.i("gatewayId:" + device.getDevId());
+					// 判断网关是否需要拉取数据
 					if (device.getState() != null && device.getState().equals("1")) {
-						setSyncDbAttr(device.getDevId(), attr);
+						deviceManager.getDeviceAttribute(device.getDevId(), AxalentUtils.ATTRIBUTE_GATEWAY_TIME, new Listener<XmlPullParser>() {
+							@Override
+							public void onResponse(XmlPullParser xmlPullParser) {
+								DeviceAttribute deviceAttribute = XmlUtils.converDeviceAttribute(xmlPullParser);
+								String gatewayTime = deviceAttribute.getValue();
+								String gatewayData = AxalentUtils.gmtToLoLocal2(gatewayTime);
+								String userData = AxalentUtils.gmtToLoLocal2(unpTime);
+								int node = AxalentUtils.compareDate(gatewayData, userData);
+								if (gatewayTime.isEmpty() || node == -1) {
+									setSyncDbAttr(device.getDevId(), attr);
+									setDeviceTimeAttr(device, unpTime);
+								}
+							}
+						}, new ErrorListener() {
+							@Override
+							public void onErrorResponse(VolleyError volleyError) {
+								ToastUtils.show(getString(R.string.get_gateway_time_error));
+							}
+						});
+					} else {
+						ToastUtils.show(getString(R.string.gateway_not_online));
 					}
 				}
 			}
 		}
+	}
+
+	private void setDeviceTimeAttr(Device device, String attr) {
+		deviceManager.setDeviceAttribute(device.getDevId(), AxalentUtils.ATTRIBUTE_GATEWAY_TIME, attr, new Listener<XmlPullParser>() {
+			@Override
+			public void onResponse(XmlPullParser xmlPullParser) {
+				ToastUtils.show(getString(R.string.set_gateway_time_success));
+			}
+		}, new ErrorListener() {
+			@Override
+			public void onErrorResponse(VolleyError volleyError) {
+				ToastUtils.show(getString(R.string.set_gateway_time_error));
+			}
+		});
 	}
 
 	private void setSyncDbAttr(String gatewayId, String attr) {

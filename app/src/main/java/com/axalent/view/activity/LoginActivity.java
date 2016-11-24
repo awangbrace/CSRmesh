@@ -348,7 +348,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, OnCh
 	}
 
 	private void skipGatewayConfig() {
-		Intent intent = new Intent(this, GatewayConfigActivity.class);
+		Intent intent = new Intent(this, SwitchWifiGuideActivity.class);
 		startActivity(intent);
 	}
 

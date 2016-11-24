@@ -232,7 +232,7 @@
     <string name="please_change_to_cloud_mode">Temporarily does not support gateway mode, please switch to the cloud schema editor</string>
     <string name="input_address">Enter address</string>
     <string name="gateway_config_title">Gateway Config</string>
-    <string name="gateway_config"><u>Gateway Config</u></string>
+    <string name="gateway_config"><u>Switch Gateway Wifi</u></string>
     <string name="configuration_success">Configuration Success</string>
     <string name="please_input_address">Please enter the local IP address</string>
     <string name="ip_address_not_null">IP address cannot be empty</string>
@@ -467,5 +467,10 @@
     <string name="have_channel">You are connected to the Bluetooth channel</string>
     <string name="wait_channel">Wait for the Bluetooth channel connection</string>
     <string name="denided_permission">permissions_denided</string>
+
+    <string name="get_gateway_time_error">get gateway time failure!</string>
+    <string name="set_gateway_time_success">set gateway time success!</string>
+    <string name="set_gateway_time_error">set gateway time failure!</string>
+    <string name="gateway_not_online">gateway not online!</string>
 
 </resources>

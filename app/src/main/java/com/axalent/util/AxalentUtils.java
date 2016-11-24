@@ -238,7 +238,8 @@ public class AxalentUtils {
 	public static final String ATTRIBUTE_SHOCK = "shock";
 
 	public static final String ATTRIBUTE_SYNCDB = "syncdb";
-	
+	public static final String ATTRIBUTE_GATEWAY_TIME = "currentTime";
+
 	/**
 	 * �豸�� ChildiInfo ��ֵ
 	 */

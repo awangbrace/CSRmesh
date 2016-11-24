@@ -11,7 +11,17 @@ package com.axalent.view.fragment;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.axalent.R;
+import com.axalent.model.UserAttribute;
+import com.axalent.model.data.model.Time;
+import com.axalent.presenter.axaapi.UserAPI;
+import com.axalent.util.AxalentUtils;
+import com.axalent.util.LogUtils;
+import com.axalent.util.ToastUtils;
+import com.axalent.util.XmlUtils;
 import com.axalent.view.activity.HomeActivity;
 import com.axalent.adapter.MainListAdapter;
 import com.axalent.adapter.MainListAdapter.MyScrollListener;
@@ -22,6 +32,7 @@ import com.axalent.util.CacheUtils;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
@@ -32,6 +43,8 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
+
+import org.xmlpull.v1.XmlPullParser;
 
 public class MainFragment extends Fragment implements Manager, OnRefreshListener, MyScrollListener {
 	
@@ -73,9 +86,30 @@ public class MainFragment extends Fragment implements Manager, OnRefreshListener
 			aty.setupCSRDatas();
 			notifyPageRefresh();
 		} else {
-			aty.sendMsgToGateway();
+			getServerTime();
 		}
 		refreshLayout.setRefreshing(false);
+	}
+
+	private void getServerTime() {
+		UserAPI.getUserValueList(new Response.Listener<XmlPullParser>() {
+			@Override
+			public void onResponse(XmlPullParser xmlPullParser) {
+				List<UserAttribute> userAttributes = XmlUtils.converUserValueList(xmlPullParser);
+				for (int i = 0; i < userAttributes.size(); i++) {
+					if (AxalentUtils.ATTRIBUTE_DATABASE.equals(userAttributes.get(i).getName())) {
+						String updateTime = userAttributes.get(i).getUpdTime();
+						LogUtils.i("update time:" + updateTime);
+						aty.sendMsgToGateway(updateTime);
+					}
+				}
+			}
+		}, new Response.ErrorListener() {
+			@Override
+			public void onErrorResponse(VolleyError volleyError) {
+				ToastUtils.show(getString(R.string.get_server_data_error));
+			}
+		});
 	}
 
 	public void autoRefresh() {
