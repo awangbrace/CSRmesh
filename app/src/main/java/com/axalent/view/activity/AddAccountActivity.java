@@ -122,10 +122,6 @@ public class AddAccountActivity extends BaseActivity implements View.OnClickList
         });
     }
 
-    private void skipToHome() {
-        finish();
-    }
-
     private void saveUserInfo(User user) {
         LogUtils.e("saveUserInfo");
         SharedPreferences.Editor editor = sp.edit();

@@ -17,6 +17,8 @@ version2.0.2:
 
   5.在cloud模式下添加group
 
-  6.smart config配置wifi，发送广播包
+  6.local与cloud的group的同步支持
 
-  7.向网关发送消息的时候，判断是否需要发送
+  7.smart config配置wifi，发送广播包
+
+  8.向网关发送消息的时候，判断是否需要发送

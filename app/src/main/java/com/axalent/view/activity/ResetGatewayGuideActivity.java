@@ -103,13 +103,9 @@ public class ResetGatewayGuideActivity extends BaseActivity implements View.OnCl
             try {
                 sock = new SSDPSocket("");
                 while(!stop) {
-                    DatagramPacket dp = sock.receive();
+                    DatagramPacket dp = sock.receiveAck();
 
                     LogUtils.i("result:" + new String(dp.getData()));
-                    LogUtils.i("result_address:" + dp.getAddress());
-                    LogUtils.i("result_length:" + dp.getLength());
-                    LogUtils.i("result_port:" + dp.getPort());
-                    LogUtils.i("result_socket_address:" + dp.getSocketAddress());
 
                     parserResult(new String(dp.getData()));
                 }
@@ -125,46 +121,7 @@ public class ResetGatewayGuideActivity extends BaseActivity implements View.OnCl
         }
     }
 
-    private void findGateway(final String url) {
-        LogUtils.i("url:"+url);
-        StringRequest req = new StringRequest(url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String str) {
-                try {
-                    XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
-                    XmlPullParser pull = factory.newPullParser();
-                    pull.setInput(new StringReader(str));
-                    Gateway gateway = XmlUtils.getGateway(pull);
-                    String manufacturer = gateway.getManufacturer();
-
-                    if (manufacturer != null && manufacturer.contains("Axalent")) {
-                        LogUtils.i("find gateway ok!");
-                        int start = 0;
-                        int end = url.lastIndexOf(":");
-                        String newUrl = url.substring(start, end);
-                        gateway.setUrl(newUrl);
-                        String localUrl = gateway.getUrl() + ":8087/zdk/services/zamapi/";
-                        sharedPreferences.edit().putString("localUrl", localUrl).commit();
-                        LogUtils.i("localUrl:"+localUrl);
-                        configSuccess();
-                    }
-
-                } catch (XmlPullParserException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError arg0) {
-            }
-        });
-
-        MyRequestQueue.addToRequestQueue(req);
-
-    }
-
     private void configSuccess() {
-        ToastUtils.show(getString(R.string.config_success));
         setResult(AxalentUtils.SWITCH_GATEWAY_WIFI_SUCCESS);
         finish();
     }

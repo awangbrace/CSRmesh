@@ -271,7 +271,11 @@ public class LoginActivity extends BaseActivity implements OnClickListener, OnCh
 			passwordEdit.setText(user.getPassword());
 			userLogin();
 			break;
+		case AxalentUtils.SWITCH_GATEWAY_WIFI_SUCCESS:
+			ToastUtils.show(getString(R.string.config_success));
+			break;
 		}
+
 
 		super.onActivityResult(requestCode, resultCode, data);
 	}

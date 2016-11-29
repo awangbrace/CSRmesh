@@ -34,6 +34,7 @@ import com.axalent.presenter.csrapi.GroupModel;
 import com.axalent.presenter.events.MeshResponseEvent;
 import com.axalent.util.AxalentUtils;
 import com.axalent.adapter.DiscoveredDevicesAdapter;
+import com.axalent.util.LogUtils;
 import com.axalent.view.material.ButtonFlatMaterial;
 import com.axalent.view.material.Constants;
 import com.axalent.view.material.DialogMaterial;
@@ -520,7 +521,6 @@ public class DetectedDevicesActivity extends BaseActivity {
                                 int deviceId = meshResponseEvent.data.getInt(MeshConstants.EXTRA_DEVICE_ID);
                                 int uuidHash = meshResponseEvent.data.getInt(MeshConstants.EXTRA_UUIDHASH_31);
                                 byte[] dhmKey = meshResponseEvent.data.getByteArray(MeshConstants.EXTRA_RESET_KEY);
-
                                 mTempCSRDevice = new UnknownCSRDevice();
                                 mTempCSRDevice.setDeviceID(deviceId);
                                 mTempCSRDevice.setDeviceHash(uuidHash);

@@ -25,7 +25,10 @@ import com.axalent.util.LogUtils;
 import com.axalent.view.material.Constants;
 import com.axalent.view.widget.LoadingDialog;
 import com.csr.csrmesh2.GroupModelApi;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -194,7 +197,7 @@ public class AddGroupActivity extends BaseActivity {
             else {
                 loadingDialog.close();
                 Toast.makeText(this, getString(R.string.area_failure), Toast.LENGTH_SHORT).show();
-                finish();
+//                finish();
             }
         }
     }
@@ -234,8 +237,8 @@ public class AddGroupActivity extends BaseActivity {
                     int groupIndex = mDeviceToApply.getGroupsList().indexOf(0);
                     if (groupIndex == Constants.INVALID_VALUE) {
                         mDevicesToAdd.remove();
-                        Toast.makeText(this,getString(R.string.maximum_areas), Toast.LENGTH_SHORT).show();
-                        operation = false;
+                        Toast.makeText(this,mDeviceToApply.getName() + getString(R.string.maximum_areas), Toast.LENGTH_SHORT).show();
+                        return false;
                     }
                     else {
                         mDeviceToApply.setGroup(groupIndex, area.getAreaID());

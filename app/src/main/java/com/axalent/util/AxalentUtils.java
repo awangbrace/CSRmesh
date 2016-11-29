@@ -52,7 +52,7 @@ import android.view.animation.RotateAnimation;
 
 public class AxalentUtils {
 
-//	 public static final String SERVER_ADDRESS_REMOTELY ="https://devkit-api.arrayent.com:8081/zdk/services/zamapi/";
+//	public static final String SERVER_ADDRESS_REMOTELY ="https://devkit-api.arrayent.com:8081/zdk/services/zamapi/";
 	public static final String SERVER_ADDRESS_REMOTELY = "https://apac-axlprod01-api.arrayent.com:8081/zdk/services/zamapi/";
 	public static final String SERVER_ADDRESS_LOCAL = "http://192.168.11.100:8087/zdk/services/zamapi/";
 	public static final String SERVER_ADDRESS_API = "http://www.axalent.com:8081/api/";
@@ -165,8 +165,9 @@ public class AxalentUtils {
 	public static final String TYPE_SHCK = "SHCK";
 
 	public static final String ATTRIBUTE_DATABASE = "DataBase";
+	public static final String ATTRIBUTE_TIME_STAMP = "TimeStamp";
 
-	public static final String SWITCH_WIFI_SUCCESS_FEEDBACK = "Axalent Solutions";
+	public static final String SWITCH_WIFI_SUCCESS_FEEDBACK = "Axalent Solution";
 
 	public static final int SWITCH_GATEWAY_WIFI = 0x31;
 	public static final int SAVE_GATEWAY_IP = 0x32;
@@ -238,7 +239,9 @@ public class AxalentUtils {
 	public static final String ATTRIBUTE_SHOCK = "shock";
 
 	public static final String ATTRIBUTE_SYNCDB = "syncdb";
-	public static final String ATTRIBUTE_GATEWAY_TIME = "currentTime";
+	public static final String ATTRIBUTE_GATEWAY_TIME = "dbgatewaytime";
+	public static final String ATTRIBUTE_DATE_TIME = "dbupdatetime";
+	public static final String ATTRIBUTE_REFRESH_CHILDINFO = "refresh";
 
 	/**
 	 * �豸�� ChildiInfo ��ֵ

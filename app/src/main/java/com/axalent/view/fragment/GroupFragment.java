@@ -14,6 +14,8 @@ import com.android.volley.VolleyError;
 import com.axalent.R;
 import com.axalent.adapter.GroupAdapter;
 import com.axalent.model.Device;
+import com.axalent.model.DeviceAttribute;
+import com.axalent.presenter.controller.GroupInterface;
 import com.axalent.presenter.controller.Manager;
 import com.axalent.presenter.controller.MyOnSwipeListener;
 import com.axalent.util.AxalentUtils;
@@ -53,7 +55,7 @@ import java.util.List;
  * All rights reserved.
  */
 
-public class GroupFragment extends Fragment implements Manager, OnItemClickListener, OnItemLongClickListener, OnRefreshListener {
+public class GroupFragment extends Fragment implements Manager, OnItemClickListener, OnItemLongClickListener, OnRefreshListener, GroupInterface {
 
     private HomeActivity aty;
     private SwipeMenuListView listView;
@@ -108,7 +110,7 @@ public class GroupFragment extends Fragment implements Manager, OnItemClickListe
 
     private void setAdapter() {
         if (adapter == null) {
-            adapter = new GroupAdapter(aty, groups, aty.getDeviceManager());
+            adapter = new GroupAdapter(aty, groups, aty.getDeviceManager(), true, this);
             listView.setAdapter(adapter);
         } else {
             aty.runOnUiThread(new Runnable() {
@@ -122,12 +124,12 @@ public class GroupFragment extends Fragment implements Manager, OnItemClickListe
 
     @Override
     public void onRefresh() {
-        loadDatas();
+        aty.loadData();
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        controllerGroup(groups.get(position));
+//        controllerGroup(groups.get(position));
     }
 
     @Override
@@ -136,23 +138,31 @@ public class GroupFragment extends Fragment implements Manager, OnItemClickListe
         return true;
     }
 
-    private void controllerGroup(Device group) {
-        aty.getDeviceManager().setDeviceAttribute(group.getDevId(), AxalentUtils.ATTRIBUTE_LIGHT, getValue(group), new Response.Listener<XmlPullParser>() {
+    private void controllerGroup(final Device device) {
+        aty.getDeviceManager().getDeviceAttribute(device.getDevId(), AxalentUtils.ATTRIBUTE_LIGHT, new Response.Listener<XmlPullParser>() {
             @Override
-            public void onResponse(XmlPullParser response) {
-                ToastUtils.show(R.string.action_success);
+            public void onResponse(XmlPullParser xmlPullParser) {
+                DeviceAttribute deviceAttribute = XmlUtils.converDeviceAttribute(xmlPullParser);
+                boolean value = !AxalentUtils.ON.equals(deviceAttribute.getValue());
+                controllPower(device, value);
+//                aty.getDeviceManager().setDeviceAttribute(device.getDevId(), AxalentUtils.ATTRIBUTE_LIGHT, value, new Response.Listener<XmlPullParser>() {
+//                    @Override
+//                    public void onResponse(XmlPullParser response) {
+//                        ToastUtils.show(R.string.action_success);
+//                    }
+//                }, new Response.ErrorListener() {
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        ToastUtils.show(XmlUtils.converErrorMsg(error));
+//                    }
+//                });
             }
         }, new Response.ErrorListener() {
             @Override
-            public void onErrorResponse(VolleyError error) {
-                ToastUtils.show(XmlUtils.converErrorMsg(error));
+            public void onErrorResponse(VolleyError volleyError) {
+                ToastUtils.show(XmlUtils.converErrorMsg(volleyError));
             }
         });
-    }
-
-    private String getValue(Device device) {
-        String value = device.getToggle();
-        return AxalentUtils.ON.equals(value) ? AxalentUtils.OFF : AxalentUtils.ON;
     }
 
     private void controllerGroupAttr(Device group) {
@@ -169,5 +179,20 @@ public class GroupFragment extends Fragment implements Manager, OnItemClickListe
 
     @Override
     public void addDevice(Device device) {
+    }
+
+    @Override
+    public void controllPower(Device device, boolean isCheck) {
+        String value = !isCheck ? AxalentUtils.OFF : AxalentUtils.ON;
+        aty.getDeviceManager().setDeviceAttribute(device.getDevId(), AxalentUtils.ATTRIBUTE_LIGHT, value, new Response.Listener<XmlPullParser>() {
+            @Override
+            public void onResponse(XmlPullParser response) {
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                ToastUtils.show(XmlUtils.converErrorMsg(error));
+            }
+        });
     }
 }

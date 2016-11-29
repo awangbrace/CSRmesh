@@ -19,7 +19,7 @@ import com.axalent.R;
 import com.axalent.model.data.database.DBManager;
 import com.axalent.model.data.model.Area;
 import com.axalent.model.data.model.devices.CSRDevice;
-import com.axalent.presenter.controller.GroupsInterface;
+import com.axalent.presenter.controller.SceneInterface;
 import com.axalent.view.activity.AddActivity;
 import com.axalent.view.activity.AddGroupActivity;
 import com.axalent.view.activity.HomeActivity;
@@ -67,7 +67,7 @@ import android.widget.AdapterView.OnItemLongClickListener;
 
 import static android.content.Context.MODE_PRIVATE;
 
-public class SceneFragment extends Fragment implements Manager, OnItemClickListener, OnMenuItemClickListener, OnItemLongClickListener, OnRefreshListener, GroupsInterface {
+public class SceneFragment extends Fragment implements Manager, OnItemClickListener, OnMenuItemClickListener, OnItemLongClickListener, OnRefreshListener, SceneInterface {
 
 	private HomeActivity aty;
 	private GroupAdapter adapter;
@@ -154,21 +154,23 @@ public class SceneFragment extends Fragment implements Manager, OnItemClickListe
 	}
 	
 	public void loadDatas() {
-		if (aty.isBluetoothMode()) {
-			areas.clear();
-			areas.addAll(dbManager.getAllAreaList());
-		} else {
-			scenes.clear();
-			List<Device> devices = CacheUtils.getDevices();
-			for (Device device : devices) {
-				if (AxalentUtils.TYPE_AXALENT_SCENE.equalsIgnoreCase(device.getTypeName())) {
-					scenes.add(device);
-				} else if (AxalentUtils.TYPE_GATEWAY_SCENE.equalsIgnoreCase(device.getTypeName())) {
-					setDeviceAttribute(device);
+		if (aty != null) {
+			if (aty.isBluetoothMode()) {
+				areas.clear();
+				areas.addAll(dbManager.getAllAreaList());
+			} else {
+				scenes.clear();
+				List<Device> devices = CacheUtils.getDevices();
+				for (Device device : devices) {
+					if (AxalentUtils.TYPE_AXALENT_SCENE.equalsIgnoreCase(device.getTypeName())) {
+						scenes.add(device);
+					} else if (AxalentUtils.TYPE_GATEWAY_SCENE.equalsIgnoreCase(device.getTypeName())) {
+						setDeviceAttribute(device);
+					}
 				}
 			}
+			setAdapter();
 		}
-		setAdapter();
 	}
 	
 	private void setAdapter() {
@@ -240,8 +242,8 @@ public class SceneFragment extends Fragment implements Manager, OnItemClickListe
 				aty.loadingDialog.show(R.string.is_the_delete);
 				for (CSRDevice d : dbManager.getDevicesInArea(area.getId())) {
 					for (int i = 0; i < d.getGroups().length; i++) {
-						if (d.getGroups()[i] == area.getId()) {
-							d.getGroups()[i] = 0;
+						if (d.getGroups()[i] == area.getAreaID()) {
+							d.setGroup(i, 0);
 						}
 					}
 					CSRDevice result = dbManager.createOrUpdateDevice(d);

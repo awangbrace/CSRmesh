@@ -413,7 +413,7 @@
     <string name="area_applied">应用成功</string>
     <string name="create_area_failure">创建组失败!</string>
     <string name="area_failure">应用失败!</string>
-    <string name="maximum_areas">已达到最大选择数，请先取消一个已选择的.</string>
+    <string name="maximum_areas">的组已经加满.</string>
 
     <string name="belong_to_group">这个设备必须加入一个组才能控制</string>
 
@@ -473,5 +473,6 @@
     <string name="set_gateway_time_success">设置网关时间成功</string>
     <string name="set_gateway_time_error">设置网关时间失败</string>
     <string name="gateway_not_online">网关不在线</string>
+    <string name="child_info_refresh_error">刷新失败</string>
 
 </resources>

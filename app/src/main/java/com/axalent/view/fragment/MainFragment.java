@@ -85,31 +85,8 @@ public class MainFragment extends Fragment implements Manager, OnRefreshListener
 			Log.i("test", "onRefresh");
 			aty.setupCSRDatas();
 			notifyPageRefresh();
-		} else {
-			getServerTime();
 		}
 		refreshLayout.setRefreshing(false);
-	}
-
-	private void getServerTime() {
-		UserAPI.getUserValueList(new Response.Listener<XmlPullParser>() {
-			@Override
-			public void onResponse(XmlPullParser xmlPullParser) {
-				List<UserAttribute> userAttributes = XmlUtils.converUserValueList(xmlPullParser);
-				for (int i = 0; i < userAttributes.size(); i++) {
-					if (AxalentUtils.ATTRIBUTE_DATABASE.equals(userAttributes.get(i).getName())) {
-						String updateTime = userAttributes.get(i).getUpdTime();
-						LogUtils.i("update time:" + updateTime);
-						aty.sendMsgToGateway(updateTime);
-					}
-				}
-			}
-		}, new Response.ErrorListener() {
-			@Override
-			public void onErrorResponse(VolleyError volleyError) {
-				ToastUtils.show(getString(R.string.get_server_data_error));
-			}
-		});
 	}
 
 	public void autoRefresh() {
@@ -205,6 +182,10 @@ public class MainFragment extends Fragment implements Manager, OnRefreshListener
 	@Override
 	public void addDevice(Device device) {
 		Device cacheDevice = CacheUtils.getDeviceByDevId(device.getDevId());
+
+		if (cacheDevice != null && cacheDevice.getTypeName().equalsIgnoreCase(AxalentUtils.TYPE_GATEWAY_GROUP))
+			return;
+
 		if (cacheDevice == null) {
 			CacheUtils.saveDevice(device);
 		} 

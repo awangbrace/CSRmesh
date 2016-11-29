@@ -472,5 +472,6 @@
     <string name="set_gateway_time_success">set gateway time success!</string>
     <string name="set_gateway_time_error">set gateway time failure!</string>
     <string name="gateway_not_online">gateway not online!</string>
+    <string name="child_info_refresh_error">refresh failure!</string>
 
 </resources>

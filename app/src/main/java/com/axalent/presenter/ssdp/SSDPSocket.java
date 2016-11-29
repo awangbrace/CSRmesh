@@ -9,8 +9,9 @@ import java.net.SocketAddress;
 public class SSDPSocket {
 	
 	SocketAddress mSSDPMulticastGroup;
-	MulticastSocket mSSDPSocket;
-	InetAddress broadcastAddress;
+	private MulticastSocket mSSDPSocket;
+	private MulticastSocket mSSDPSocketAck;
+	private InetAddress broadcastAddress;
 	
 	public SSDPSocket() throws IOException {
 		mSSDPSocket = new MulticastSocket(58000); // Bind some random port for receiving datagram
@@ -19,9 +20,9 @@ public class SSDPSocket {
 	}
 
 	public SSDPSocket(String ack) throws IOException {
-		mSSDPSocket = new MulticastSocket(9958); // Bind some random port for receiving datagram
-		broadcastAddress = InetAddress.getByName(SSDPConstants.ADDRESS_ACK);
-		mSSDPSocket.joinGroup(broadcastAddress);
+		mSSDPSocketAck = new MulticastSocket(9960); // Bind some random port for receiving datagram
+		InetAddress broadcastAddress = InetAddress.getByName(SSDPConstants.ADDRESS_ACK);
+		mSSDPSocketAck.joinGroup(broadcastAddress);
 	}
 	
 	/* Used to send SSDP packet */
@@ -35,6 +36,14 @@ public class SSDPSocket {
 		byte[] buf = new byte[1024];
 		DatagramPacket dp = new DatagramPacket(buf, buf.length);
 		mSSDPSocket.receive(dp);
+		return dp;
+	}
+
+	/* Used to receive SSDP packet */
+	public DatagramPacket receiveAck() throws IOException {
+		byte[] buf = new byte[1024];
+		DatagramPacket dp = new DatagramPacket(buf, buf.length);
+		mSSDPSocketAck.receive(dp);
 		return dp;
 	}
 

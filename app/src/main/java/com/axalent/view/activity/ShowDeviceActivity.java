@@ -618,13 +618,15 @@ public class ShowDeviceActivity extends BaseActivity implements OnClickListener 
 
 	private void resetDevice() {
 		UUID deviceUUID = csrDevice.getUuid();
-		if (deviceUUID != null) {
-			ConfigModel.resetDevice(csrDevice.getDeviceID(),
-					MeshService.getDeviceHash64FromUuid(csrDevice.getUuid()),
-					csrDevice.getDmKey());
-		}
-		else {
-			Association.resetDevice(csrDevice.getDeviceID(), csrDevice.getDmKey());
+		if (csrDevice.getDmKey() != null) {
+			if (deviceUUID != null) {
+				ConfigModel.resetDevice(csrDevice.getDeviceID(),
+						MeshService.getDeviceHash64FromUuid(csrDevice.getUuid()),
+						csrDevice.getDmKey());
+			}
+			else {
+				Association.resetDevice(csrDevice.getDeviceID(), csrDevice.getDmKey());
+			}
 		}
 	}
 	

@@ -10,7 +10,7 @@ package com.axalent.presenter.controller;
  * All rights reserved.
  */
 
-public interface GroupsInterface {
+public interface SceneInterface {
 
     void goToController(int areaId);
 

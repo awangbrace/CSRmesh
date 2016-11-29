@@ -334,10 +334,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 			case R.id.database_update:
-				if (fragments.get(fragmentIndex) instanceof MainFragment) {
-					databaseUpdate.setVisibility(View.GONE);
-					syncServerData();
-				}
+				databaseUpdate.setVisibility(View.GONE);
+				syncServerData();
 				break;
 		}
 	}
@@ -651,7 +649,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
 	}
 	
 	private void changeFragment(int checkedId) {
-//		cancelRequests();
+		cancelRequests();
 		FragmentTransaction transaction = getFragmentManager().beginTransaction();
 		Fragment hideFragment = fragments.get(fragmentIndex);
 		hideFragment.onPause();
@@ -834,6 +832,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
 			examineUserInfo();
 			notifyPageRefresh();
 			examineGatewayChildInfo();
+			if (!isBluetoothMode()) {
+				sendMsgToGateway();
+			}
 		}
 		
 	}
@@ -973,8 +974,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
 						Log.i("type_group_name",typeName);
 
 						if (device.getTypeName() != null && !device.getTypeName().equalsIgnoreCase(typeName) &&
-								!device.getTypeName().equalsIgnoreCase(AxalentUtils.TYPE_AXALENT_SCENE) &&
-								!device.getTypeName().equalsIgnoreCase(AxalentUtils.TYPE_GATEWAY_GROUP)) {
+								!device.getTypeName().equalsIgnoreCase(AxalentUtils.TYPE_AXALENT_SCENE)) {
 							// ���Ͳ�ƥ��,֤��֮ǰ����д��󣬣��Ƶ� ChildInfoValue��82 ������ֵ����82��ɾ���������
 							deviceManager.removeDeviceFromUser(device.getDevId(), new Listener<XmlPullParser>() {
 								@Override
@@ -1090,14 +1090,14 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
 private boolean filtration(String typeName) {
 		if (AxalentUtils.TYPE_AXALENT_SCENE.equalsIgnoreCase(typeName)) {
 			return false;
+		} else if (AxalentUtils.TYPE_GATEWAY_GROUP.equals(typeName)) {
+			return false;
 		} else if (AxalentUtils.TYPE_GATEWAY_SCENE.equalsIgnoreCase(typeName)) {
 			return false;
 		} else if (AxalentUtils.TYPE_GATEWAY_SCHEDULE.equalsIgnoreCase(typeName)) {
 			return false;
 		} else if (AxalentUtils.TYPE_GATEWAY.equalsIgnoreCase(typeName)) {
 			return sharedPreferences.getBoolean("showGateway", false);
-		} else if (AxalentUtils.TYPE_GATEWAY_GROUP.equals(typeName)) {
-			return false;
 		}
 		return true;
 	}
@@ -1311,26 +1311,12 @@ private boolean filtration(String typeName) {
 	}
 
 	private void updateConnectionSettings() {
-		Bundle bundle = new Bundle();
 		MeshLibraryManager.getInstance().setNetworkPassPhrase(dbManager.getPlace(1).getNetworkKey());
-
 		// Set REST host and port to point to Selected GATEWAY
 		int connectionType = ConnectionUtils.getConnectionType(this);
 		if(connectionType == ConnectionUtils.TYPE_WIFI) {
-
 			MeshLibraryManager.getInstance().restartBonjour();
-
-//			Intent serviceIntent = new Intent(this, SearchSelectedGatewayService.class);
-//			this.startService(serviceIntent);
 		}
-
-
-//		// Set tenant & site
-//		RestChannel.setTenant(dbManager.getSettingByFacebookId(null).getCloudTenantId());
-//		RestChannel.setSite(dbManager.getPlace(Utils.getLatestPlaceIdUsed(this)).getCloudSiteID());
-
-		//TODO - is this needed? - the mesh id is internal to the library.
-		//mDBManager.getSettingByFacebookId(null).getCloudMeshId();
 	}
 
 	private void showRefresh() {
@@ -1369,25 +1355,18 @@ private boolean filtration(String typeName) {
 							String updTime = AxalentUtils.gmtToLoLocal2(serverTime);
 							int node = AxalentUtils.compareDate(updTime, AxalentUtils.gmtToLoLocal2(time.getTime()));
 							switch (node) {
-								case AxalentUtils.SAME_TIME:
-									closeRefresh();
-									databaseUpdate.setVisibility(View.GONE);
-									SharedPreferences.Editor editor = sp.edit();
-									editor.putBoolean("isShowMsg", false);
-									editor.apply();
-									ToastUtils.show(getString(R.string.no_synchronization));
-									break;
 								case AxalentUtils.GREATER_TIME:
 									closeRefresh();
 									dbManager.updateLocalDatabase(userAttributes.get(i).getValue());
 									databaseUpdate.setVisibility(View.GONE);
 									break;
 								case AxalentUtils.LESS_TIME:
-									uploadLocalData(updateTime);
+								case AxalentUtils.SAME_TIME:
+									uploadLocalData();
 									break;
 							}
 						} else if (serverTime.isEmpty() && time != null) {
-							uploadLocalData(updateTime);
+							uploadLocalData();
 						} else if (!serverTime.isEmpty() && time == null){
 							closeRefresh();
 							dbManager.updateLocalDatabase(userAttributes.get(i).getValue());
@@ -1441,7 +1420,7 @@ private boolean filtration(String typeName) {
 	}
 
 	// upload local data to server
-	private void uploadLocalData(final String unpTime) {
+	private void uploadLocalData() {
 		// Get configuration data.
 		String configuration = dbManager.getDataBaseAsJson();
 		Log.i("configuration:" , configuration+"");
@@ -1452,7 +1431,8 @@ private boolean filtration(String typeName) {
 		UserAPI.setUserAttribute(AxalentUtils.ATTRIBUTE_DATABASE, configuration, new Response.Listener<String>() {
 			@Override
 			public void onResponse(String response) {
-				sendMsgToGateway(unpTime);
+				setDeviceTimeAttr();
+				sendMsgToGateway();
 				SharedPreferences.Editor editor = sp.edit();
 				editor.putBoolean("isShowMsg", false);
 				editor.apply();
@@ -1472,7 +1452,7 @@ private boolean filtration(String typeName) {
 		});
 	}
 
-	public void sendMsgToGateway(final String unpTime) {
+	public void sendMsgToGateway() {
 		if (MyCacheData.getInstance().getCacheUser().getSecurityToken() == null) {
 			closeRefresh();
 			goToAddAccount();
@@ -1490,54 +1470,138 @@ private boolean filtration(String typeName) {
 				if (AxalentUtils.TYPE_GATEWAY.equals(device.getTypeName())) {
 					LogUtils.i("gatewayId:" + device.getDevId());
 					// 判断网关是否需要拉取数据
-					if (device.getState() != null && device.getState().equals("1")) {
-						deviceManager.getDeviceAttribute(device.getDevId(), AxalentUtils.ATTRIBUTE_GATEWAY_TIME, new Listener<XmlPullParser>() {
-							@Override
-							public void onResponse(XmlPullParser xmlPullParser) {
-								DeviceAttribute deviceAttribute = XmlUtils.converDeviceAttribute(xmlPullParser);
-								String gatewayTime = deviceAttribute.getValue();
-								String gatewayData = AxalentUtils.gmtToLoLocal2(gatewayTime);
-								String userData = AxalentUtils.gmtToLoLocal2(unpTime);
-								int node = AxalentUtils.compareDate(gatewayData, userData);
-								if (gatewayTime.isEmpty() || node == -1) {
-									setSyncDbAttr(device.getDevId(), attr);
-									setDeviceTimeAttr(device, unpTime);
-								}
-							}
-						}, new ErrorListener() {
-							@Override
-							public void onErrorResponse(VolleyError volleyError) {
-								ToastUtils.show(getString(R.string.get_gateway_time_error));
-							}
-						});
-					} else {
-						ToastUtils.show(getString(R.string.gateway_not_online));
-					}
+					deviceManager.getPresenceInfo(device.getDevId(), new Listener<XmlPullParser>() {
+						@Override
+						public void onResponse(XmlPullParser xmlPullParser) {
+							String state = XmlUtils.convertPresenceInfo(xmlPullParser);
+							device.setState(state);
+							refreshChildInfo(device, attr);
+						}
+					}, new ErrorListener() {
+						@Override
+						public void onErrorResponse(VolleyError volleyError) {
+
+						}
+					});
 				}
 			}
 		}
 	}
 
-	private void setDeviceTimeAttr(Device device, String attr) {
-		deviceManager.setDeviceAttribute(device.getDevId(), AxalentUtils.ATTRIBUTE_GATEWAY_TIME, attr, new Listener<XmlPullParser>() {
+	private void refreshChildInfo(final Device device, final String attr) {
+		deviceManager.setDeviceAttribute(device.getDevId(), AxalentUtils.ATTRIBUTE_REFRESH_CHILDINFO, AxalentUtils.ON, new Response.Listener<XmlPullParser>() {
 			@Override
 			public void onResponse(XmlPullParser xmlPullParser) {
-				ToastUtils.show(getString(R.string.set_gateway_time_success));
+				isSendMsgToGateway(device, attr);
 			}
-		}, new ErrorListener() {
+		}, new Response.ErrorListener() {
 			@Override
 			public void onErrorResponse(VolleyError volleyError) {
-				ToastUtils.show(getString(R.string.set_gateway_time_error));
+				ToastUtils.show(getString(R.string.child_info_refresh_error));
 			}
 		});
 	}
 
-	private void setSyncDbAttr(String gatewayId, String attr) {
+	private void isSendMsgToGateway(final Device device, final String attr) {
+		if (device.getState() != null && device.getState().equals("1")) {
+			deviceManager.getDeviceAttribute(device.getDevId(), AxalentUtils.ATTRIBUTE_GATEWAY_TIME, new Listener<XmlPullParser>() {
+				@Override
+				public void onResponse(XmlPullParser xmlPullParser) {
+					DeviceAttribute deviceAttribute = XmlUtils.converDeviceAttribute(xmlPullParser);
+					final String gatewayTime = deviceAttribute.getValue();
+					deviceManager.getDeviceAttribute(device.getDevId(), AxalentUtils.ATTRIBUTE_DATE_TIME, new Listener<XmlPullParser>() {
+						@Override
+						public void onResponse(XmlPullParser xmlPullParser) {
+							DeviceAttribute deviceAttribute = XmlUtils.converDeviceAttribute(xmlPullParser);
+							String updateTime = deviceAttribute.getValue();
+							if (!gatewayTime.isEmpty() && !updateTime.isEmpty()) {
+								long unp = Long.parseLong(updateTime);
+								long gate = Long.parseLong(gatewayTime);
+								LogUtils.i("long_node:" + unp);
+								LogUtils.i("long_node:" + gate);
+								LogUtils.i("long_node_dx:" + (unp > gate));
+								if (unp > gate) {
+									setSyncDbAttr(device, attr, updateTime);
+								}
+							} else {
+								setSyncDbAttr(device, attr, updateTime);
+							}
+						}
+					}, new ErrorListener() {
+						@Override
+						public void onErrorResponse(VolleyError volleyError) {
+							ToastUtils.show(getString(R.string.get_gateway_time_error));
+						}
+					});
+				}
+			}, new ErrorListener() {
+				@Override
+				public void onErrorResponse(VolleyError volleyError) {
+					ToastUtils.show(getString(R.string.get_gateway_time_error));
+				}
+			});
+		} else {
+			ToastUtils.show(getString(R.string.gateway_not_online));
+		}
+	}
+
+	private void setUserTimeStamp(String unpTime) {
+		UserAPI.setUserAttribute(AxalentUtils.ATTRIBUTE_TIME_STAMP, unpTime, new Listener<String>() {
+			@Override
+			public void onResponse(String s) {
+
+			}
+		}, new ErrorListener() {
+			@Override
+			public void onErrorResponse(VolleyError volleyError) {
+
+			}
+		});
+	}
+
+	private void setDeviceTimeAttr() {
+		for (final Device device : CacheUtils.getDevices()) {
+			LogUtils.i("deviceType:" + device.getTypeName());
+			if (AxalentUtils.TYPE_GATEWAY.equals(device.getTypeName())) {
+				LogUtils.i("gatewayId:" + device.getDevId());
+				UserAPI.getUserValueList(new Response.Listener<XmlPullParser>() {
+					@Override
+					public void onResponse(XmlPullParser xmlPullParser) {
+						List<UserAttribute> userAttributes = XmlUtils.converUserValueList(xmlPullParser);
+						for (int i = 0; i < userAttributes.size(); i++) {
+							if (AxalentUtils.ATTRIBUTE_DATABASE.equals(userAttributes.get(i).getName())) {
+								String updateTime = userAttributes.get(i).getUpdTime();
+								LogUtils.i("updateTime:" + updateTime);
+								deviceManager.setDeviceAttribute(device.getDevId(), AxalentUtils.ATTRIBUTE_DATE_TIME, updateTime, new Listener<XmlPullParser>() {
+									@Override
+									public void onResponse(XmlPullParser xmlPullParser) {
+
+									}
+								}, new ErrorListener() {
+									@Override
+									public void onErrorResponse(VolleyError volleyError) {
+									}
+								});
+							}
+						}
+					}
+				}, new ErrorListener() {
+					@Override
+					public void onErrorResponse(VolleyError volleyError) {
+						ToastUtils.show(getString(R.string.get_server_data_error));
+					}
+				});
+			}
+		}
+	}
+
+	private void setSyncDbAttr(final Device device, String attr, final String unpTime) {
 		showRefresh();
-		deviceManager.setDeviceAttribute(gatewayId, AxalentUtils.ATTRIBUTE_SYNCDB, attr, new Listener<XmlPullParser>() {
+		deviceManager.setDeviceAttribute(device.getDevId(), AxalentUtils.ATTRIBUTE_SYNCDB, attr, new Listener<XmlPullParser>() {
 			@Override
 			public void onResponse(XmlPullParser xmlPullParser) {
 				ToastUtils.show(getString(R.string.sync_success_homepage));
+				setUserTimeStamp(unpTime);
 				closeRefresh();
 			}
 		}, new ErrorListener() {
